@@ -4,144 +4,195 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Default - General
-    public float speed = 10f;          
-    public float jumpForce = 1000f;      
-    public bool isGrounded = true;
+    // Rigid Body
+    // Mass: 200
+    // Drag: 0.5, Angular Drag: 0.05
+    // Freeze Rotation: X, Y, Z
+    private Rigidbody rb;
 
-    // Ice
+    // Default Ground - General
+    public float speed = 1.5f;
+    public float jumpForce = 1200f;
+    public bool isGrounded = true;
+    public float groundCheckDistance = 1.1f;
+
+    // Ice Ground
     public bool isOnIce = false;
-    public float iceAcceleration = 0.1f;
-    public float maxIceSpeed = 20f;
+    public float iceAcceleration = 1.5f;
+    public float maxIceSpeed = 5.0f;
     private Vector3 iceVelocity = Vector3.zero;
     public float iceDeceleration = 0.001f;
 
-    // Physics
-    private Rigidbody rb;
-
-    // Animation
+    // Animator
     private Animator animator;
+    private bool isMoving = false;
 
     // Audio
     public AudioSource audioSource;
     public AudioClip jumpSound;
     public AudioClip groundImpactSound;
     public AudioClip movementSound;
-    private bool isMoving = false;
 
-    // Particle Effects
+    // Particles
     public ParticleSystem iceTrail;
     public ParticleSystem dirtTrail;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();  
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
+        GroundCheck(); 
+        HandleMovementInput();
+        HandleJumpInput();
+        UpdateEffects();
+    }
+
+    private IEnumerator DelayGroundedReset()
+    {
+        yield return new WaitForSeconds(0.1f);
+        isGrounded = false;
+        animator.SetBool("Grounded", false);
+        rb.drag = 0f;
+        rb.AddForce(Vector3.down * 0.1f, ForceMode.Acceleration);
+    }
+
+    private void GroundCheck()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance))
+        {
+            if (Vector3.Angle(hit.normal, Vector3.up) < 45f && hit.distance <= groundCheckDistance)
+            {
+                isGrounded = true;
+                isOnIce = hit.collider.CompareTag("IceGround");
+                rb.drag = 0.5f;
+                animator.SetBool("Grounded", true);
+                if (!isMoving)
+                {
+                    audioSource.PlayOneShot(groundImpactSound);
+                }
+            }
+            else if (isGrounded && rb.velocity.y >= -0.1f) 
+            {
+                isGrounded = true;
+            }
+            else
+            {
+                StartCoroutine(DelayGroundedReset()); 
+            }
+        }
+        else
+        {
+            StartCoroutine(DelayGroundedReset());
+        }
+    }
+
+    private void HandleMovementInput()
+    {
         float moveHorizontal = 0f;
         float moveVertical = 0f;
 
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            moveVertical = 1f;
-        }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            moveVertical = -1f;
-        }
+        if (Input.GetKey(KeyCode.UpArrow)) moveVertical = 1f;
+        else if (Input.GetKey(KeyCode.DownArrow)) moveVertical = -1f;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            moveHorizontal = -1f;
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            moveHorizontal = 1f;
-        }
+        if (Input.GetKey(KeyCode.LeftArrow)) moveHorizontal = -1f;
+        else if (Input.GetKey(KeyCode.RightArrow)) moveHorizontal = 1f;
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
+        ApplyMovement(movement);
+        UpdateAnimationAndSound(movement);
+    }
 
-        if (isOnIce)
+    private void ApplyMovement(Vector3 movement)
+    {
+        if (isGrounded && !isOnIce) // On Default Ground
         {
-            // Accelerates, speed can not be more than maxIceSpeed
+            Vector3 force = movement * speed * 2.5f * rb.mass;
+            rb.AddForce(force, ForceMode.Force);
+            iceVelocity = Vector3.zero;
+        }
+        else if (isOnIce && isGrounded) // On Ice
+        {
             if (movement != Vector3.zero)
             {
                 iceVelocity += movement * iceAcceleration;
                 iceVelocity = Vector3.ClampMagnitude(iceVelocity, maxIceSpeed);
+                rb.AddForce(iceVelocity * rb.mass, ForceMode.Force);
             }
-            // Decelerates if no movement input
             else
             {
                 iceVelocity = Vector3.Lerp(iceVelocity, Vector3.zero, iceDeceleration);
+                rb.AddForce(iceVelocity * rb.mass, ForceMode.Force);
             }
-            rb.velocity = new Vector3(iceVelocity.x, rb.velocity.y, iceVelocity.z);
         }
-        else
+        // On Air
+        else 
         {
-            rb.velocity = new Vector3(movement.x * speed, rb.velocity.y, movement.z * speed);
+            Vector3 force = movement * speed * rb.mass * 0.4f;
+            rb.AddForce(force, ForceMode.Force);
+            rb.AddForce(Physics.gravity, ForceMode.Acceleration);
             iceVelocity = Vector3.zero;
         }
+    }
 
-        // Walking - Running
-        if (movement != Vector3.zero)
-        {
-            // Make the Player look always at the direction of its movement
-            transform.rotation = Quaternion.LookRotation(movement);
-            animator.SetFloat("Speed_f", 1f);  
-            
-            if (!isMoving)
-            {
-                audioSource.PlayOneShot(movementSound);
-                isMoving = true;
-            }
-
-            if (isOnIce)
-            {
-                if (!iceTrail.isPlaying)
-                {
-                    iceTrail.Play();
-                }
-            }
-            else
-            {
-                if (!dirtTrail.isPlaying)
-                {
-                    dirtTrail.Play();
-                }
-            }
-        }
-        else
-        // Idle
-        {
-            animator.SetFloat("Speed_f", 0f);  
-            isMoving = false;
-
-            iceTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-            dirtTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        }
-
-        // Jump
+    private void HandleJumpInput()
+    {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
             audioSource.PlayOneShot(jumpSound);
             animator.SetBool("Jump_b", true);
-            Invoke("ResetJumpTrigger", 0.1f); 
+            Invoke("ResetJumpTrigger", 0.1f);
         }
     }
 
-
-    void OnCollisionEnter(Collision collision)
+    private void UpdateAnimationAndSound(Vector3 movement)
     {
-        if (collision.gameObject.CompareTag("DefaultGround") || collision.gameObject.CompareTag("IceGround"))
+        float currentSpeed = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
+        animator.SetFloat("Speed_f", currentSpeed);
+        animator.SetBool("Moving_b", movement != Vector3.zero);
+
+        if (movement != Vector3.zero)
         {
-            isGrounded = true;
-            isOnIce = collision.gameObject.CompareTag("IceGround");
-            audioSource.PlayOneShot(groundImpactSound);
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            if (!audioSource.isPlaying)
+            {
+                audioSource.clip = movementSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+        }
+    }
+
+    // Particle Effects
+    private void UpdateEffects()
+    {
+        if (isMoving)
+        {
+            if (isOnIce && !iceTrail.isPlaying)
+            {
+                iceTrail.Play();
+            }
+            else if (!isOnIce && !dirtTrail.isPlaying)
+            {
+                dirtTrail.Play();
+            }
+        }
+        else
+        {
+            iceTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            dirtTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
     }
 
