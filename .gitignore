@@ -70,3 +70,13 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Blender
+*.blend[1-9]
+*.blend@
+*.blend~
+*.pyc
+*.pyo
+__pycache__/
+.DS_Store
+Thumbs.db
