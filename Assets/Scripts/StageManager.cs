@@ -13,10 +13,10 @@ public enum Powerup
     Ice          // 4
 }
 
-// Manage player status and UI on stage screen
+// Manage player status and UI on playing stage screen
 public class StageManager : MonoBehaviour
 {
-    [SerializeField] bool gotRecipe = false;
+    [SerializeField] bool obtainedRecipe = false;
     [SerializeField] int stageCoins = 0;
     [SerializeField] int stageScore = 0;
     [SerializeField] Powerup powerup = Powerup.None;
@@ -29,12 +29,10 @@ public class StageManager : MonoBehaviour
     public TextMeshProUGUI coinText;
     public Image recipeImage;
 
-    private GameManager gameManager;
-
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        
     }
 
     // Update is called once per frame
@@ -58,14 +56,18 @@ public class StageManager : MonoBehaviour
 
     public void ObtainRecipe()
     {
-        gotRecipe = true;
+        obtainedRecipe = true;
         UpdateScore(5000);
-        recipeImage.gameObject.SetActive(true);
+
+        // Make UI image color opaque
+        Color opaqueColor = recipeImage.color;
+        opaqueColor.a = 1.0f;
+        recipeImage.color = opaqueColor;
     }
 
     public void GameClear()
     {
         isGameClear = true;
-        gameManager.UpdateStageClear();
+        GameManager.Instance.UpdateStageClear(stageScore, obtainedRecipe);
     }
 }

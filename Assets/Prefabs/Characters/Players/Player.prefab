@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSpeed: 0
-  speed: 1.5
+  speed: 1
   jumpForce: 1200
   isGrounded: 1
   groundCheckDistance: 1.1
