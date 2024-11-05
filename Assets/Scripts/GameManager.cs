@@ -7,6 +7,8 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
+    // TODO: 'Settings' variables as save log
+
     // Save Log
     [SerializeField] bool[] obtainedRecipes = new bool[4];
     [SerializeField] int[] bestScores = new int[4];

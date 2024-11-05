@@ -52,6 +52,12 @@ public class PlayerController : MonoBehaviour
         HandleMovementInput();
         HandleJumpInput();
         UpdateEffects();
+
+        // For debugging stamina behavior
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            stageManager.RunStamina(2.0f);
+        }
     }
 
     private IEnumerator DelayGroundedReset()
@@ -224,6 +230,12 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             stageManager.GameClear();
+        }
+
+        if (other.gameObject.CompareTag("Powerup"))
+        {
+            Destroy(other.gameObject);
+            stageManager.UpdatePowerup(other.gameObject.name);
         }
     }
 }
