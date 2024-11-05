@@ -1521,17 +1521,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1013255337}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e07b25990fa1f4eb2b43b0851b361e2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c2a9b4e6afb444b9ad7781c7ac01be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeIndex: 0
-  uiManager: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  originalColor:
-    r: 1
-    g: 0.5
-    b: 0
-    a: 1
 --- !u!135 &1013255340
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1742,17 +1734,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1338402429}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e07b25990fa1f4eb2b43b0851b361e2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c2a9b4e6afb444b9ad7781c7ac01be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeIndex: 0
-  uiManager: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  originalColor:
-    r: 1
-    g: 0.5
-    b: 0
-    a: 1
 --- !u!4 &1343656344 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2263ba67f2c55423e896b1c9beef3baa, type: 3}
@@ -2167,17 +2151,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1573561607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e07b25990fa1f4eb2b43b0851b361e2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c2a9b4e6afb444b9ad7781c7ac01be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeIndex: 0
-  uiManager: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  originalColor:
-    r: 1
-    g: 0.5
-    b: 0
-    a: 1
 --- !u!1001 &1767064052
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2314,17 +2290,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1841846371}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e07b25990fa1f4eb2b43b0851b361e2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c2a9b4e6afb444b9ad7781c7ac01be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeIndex: 0
-  uiManager: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  originalColor:
-    r: 1
-    g: 0.5
-    b: 0
-    a: 1
 --- !u!4 &1850555115 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2263ba67f2c55423e896b1c9beef3baa, type: 3}
