@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UIManager : MonoBehaviour
+public class UIWorldMap : MonoBehaviour
 {
     public Color completedStageColor = new Color(1f, 0.5f, 0f); // RGB for orange
     public Color currentStageColor = Color.red;
@@ -86,10 +86,12 @@ public class UIManager : MonoBehaviour
         stageNodes.Add(GameObject.Find("NodeStage3"));
         stageNodes.Add(GameObject.Find("NodeStage4"));
 
+        UIWorldMap uiWorldMap = FindObjectOfType<UIWorldMap>(); 
+
         for (int i = 0; i < stageNodes.Count; i++)
         {
             int index = i;
-            stageNodes[i].AddComponent<ClickableNode>().Setup(index, this);
+            stageNodes[i].AddComponent<ClickableNode>().Setup(index, uiWorldMap); 
         }
     }
 
@@ -118,7 +120,7 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < stageNodes.Count; i++)
         {
-            if (stageNodes[i] != null)
+            if (i < stageUnlocked.Count && stageNodes[i] != null) // Add this bounds check
             {
                 GameObject thickCircle = stageNodes[i].transform.Find("thickcircle")?.gameObject;
                 if (thickCircle != null)
