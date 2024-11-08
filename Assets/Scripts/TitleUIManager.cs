@@ -61,11 +61,11 @@ public class TitleUIManager : MonoBehaviour
                 }
                 if (selectedButton == 1)
                 {
-                    LoadSettingsScene();
+                    LoadContinueScene();
                 }
                 if (selectedButton == 2)
                 {
-                    LoadContinueScene();
+                    LoadSettingsScene();
                 }
                 if (selectedButton == 3)
                 {
