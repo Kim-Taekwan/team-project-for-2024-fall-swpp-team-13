@@ -24,6 +24,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] bool isGameOver = false;
     [SerializeField] bool isGameClear = false;
 
+    // UI status
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI coinText;
     public Image recipeImage;
@@ -32,6 +33,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] float rechargeRate = 3.0f;
     private Slider staminaSlider;
     private Coroutine recharging;
+    private PauseUIManager pauseUIManager;
 
     // Player status
     [SerializeField] int hp, maxHp = 6;
@@ -42,8 +44,15 @@ public class StageManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        pauseUIManager = GameObject.Find("PauseUIManager").GetComponent<PauseUIManager>();
         staminaSlider = staminaBar.GetComponent<Slider>();
         SetMaxStamina();
+    }
+
+    // Checker method to determine the game continues
+    public bool CheckGameContinue()
+    {
+        return !pauseUIManager.isGamePaused && !isGameClear && !isGameOver;
     }
 
     private void SetMaxStamina()

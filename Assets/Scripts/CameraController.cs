@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
     public Transform player;
     public Vector3 cameraOffset = new Vector3(0, 3, -4);
     public Vector3 playerOffset = new Vector3(0, 0, 2);
-    public float smoothSpeed = 1.5f;
+    [SerializeField] float smoothSpeed = 0.1f;
     
     void LateUpdate()
     {
