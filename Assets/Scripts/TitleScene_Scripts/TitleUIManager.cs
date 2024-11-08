@@ -21,7 +21,6 @@ public class TitleUIManager : MonoBehaviour
 
     public void Start()
     {
-        planeRenderer = originalPlane.GetComponent<Renderer>();
         newGameButton.SetActive(true);
         continueButton.SetActive(true);
         settingsButton.SetActive(true);
@@ -119,6 +118,7 @@ public class TitleUIManager : MonoBehaviour
     }
     public void QuitAsk()
     {
+        Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         planeRenderer.material.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
         isQuitAsk = true;
         quitAskPlane.SetActive(true);
@@ -134,6 +134,7 @@ public class TitleUIManager : MonoBehaviour
     }
     public void QuitNo()
     {
+        Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         planeRenderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         isQuitAsk = false;
         quitAskPlane.SetActive(false);
