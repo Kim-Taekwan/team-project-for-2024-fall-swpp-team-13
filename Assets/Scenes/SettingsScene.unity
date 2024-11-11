@@ -425,6 +425,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 331539157}
+  - component: {fileID: 331539158}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -447,6 +448,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &331539158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 331539156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5a7fe1de15b4320b3111032840d82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmVolume: 1
+  sfxVolume: 1
+  bgmSource: {fileID: 0}
+  sfxSource: {fileID: 0}
 --- !u!1 &345942594
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,6 +1348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1131299176}
+  - component: {fileID: 1131299177}
   m_Layer: 0
   m_Name: SettingsManager
   m_TagString: Untagged
@@ -1353,6 +1371,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1131299177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131299175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ede2e702e4e54dcdbec14b7f270dd42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brightnessSlider: {fileID: 0}
+  bgmVolumeSlider: {fileID: 0}
+  sfxVolumeSlider: {fileID: 0}
+  resolutionDropdown: {fileID: 0}
+  fullscreenDropdown: {fileID: 0}
+  brightnessValueText: {fileID: 0}
+  bgmVolumeValueText: {fileID: 0}
+  sfxVolumeValueText: {fileID: 0}
+  resolutionValueText: {fileID: 0}
+  fullscreenValueText: {fileID: 0}
+  originalPlane: {fileID: 0}
+  quitAskPlane: {fileID: 0}
+  quitAskText: {fileID: 0}
+  quitYesButton: {fileID: 0}
+  quitNoButton: {fileID: 0}
+  isSaved: 0
+  isQuitAsk: 0
+  selectedQuitButton: 0
 --- !u!1 &1195228207
 GameObject:
   m_ObjectHideFlags: 0
@@ -2361,9 +2409,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 37365550}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0
+  m_MaxValue: 100
+  m_WholeNumbers: 1
+  m_Value: 50
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
