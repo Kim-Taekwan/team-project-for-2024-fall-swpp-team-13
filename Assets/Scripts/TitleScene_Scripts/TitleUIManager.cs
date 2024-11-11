@@ -106,15 +106,24 @@ public class TitleUIManager : MonoBehaviour
     }
     public void LoadWorldMapScene()
     {
-        if(!isQuitAsk) SceneManager.LoadScene("WorldMapScene");
+        if(!isQuitAsk){
+            PlayerPrefs.SetString("LastScene", "TitleScene");
+            SceneManager.LoadScene("WorldMapScene");
+        }
     }
     public void LoadSettingsScene()
     {
-        if(!isQuitAsk) SceneManager.LoadScene("SettingsScene");
+        if(!isQuitAsk){
+            PlayerPrefs.SetString("LastScene", "TitleScene");
+            SceneManager.LoadScene("SettingsScene");
+        }
     }
     public void LoadContinueScene()
     {
-        if(!isQuitAsk) SceneManager.LoadScene("ContinueScene");
+        if(!isQuitAsk){
+            PlayerPrefs.SetString("LastScene", "TitleScene");
+            SceneManager.LoadScene("ContinueScene");
+        }
     }
     public void QuitAsk()
     {
