@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded = true;
     private float moveHorizontal = 0.0f;
     private float moveVertical = 0.0f;
-    private bool isJumpInput = false;
+    private bool hasJumpInput = false;
 
     // Ice Ground
     /*public bool isOnIce = false;
@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
             // Jump Input
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
-                isJumpInput = true;
+                hasJumpInput = true;
             }
 
             // For debugging stamina behavior
@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         if (stageManager.CheckGameContinue())
-        {            
+        {
             HandleMovement();
             HandleJump();
             UpdateEffects();
@@ -93,9 +93,9 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (isJumpInput)
+        if (hasJumpInput)
         {
-            isJumpInput = false;
+            hasJumpInput = false;
             isGrounded = false;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
@@ -163,6 +163,14 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
         }
     }
 
