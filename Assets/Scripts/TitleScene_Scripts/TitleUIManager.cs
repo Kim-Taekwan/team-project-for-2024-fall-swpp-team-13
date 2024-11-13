@@ -19,17 +19,27 @@ public class TitleUIManager : MonoBehaviour
     private int maxButtons = 4;
     public bool isQuitAsk;
 
+    void OnEnable()
+    {
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+
+    void OnSceneUnloaded(Scene scene)
+    {
+        showButtons();
+        showSelectTriangle();
+    }
+
     public void Start()
     {
-        newGameButton.SetActive(true);
-        continueButton.SetActive(true);
-        settingsButton.SetActive(true);
-        quitButton.SetActive(true);
+        showButtons();
         showSelectTriangle();
-        quitAskPlane.SetActive(false);
-        quitAskText.SetActive(false);
-        quitYesButton.SetActive(false);
-        quitNoButton.SetActive(false);
+        hideQuitAsk();
 
         isQuitAsk = false;
     }
@@ -95,6 +105,41 @@ public class TitleUIManager : MonoBehaviour
             }
         }
     }
+    public void hideButtons()
+    {
+        newGameButton.SetActive(false);
+        continueButton.SetActive(false);
+        settingsButton.SetActive(false);
+        quitButton.SetActive(false);
+    }
+    public void showButtons()
+    {
+        newGameButton.SetActive(true);
+        continueButton.SetActive(true);
+        settingsButton.SetActive(true);
+        quitButton.SetActive(true);
+    }
+    public void hideQuitAsk()
+    {
+        quitAskPlane.SetActive(false);
+        quitAskText.SetActive(false);
+        quitYesButton.SetActive(false);
+        quitNoButton.SetActive(false);
+    }
+    public void showQuitAsk()
+    {
+        quitAskPlane.SetActive(true);
+        quitAskText.SetActive(true);
+        quitYesButton.SetActive(true);
+        quitNoButton.SetActive(true);
+    }
+    public void hideSelectTriangle()
+    {
+        for (int i = 0; i < selectTriangleList.Length; i++)
+        {
+            selectTriangleList[i].SetActive(false);
+        }
+    }
     public void showSelectTriangle()
     {
         for (int i = 0; i < selectTriangleList.Length; i++)
@@ -113,9 +158,10 @@ public class TitleUIManager : MonoBehaviour
     }
     public void LoadSettingsScene()
     {
+        hideButtons();
+        hideSelectTriangle();
         if(!isQuitAsk){
-            PlayerPrefs.SetString("LastScene", "TitleScene");
-            SceneManager.LoadScene("SettingsScene");
+            SceneManager.LoadSceneAsync("SettingsScene", LoadSceneMode.Additive);
         }
     }
     public void LoadContinueScene()

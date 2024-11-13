@@ -6,6 +6,8 @@ using System.Linq;
 
 public class SettingsManager : MonoBehaviour
 {
+    public static SettingsManager Instance { get; private set; }
+
     public Slider brightnessSlider;
     public Slider bgmVolumeSlider;
     public Slider sfxVolumeSlider;
@@ -35,6 +37,19 @@ public class SettingsManager : MonoBehaviour
         new Resolution { width = 1600, height = 900},
         new Resolution { width = 1280, height = 720 }
     };
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void Start()
     {
@@ -86,13 +101,13 @@ public class SettingsManager : MonoBehaviour
 
     public void SetBGMVolume(int volume)
     {
-        AudioManager.instance.SetBGMVolume(volume / 100);
+        AudioManager.Instance.SetBGMVolume(volume / 100);
         isSaved = false;
     }
 
     public void SetSFXVolume(int volume)
     {
-        AudioManager.instance.SetSFXVolume(volume / 100);
+        AudioManager.Instance.SetSFXVolume(volume / 100);
         isSaved = false;
     }
 
@@ -118,11 +133,8 @@ public class SettingsManager : MonoBehaviour
     {
         if(isSaved){
             // last scene 없을 때 오류 출력
-            if(PlayerPrefs.GetString("LastScene") == null){
-                Debug.LogWarning("No last scene");
-                return;
-            }
-            SceneManager.LoadScene(PlayerPrefs.GetString("LastScene"));
+            SceneManager.UnloadSceneAsync("SettingsScene");
+            //SceneManager.LoadScene(PlayerPrefs.GetString("LastScene"));
         }
         else{
             QuitAsk();
@@ -132,8 +144,8 @@ public class SettingsManager : MonoBehaviour
     public void SaveSettings()
     {
         PlayerPrefs.SetFloat("Brightness", RenderSettings.ambientLight.r);
-        PlayerPrefs.SetFloat("BGMVolume", AudioManager.instance.bgmVolume);
-        PlayerPrefs.SetFloat("SFXVolume", AudioManager.instance.sfxVolume);
+        PlayerPrefs.SetFloat("BGMVolume", AudioManager.Instance.bgmVolume);
+        PlayerPrefs.SetFloat("SFXVolume", AudioManager.Instance.sfxVolume);
         PlayerPrefs.SetInt("Resolution", resolutionDropdown.value);
         PlayerPrefs.SetInt("Fullscreen", fullscreenDropdown.value);
         isSaved = true;
@@ -152,10 +164,10 @@ public class SettingsManager : MonoBehaviour
         RenderSettings.ambientLight = new Color(PlayerPrefs.GetFloat("Brightness"), PlayerPrefs.GetFloat("Brightness"), PlayerPrefs.GetFloat("Brightness"), 1);
         brightnessSlider.value = PlayerPrefs.GetFloat("Brightness");
 
-        AudioManager.instance.SetBGMVolume(PlayerPrefs.GetFloat("BGMVolume"));
+        AudioManager.Instance.SetBGMVolume(PlayerPrefs.GetFloat("BGMVolume"));
         bgmVolumeSlider.value = PlayerPrefs.GetFloat("BGMVolume");
 
-        AudioManager.instance.SetSFXVolume(PlayerPrefs.GetFloat("SFXVolume"));
+        AudioManager.Instance.SetSFXVolume(PlayerPrefs.GetFloat("SFXVolume"));
         sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume");
 
         resolutionDropdown.value = PlayerPrefs.GetInt("Resolution");
