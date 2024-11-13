@@ -24,7 +24,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] bool isGameOver = false;
     [SerializeField] bool isGameClear = false;
 
-    // UI status
+    // Stage UI
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI coinText;
     public Image recipeImage;
@@ -36,9 +36,9 @@ public class StageManager : MonoBehaviour
     private PauseUIManager pauseUIManager;
 
     // Player status
-    [SerializeField] int hp, maxHp = 6;
-    [SerializeField] float stamina, maxStamina = 10.0f;
-    [SerializeField] Powerup currentPowerup = Powerup.None;
+    public int hp = 6, maxHp = 6;
+    public float stamina = 10.0f, maxStamina = 10.0f;
+    public Powerup currentPowerup = Powerup.None;
     public GameObject[] mouseForms = new GameObject[5];
 
     // Start is called before the first frame update

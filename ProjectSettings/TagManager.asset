@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Reward
   - Powerup
+  - Enemy
   layers:
   - Default
   - TransparentFX
