@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class PlayerController : MonoBehaviour
     // Freeze Rotation: X, Y, Z
     private Rigidbody rb;    
     private StageManager stageManager;
+    private StaminaManager staminaManager;
+    private HealthManager healthManager;
 
     // Default Ground - General
     [SerializeField] float currentSpeed; // for debugging speed
@@ -46,6 +49,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
+        healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         //animator = GetComponent<Animator>();
     }
 
@@ -62,7 +67,7 @@ public class PlayerController : MonoBehaviour
             // For debugging stamina behavior
             if (Input.GetKeyDown(KeyCode.X))
             {
-                stageManager.RunStamina(2.0f);
+                staminaManager.RunStamina(2.0f);
             }
         }
     }
@@ -163,14 +168,6 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
         }
     }
 

@@ -15,7 +15,6 @@ public class Heart : MonoBehaviour
     public Sprite fullHeart, halfHeart, emptyHeart;
     Image heartImage;
 
-    // Start is called before the first frame update
     void Awake()
     {
         heartImage = GetComponent<Image>();

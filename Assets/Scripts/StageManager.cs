@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum Powerup
@@ -18,21 +20,21 @@ public enum Powerup
 public class StageManager : MonoBehaviour
 {
     // Stage status
-    [SerializeField] bool obtainedRecipe = false;
-    [SerializeField] int stageCoins = 0;
-    [SerializeField] int stageScore = 0;
-    [SerializeField] bool isGameOver = false;
-    [SerializeField] bool isGameClear = false;
+    public bool obtainedRecipe = false;
+    public int stageCoins = 0;
+    public int stageScore = 0;
+    public bool isGameOver = false;
+    public bool isGameClear = false;
+    public bool isGamePaused = false;
 
     // Stage UI
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI coinText;
     public Image recipeImage;
     public Image[] powerupImages = new Image[5];
-    public GameObject staminaBar;
-    [SerializeField] float rechargeRate = 3.0f;
-    private Slider staminaSlider;
-    private Coroutine recharging;
+    public Canvas mainCanvas;
+    public Canvas gameOverCanvas;
+    public Canvas gameClearCanvas;
     private PauseUIManager pauseUIManager;
 
     // Player status
@@ -41,31 +43,20 @@ public class StageManager : MonoBehaviour
     public Powerup currentPowerup = Powerup.None;
     public GameObject[] mouseForms = new GameObject[5];
 
+    // Events
+    public static event Action OnPlayerDamaged;
+    public static event Action OnGameCleared;
+
     // Start is called before the first frame update
     void Start()
     {
         pauseUIManager = GameObject.Find("PauseUIManager").GetComponent<PauseUIManager>();
-        staminaSlider = staminaBar.GetComponent<Slider>();
-        SetMaxStamina();
     }
 
     // Checker method to determine the game continues
     public bool CheckGameContinue()
     {
-        return !pauseUIManager.isGamePaused && !isGameClear && !isGameOver;
-    }
-
-    private void SetMaxStamina()
-    {
-        stamina = maxStamina;
-        staminaSlider.maxValue = maxStamina;
-        staminaSlider.value = maxStamina;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        return !isGamePaused && !isGameClear && !isGameOver;
     }
 
     public void UpdateScore(int score)
@@ -121,32 +112,38 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void RunStamina(float staminaCost)
+    public void TakeDamage(int amount)
     {
-        stamina = (stamina >= staminaCost) ? stamina - staminaCost : 0.0f;
-        staminaSlider.value = stamina;
+        hp = (hp <= amount) ? 0 : hp - amount;
+        OnPlayerDamaged?.Invoke();
 
-        // Recharging stamina coroutine happens uniquely
-        if (recharging != null) StopCoroutine(recharging);
-        recharging = StartCoroutine(RechargeStamina());
+        if (hp == 0)
+        {
+            GameOver();
+        }
     }
 
-    IEnumerator RechargeStamina()
+    public void GameOver()
     {
-        yield return new WaitForSeconds(1);
-        while (stamina < maxStamina)
-        {
-            // Recharge Stamina by 'rechargeRate' every second
-            stamina += rechargeRate / 50.0f;
-            if (stamina >= maxStamina) stamina = maxStamina;
-            staminaSlider.value = stamina;
-            yield return new WaitForSeconds(0.02f);
-        }
+        isGameOver = true;
+        mainCanvas.gameObject.SetActive(false);
+        gameOverCanvas.gameObject.SetActive(true);
     }
 
     public void GameClear()
     {
         isGameClear = true;
+        mainCanvas.gameObject.SetActive(false);
+        gameClearCanvas.gameObject.SetActive(true);
+        OnGameCleared?.Invoke();
+
+        // Save log right after stage clear
         GameManager.Instance.UpdateStageClear(stageScore, obtainedRecipe);
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

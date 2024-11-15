@@ -7,25 +7,36 @@ public class HealthManager : MonoBehaviour
     public GameObject heartPrefab;
     private StageManager stageManager;
     List<Heart> hearts = new List<Heart>();
-    
+
+    private void OnEnable()
+    {
+        StageManager.OnPlayerDamaged += UpdateHearts;
+    }
+
+    private void OnDisable()
+    {
+        StageManager.OnPlayerDamaged -= UpdateHearts;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
-        DrawHearts();
+        UpdateHearts();
     }
 
-    public void DrawHearts()
+    public void UpdateHearts()
     {
         ClearHearts();
 
+        // Assume stageManager.maxHp >= stageManager.hp
         int numOfHearts = stageManager.maxHp / 2;
         for (int i = 0; i < numOfHearts; i++)
         {
             CreateEmptyHeart();
         }
 
+        // Update sprites of full & half hearts
         int numOfHalfHearts = stageManager.hp % 2;
         int numOfFullHearts = stageManager.hp / 2;
         for (int i = 0; i < numOfFullHearts + numOfHalfHearts; i++)
@@ -44,9 +55,7 @@ public class HealthManager : MonoBehaviour
 
     public void CreateEmptyHeart()
     {
-        GameObject newHeart = Instantiate(heartPrefab);
-        newHeart.transform.SetParent(transform);
-
+        GameObject newHeart = Instantiate(heartPrefab, transform);
         Heart newHeartScript = newHeart.GetComponent<Heart>();
         newHeartScript.SetHeartSprite(HeartStatus.Empty);
         hearts.Add(newHeartScript);
@@ -54,6 +63,7 @@ public class HealthManager : MonoBehaviour
 
     public void ClearHearts()
     {
+        // Destroy all children (hearts)
         foreach (Transform t in transform)
         {
             Destroy(t.gameObject);
