@@ -69,6 +69,12 @@ public class PlayerController : MonoBehaviour
             {
                 staminaManager.RunStamina(2.0f);
             }
+
+            // Attack Input
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                
+            }
         }
     }
 

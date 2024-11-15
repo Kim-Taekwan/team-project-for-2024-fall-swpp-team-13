@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class Bug : MonoBehaviour
 {
-    public int damageAmount;
+    public int hp = 1, maxhp = 1;
+    public int damageAmount = 1;
+    public float speed = 5.0f;
+    public float detectDistance = 10.0f;
+    public float returnDistance = 20.0f;
+    public bool isAttacking = false;
     private StageManager stageManager;
+    
 
     void Awake()
     {
@@ -22,6 +28,12 @@ public class EnemyController : MonoBehaviour
     void Update()
     { 
         
+    }
+
+    // Damaged by player jump or attack
+    public void TakeDamage(int amount)
+    {
+
     }
 
     public void AttackPlayer()
