@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Coin
+  - Recipe
+  - Ground
+  - Reward
+  - Powerup
+  - Enemy
   layers:
   - Default
   - TransparentFX
