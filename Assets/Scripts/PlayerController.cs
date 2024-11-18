@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     // Mass: 20
     // Drag: 0.5, Angular Drag: 0.05
     // Freeze Rotation: X, Y, Z
-    private Rigidbody rb;    
+    private Rigidbody rb;
     private StageManager stageManager;
     private StaminaManager staminaManager;
     private HealthManager healthManager;
@@ -40,6 +40,14 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip groundImpactSound;
     public AudioClip movementSound;
+
+    // Attack
+    public float attackRange = 2.0f;
+    public float attackAngle = 90.0f;
+    public int attackDamage = 1;
+    public float attackCooldown = 1.0f;
+    private bool canAttack = true;
+    public LayerMask enemyLayer;
 
     // Particles
     //public ParticleSystem iceTrail;
@@ -73,7 +81,7 @@ public class PlayerController : MonoBehaviour
             // Attack Input
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                
+                PerformAttack();
             }
         }
     }
@@ -114,7 +122,43 @@ public class PlayerController : MonoBehaviour
             //animator.SetTrigger("Jump_trig");
         }
     }
-    
+
+    private void PerformAttack()
+    {
+        if (!canAttack)
+        {
+            return;
+        }
+        canAttack = false;
+        Vector3 playerPosition = transform.position;
+        Vector3 forward = transform.forward;
+        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, enemyLayer);
+        foreach (Collider hitCollider in hitColliders)
+        {
+            GameObject hitObject = hitCollider.gameObject;
+            IEnemy enemy = hitObject.GetComponent<IEnemy>();
+            if (enemy != null)
+            {
+                // 적과 플레이어 사이의 방향 계산
+                Vector3 directionToEnemy = (hitObject.transform.position - playerPosition).normalized;
+                float angleToEnemy = Vector3.Angle(forward, directionToEnemy);
+
+                // 공격 각도 내에 있는지 확인
+                if (angleToEnemy <= attackAngle / 2)
+                {
+                    enemy.TakeDamage(attackDamage);
+                }
+            }
+        }
+        StartCoroutine(AttackCooldown());
+    }
+
+    private IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
     // Add gravity direction force to reduce air time
     IEnumerator AddReverseForce()
     {
@@ -123,7 +167,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateAnimationAndSound(Vector3 direction)
-    {        
+    {
         //animator.SetFloat("Speed_f", currentSpeed);
         //animator.SetBool("Moving_b", movement != Vector3.zero);
 
