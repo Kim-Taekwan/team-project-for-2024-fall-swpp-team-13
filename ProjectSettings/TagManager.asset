@@ -10,6 +10,7 @@ TagManager:
   - Reward
   - Powerup
   - Enemy
+  - Bug
   layers:
   - Default
   - TransparentFX
