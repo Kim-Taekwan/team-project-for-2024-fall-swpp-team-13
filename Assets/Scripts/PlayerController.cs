@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
 
         if (direction != Vector3.zero)
         {
-            isMoving = true;
+            animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
             /*if (!audioSource.isPlaying)
@@ -141,6 +141,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            animator.SetBool("isMoving", false);
             //audioSource.Stop();
             //audioSource.loop = false;
         }
