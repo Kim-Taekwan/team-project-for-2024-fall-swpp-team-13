@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (stageManager.CheckGameContinue())
+        if (stageManager.CheckGameContinue() && stageManager.CanMove())
         {
             // Jump Input
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -90,8 +90,11 @@ public class PlayerController : MonoBehaviour
     {
         if (stageManager.CheckGameContinue())
         {
-            HandleMovement();
-            HandleJump();
+            if(stageManager.CanMove())
+            {
+                HandleMovement();
+                HandleJump();
+            }
             UpdateEffects();
         }
     }

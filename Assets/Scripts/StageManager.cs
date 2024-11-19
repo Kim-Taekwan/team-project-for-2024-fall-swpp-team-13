@@ -44,7 +44,8 @@ public class StageManager : MonoBehaviour
     public GameObject[] mouseForms = new GameObject[5];
     public float getDamageCooldown = 1.0f;
     private bool canTakeDamage = true;
-
+    public float stunCooldown = 0.5f;
+    private bool canMove = true;
 
     // Events
     public static event Action OnPlayerDamaged;
@@ -123,6 +124,7 @@ public class StageManager : MonoBehaviour
         }
 
         canTakeDamage = false;
+        canMove = false;
         hp = (hp <= amount) ? 0 : hp - amount;
         OnPlayerDamaged?.Invoke();
 
@@ -132,6 +134,7 @@ public class StageManager : MonoBehaviour
         }
 
         StartCoroutine(DamageCooldown());
+        StartCoroutine(StunCooldown());
     }
 
     private IEnumerator DamageCooldown()
@@ -140,6 +143,16 @@ public class StageManager : MonoBehaviour
         canTakeDamage = true;
     }
 
+    private IEnumerator StunCooldown()
+    {
+        yield return new WaitForSeconds(stunCooldown);
+        canMove = true;
+    }
+
+    public bool CanMove()
+    {
+        return canMove;
+    }
 
     public void GameOver()
     {
