@@ -42,6 +42,9 @@ public class StageManager : MonoBehaviour
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
     public GameObject[] mouseForms = new GameObject[5];
+    public float getDamageCooldown = 1.0f;
+    private bool canTakeDamage = true;
+
 
     // Events
     public static event Action OnPlayerDamaged;
@@ -114,6 +117,12 @@ public class StageManager : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        if (!canTakeDamage)
+        {
+            return;
+        }
+
+        canTakeDamage = false;
         hp = (hp <= amount) ? 0 : hp - amount;
         OnPlayerDamaged?.Invoke();
 
@@ -121,7 +130,16 @@ public class StageManager : MonoBehaviour
         {
             GameOver();
         }
+
+        StartCoroutine(DamageCooldown());
     }
+
+    private IEnumerator DamageCooldown()
+    {
+        yield return new WaitForSeconds(getDamageCooldown);
+        canTakeDamage = true;
+    }
+
 
     public void GameOver()
     {

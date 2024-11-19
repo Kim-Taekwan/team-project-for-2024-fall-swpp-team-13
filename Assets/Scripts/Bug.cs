@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Bug : MonoBehaviour, IEnemy
 {
-    public int hp = 2;
+    public int hp = 1;
     public int damageAmount = 1;
 
     public Vector3 defaultPosition;
     public Vector3 patrolRange = new Vector3(5.0f, 0, 5.0f);
     public float speed = 3.0f;
+    // 플레이어 감지 거리
     public float detectDistance = 3.0f;
+    // 플레이어를 추적하다가 돌아가는 거리
     public float returnDistance = 5.0f;
 
     public bool isAttacking = false;
@@ -66,8 +68,8 @@ public class Bug : MonoBehaviour, IEnemy
         }
         else
         {
+            // 패트롤 타겟과 충분히 가까우면 새로운 목표 지점 생성
             float currentDistanceToPatrol = Vector3.Distance(transform.position, patrolTarget);
-
             if (currentDistanceToPatrol < reachedThreshold)
             {
                 SetNewPatrolTarget();
@@ -80,6 +82,7 @@ public class Bug : MonoBehaviour, IEnemy
 
     void SetNewPatrolTarget()
     {
+        // 범위 안에서 랜덤으로 패트롤 타겟 지정
         float randomX = Random.Range(-patrolRange.x, patrolRange.x);
         float randomZ = Random.Range(-patrolRange.z, patrolRange.z);
         patrolTarget = defaultPosition + new Vector3(randomX, 0, randomZ);

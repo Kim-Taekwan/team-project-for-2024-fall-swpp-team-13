@@ -133,25 +133,28 @@ public class PlayerController : MonoBehaviour
         Vector3 playerPosition = transform.position;
         Vector3 forward = transform.forward;
         Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, enemyLayer);
+        IEnemy closestEnemy = null;
+        float closestDistance = float.MaxValue;
         foreach (Collider hitCollider in hitColliders)
         {
             GameObject hitObject = hitCollider.gameObject;
             IEnemy enemy = hitObject.GetComponent<IEnemy>();
             if (enemy != null)
             {
-                // 적과 플레이어 사이의 방향 계산
-                Vector3 directionToEnemy = (hitObject.transform.position - playerPosition).normalized;
-                float angleToEnemy = Vector3.Angle(forward, directionToEnemy);
-
-                // 공격 각도 내에 있는지 확인
-                if (angleToEnemy <= attackAngle / 2)
+                float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
+                if (distanceToEnemy < closestDistance)
                 {
-                    enemy.TakeDamage(attackDamage);
+                    closestDistance = distanceToEnemy;
+                    closestEnemy = enemy;
                 }
             }
         }
+        if (closestEnemy != null)
+        {
+            closestEnemy.TakeDamage(attackDamage);
+        }
         StartCoroutine(AttackCooldown());
-    }
+    }   
 
     private IEnumerator AttackCooldown()
     {
