@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
     // Animator
     private Animator animator;
     private bool isMoving = false;
+    private bool isJumping = false;
+    private bool isFalling = false;
 
     // Audio
     public AudioSource audioSource;
@@ -73,7 +75,7 @@ public class PlayerController : MonoBehaviour
             // Attack Input
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                
+                animator.SetTrigger("attackTrig");
             }
         }
     }
@@ -108,10 +110,12 @@ public class PlayerController : MonoBehaviour
         {
             hasJumpInput = false;
             isGrounded = false;
+            isJumping = true;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
             //audioSource.PlayOneShot(jumpSound);
-            //animator.SetTrigger("Jump_trig");
+            animator.SetTrigger("jumpTrig");
+            animator.SetBool("isGrounded", false);
         }
     }
     
@@ -145,6 +149,15 @@ public class PlayerController : MonoBehaviour
             //audioSource.Stop();
             //audioSource.loop = false;
         }
+
+        // Check falling state
+        if (!isJumping && !isFalling && rb.velocity.y < -2.0f)
+        {
+            isFalling = true;
+            isGrounded = false;
+            animator.SetBool("isGrounded", false);
+            animator.SetTrigger("fallTrig");
+        }
     }
 
     // Particle Effects
@@ -175,6 +188,9 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            isJumping = false;
+            isFalling = false;
+            animator.SetBool("isGrounded", true);
         }
     }
 

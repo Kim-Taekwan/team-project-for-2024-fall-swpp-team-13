@@ -181,7 +181,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Normal Mouse
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
 --- !u!4 &3869372780341563507 stripped
 Transform:
@@ -247,7 +248,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
 --- !u!4 &3869372779971705015 stripped
 Transform:
@@ -313,7 +315,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
 --- !u!4 &3869372779611191830 stripped
 Transform:
@@ -379,7 +382,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
 --- !u!4 &3869372778886424980 stripped
 Transform:
@@ -445,7 +449,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
 --- !u!4 &3869372778591634800 stripped
 Transform:
