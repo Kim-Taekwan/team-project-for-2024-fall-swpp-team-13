@@ -651,7 +651,7 @@ GameObject:
   - component: {fileID: 341606120}
   m_Layer: 6
   m_Name: Bug
-  m_TagString: Bug
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1892,6 +1892,8 @@ MonoBehaviour:
   - {fileID: 1828301269}
   - {fileID: 785508661}
   - {fileID: 651911396}
+  getDamageCooldown: 1
+  stunCooldown: 0.5
 --- !u!1 &906210584
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
     private float moveHorizontal = 0.0f;
     private float moveVertical = 0.0f;
     private bool hasJumpInput = false;
+    public float groundNormalThreshold = 30.0f;
+    private float pushBackSpeedThreshold = 2.0f;
+    private float pushBackVelocity = 6.0f;
 
     // Ice Ground
     /*public bool isOnIce = false;
@@ -223,7 +226,56 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            int validContacts = 0;
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                float angle = Vector3.Angle(contact.normal, Vector3.up);
+                if (angle < groundNormalThreshold)
+                {
+                    validContacts++;
+                }
+            }
+            if (validContacts >= collision.contacts.Length / 2)
+            {
+                isGrounded = true;
+            }
+        }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            int validContacts = 0;
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                float angle = Vector3.Angle(contact.normal, Vector3.up);
+                if (angle < groundNormalThreshold)
+                {
+                    validContacts++;
+                }
+            }
+            Debug.Log(validContacts + " / " + collision.contacts.Length);
+            IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
+            if (validContacts >= collision.contacts.Length / 2)
+            {
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(1);
+                }
+            }
+            else{
+                if (enemy != null)
+                {
+                    enemy.GiveDamage();
+                }
+            }
+            Vector3 currentVelocity = rb.velocity;
+            if (currentVelocity.magnitude > pushBackSpeedThreshold)
+            {
+                rb.velocity = -currentVelocity;
+            }
+            else
+            {
+                Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
+                rb.velocity = -currentVelocity.normalized * pushBackVelocity;
+            }
         }
     }
 
