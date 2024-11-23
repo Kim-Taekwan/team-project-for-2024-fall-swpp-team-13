@@ -1,27 +1,35 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
     // Rigid Body
-    // Mass: 200
+    // Mass: 20
     // Drag: 0.5, Angular Drag: 0.05
     // Freeze Rotation: X, Y, Z
-    private Rigidbody rb;
+    private Rigidbody rb;    
+    private StageManager stageManager;
+    private StaminaManager staminaManager;
+    private HealthManager healthManager;
 
     // Default Ground - General
-    public float speed = 1.5f;
-    public float jumpForce = 1200f;
+    [SerializeField] float currentSpeed; // for debugging speed
+    public float speed = 8.0f;
+    public float jumpForce = 200.0f;
     public bool isGrounded = true;
-    public float groundCheckDistance = 1.1f;
+    private float moveHorizontal = 0.0f;
+    private float moveVertical = 0.0f;
+    private bool hasJumpInput = false;
 
     // Ice Ground
-    public bool isOnIce = false;
+    /*public bool isOnIce = false;
     public float iceAcceleration = 1.5f;
     public float maxIceSpeed = 5.0f;
     private Vector3 iceVelocity = Vector3.zero;
-    public float iceDeceleration = 0.001f;
+    public float iceDeceleration = 0.001f;*/
 
     // Animator
     private Animator animator;
@@ -34,144 +42,108 @@ public class PlayerController : MonoBehaviour
     public AudioClip movementSound;
 
     // Particles
-    public ParticleSystem iceTrail;
+    //public ParticleSystem iceTrail;
     public ParticleSystem dirtTrail;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
+        healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
-        GroundCheck(); 
-        HandleMovementInput();
-        HandleJumpInput();
-        UpdateEffects();
-    }
-
-    private IEnumerator DelayGroundedReset()
-    {
-        yield return new WaitForSeconds(0.1f);
-        isGrounded = false;
-        animator.SetBool("Grounded", false);
-        rb.drag = 0f;
-        rb.AddForce(Vector3.down * 0.1f, ForceMode.Acceleration);
-    }
-
-    private void GroundCheck()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance))
+        if (stageManager.CheckGameContinue())
         {
-            if (Vector3.Angle(hit.normal, Vector3.up) < 45f && hit.distance <= groundCheckDistance)
+            // Jump Input
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
             {
-                isGrounded = true;
-                isOnIce = hit.collider.CompareTag("IceGround");
-                rb.drag = 0.5f;
-                animator.SetBool("Grounded", true);
-                if (!isMoving)
-                {
-                    audioSource.PlayOneShot(groundImpactSound);
-                }
+                hasJumpInput = true;
             }
-            else if (isGrounded && rb.velocity.y >= -0.1f) 
+
+            // For debugging stamina behavior
+            if (Input.GetKeyDown(KeyCode.X))
             {
-                isGrounded = true;
+                staminaManager.RunStamina(2.0f);
             }
-            else
+
+            // Attack Input
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                StartCoroutine(DelayGroundedReset()); 
+                
             }
-        }
-        else
-        {
-            StartCoroutine(DelayGroundedReset());
         }
     }
 
-    private void HandleMovementInput()
+    void FixedUpdate()
     {
-        float moveHorizontal = 0f;
-        float moveVertical = 0f;
-
-        if (Input.GetKey(KeyCode.UpArrow)) moveVertical = 1f;
-        else if (Input.GetKey(KeyCode.DownArrow)) moveVertical = -1f;
-
-        if (Input.GetKey(KeyCode.LeftArrow)) moveHorizontal = -1f;
-        else if (Input.GetKey(KeyCode.RightArrow)) moveHorizontal = 1f;
-
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
-        ApplyMovement(movement);
-        UpdateAnimationAndSound(movement);
-    }
-
-    private void ApplyMovement(Vector3 movement)
-    {
-        if (isGrounded && !isOnIce) // On Default Ground
+        if (stageManager.CheckGameContinue())
         {
-            Vector3 force = movement * speed * 2.5f * rb.mass;
-            rb.AddForce(force, ForceMode.Force);
-            iceVelocity = Vector3.zero;
-        }
-        else if (isOnIce && isGrounded) // On Ice
-        {
-            if (movement != Vector3.zero)
-            {
-                iceVelocity += movement * iceAcceleration;
-                iceVelocity = Vector3.ClampMagnitude(iceVelocity, maxIceSpeed);
-                rb.AddForce(iceVelocity * rb.mass, ForceMode.Force);
-            }
-            else
-            {
-                iceVelocity = Vector3.Lerp(iceVelocity, Vector3.zero, iceDeceleration);
-                rb.AddForce(iceVelocity * rb.mass, ForceMode.Force);
-            }
-        }
-        // On Air
-        else 
-        {
-            Vector3 force = movement * speed * rb.mass * 0.4f;
-            rb.AddForce(force, ForceMode.Force);
-            rb.AddForce(Physics.gravity, ForceMode.Acceleration);
-            iceVelocity = Vector3.zero;
+            HandleMovement();
+            HandleJump();
+            UpdateEffects();
         }
     }
 
-    private void HandleJumpInput()
+    private void HandleMovement()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Movement Input
+        moveHorizontal = Input.GetAxis("Horizontal");
+        moveVertical = Input.GetAxis("Vertical");
+
+        Vector3 velocity = new Vector3(moveHorizontal * speed, rb.velocity.y, moveVertical * speed);
+        Vector3 direction = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
+        currentSpeed = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
+
+        rb.velocity = velocity;
+        UpdateAnimationAndSound(direction);
+    }
+
+    private void HandleJump()
+    {
+        if (hasJumpInput)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            hasJumpInput = false;
             isGrounded = false;
-            audioSource.PlayOneShot(jumpSound);
-            animator.SetBool("Jump_b", true);
-            Invoke("ResetJumpTrigger", 0.1f);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            StartCoroutine(AddReverseForce());
+            //audioSource.PlayOneShot(jumpSound);
+            //animator.SetTrigger("Jump_trig");
         }
     }
-
-    private void UpdateAnimationAndSound(Vector3 movement)
+    
+    // Add gravity direction force to reduce air time
+    IEnumerator AddReverseForce()
     {
-        float currentSpeed = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
-        animator.SetFloat("Speed_f", currentSpeed);
-        animator.SetBool("Moving_b", movement != Vector3.zero);
+        yield return new WaitForSeconds(0.2f);
+        rb.AddForce(Physics.gravity * 10.0f, ForceMode.Impulse);
+    }
 
-        if (movement != Vector3.zero)
+    private void UpdateAnimationAndSound(Vector3 direction)
+    {        
+        //animator.SetFloat("Speed_f", currentSpeed);
+        //animator.SetBool("Moving_b", movement != Vector3.zero);
+
+        if (direction != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(movement);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-            if (!audioSource.isPlaying)
+            animator.SetBool("isMoving", true);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
+            /*if (!audioSource.isPlaying)
             {
                 audioSource.clip = movementSound;
                 audioSource.loop = true;
                 audioSource.Play();
-            }
+            }*/
         }
         else
         {
-            audioSource.Stop();
-            audioSource.loop = false;
+            animator.SetBool("isMoving", false);
+            //audioSource.Stop();
+            //audioSource.loop = false;
         }
     }
 
@@ -180,6 +152,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isMoving)
         {
+            /*
             if (isOnIce && !iceTrail.isPlaying)
             {
                 iceTrail.Play();
@@ -188,16 +161,48 @@ public class PlayerController : MonoBehaviour
             {
                 dirtTrail.Play();
             }
+            */
         }
         else
         {
-            iceTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-            dirtTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            //iceTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            //dirtTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
     }
 
-    void ResetJumpTrigger()
+    private void OnCollisionEnter(Collision collision)
     {
-        animator.SetBool("Jump_b", false);
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            Destroy(other.gameObject);
+            stageManager.AddCoins(1);
+        }
+
+        if (other.gameObject.CompareTag("Recipe"))
+        {
+            Destroy(other.gameObject);
+            stageManager.ObtainRecipe();
+        }
+
+        if (other.gameObject.CompareTag("Reward"))
+        {
+            Destroy(other.gameObject);
+            rb.velocity = Vector3.zero;
+            stageManager.GameClear();
+        }
+
+        if (other.gameObject.CompareTag("Powerup"))
+        {
+            Destroy(other.gameObject);
+            stageManager.UpdatePowerup(other.gameObject.name);
+        }
     }
 }
