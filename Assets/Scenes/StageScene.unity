@@ -265,7 +265,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: '- Game Over -'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1063,11 +1063,6 @@ MonoBehaviour:
   spinSpeed: 90
   floatSpeed: 3
   floatLimit: 0.1
---- !u!1 &651911396 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6327515895236933806, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-  m_PrefabInstance: {fileID: 3618782452214707013}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &690049190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1128,7 +1123,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: X 00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1484,11 +1479,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b077f1bb15075214990880166a017623, type: 3}
---- !u!1 &785508661 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1910943946089648684, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-  m_PrefabInstance: {fileID: 3618782452214707013}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &786486005
 GameObject:
   m_ObjectHideFlags: 0
@@ -1569,11 +1559,6 @@ CanvasRenderer:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5027608228768787578, guid: b077f1bb15075214990880166a017623, type: 3}
   m_PrefabInstance: {fileID: 1894549006}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &788367179 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8582831914464963656, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-  m_PrefabInstance: {fileID: 3618782452214707013}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &792062076
 GameObject:
@@ -1887,11 +1872,11 @@ MonoBehaviour:
   maxStamina: 10
   currentPowerup: 0
   mouseForms:
-  - {fileID: 921548335}
-  - {fileID: 788367179}
-  - {fileID: 1828301269}
-  - {fileID: 785508661}
-  - {fileID: 651911396}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   getDamageCooldown: 1
   stunCooldown: 0.5
 --- !u!1 &906210584
@@ -1995,11 +1980,6 @@ MeshFilter:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4864571273752519829, guid: f7f21a38c1eeb824d8137e38177a7980, type: 3}
   m_PrefabInstance: {fileID: 1849883381}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &921548335 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4537683002908009864, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-  m_PrefabInstance: {fileID: 3618782452214707013}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &958995954
 GameObject:
@@ -2634,7 +2614,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Return To World
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -5760,7 +5740,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -5835,11 +5815,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824258387}
   m_CullTransparentMesh: 1
---- !u!1 &1828301269 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3205450316439461379, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-  m_PrefabInstance: {fileID: 3618782452214707013}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1849883381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6935,7 +6910,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Retry
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
