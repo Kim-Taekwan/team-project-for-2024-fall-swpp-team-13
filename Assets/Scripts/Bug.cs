@@ -98,16 +98,16 @@ public class Bug : MonoBehaviour, IEnemy
         }
     }
 
-    public void AttackPlayer()
+    public void GiveDamage()
     {
         stageManager.TakeDamage(damageAmount);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            AttackPlayer();
-        }
-    }
+    // private void OnCollisionEnter(Collision collision)
+    // {
+    //     if (collision.gameObject.CompareTag("Player"))
+    //     {
+    //         AttackPlayer();
+    //     }
+    // }
 }

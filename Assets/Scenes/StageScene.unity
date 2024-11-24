@@ -651,7 +651,7 @@ GameObject:
   - component: {fileID: 341606120}
   m_Layer: 6
   m_Name: Bug
-  m_TagString: Bug
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1892,6 +1892,8 @@ MonoBehaviour:
   - {fileID: 1828301269}
   - {fileID: 785508661}
   - {fileID: 651911396}
+  getDamageCooldown: 1
+  stunCooldown: 0.5
 --- !u!1 &906210584
 GameObject:
   m_ObjectHideFlags: 0
@@ -7245,9 +7247,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 568337290, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 568337286, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: m_CullingMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3618782452728500416, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: m_RootOrder
@@ -7309,25 +7311,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 3618782452728500422, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-      propertyPath: m_Constraints
-      value: 80
+    - target: {fileID: 3869372779611191830, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3618782452728500422, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618782452728500423, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-      propertyPath: m_Size.y
-      value: 4.1566043
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618782452728500423, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-      propertyPath: m_Center.y
-      value: 2.0787675
-      objectReference: {fileID: 0}
-    - target: {fileID: 3618782452728500423, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-      propertyPath: m_Material
-      value: 
+    - target: {fileID: 4537683003030773932, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
