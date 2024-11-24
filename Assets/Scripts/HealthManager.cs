@@ -40,7 +40,7 @@ public class HealthManager : MonoBehaviour
         int numOfHalfHearts = stageManager.hp % 2;
         int numOfFullHearts = stageManager.hp / 2;
         for (int i = 0; i < numOfFullHearts + numOfHalfHearts; i++)
-        {            
+        {
             if (i < numOfFullHearts)
             {
                 hearts[i].SetHeartSprite(HeartStatus.Full);

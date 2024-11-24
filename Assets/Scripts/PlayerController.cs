@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     // Mass: 20
     // Drag: 0.5, Angular Drag: 0.05
     // Freeze Rotation: X, Y, Z
-    private Rigidbody rb;    
+    private Rigidbody rb;
     private StageManager stageManager;
     private StaminaManager staminaManager;
     private HealthManager healthManager;
@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
     private float moveHorizontal = 0.0f;
     private float moveVertical = 0.0f;
     private bool hasJumpInput = false;
+    public float groundNormalThreshold = 30.0f;
+    private float pushBackSpeedThreshold = 2.0f;
+    private float pushBackVelocity = 6.0f;
 
     // Ice Ground
     /*public bool isOnIce = false;
@@ -41,6 +44,14 @@ public class PlayerController : MonoBehaviour
     public AudioClip groundImpactSound;
     public AudioClip movementSound;
 
+    // Attack
+    public float attackRange = 2.0f;
+    public float attackAngle = 90.0f;
+    public int attackDamage = 1;
+    public float attackCooldown = 1.0f;
+    private bool canAttack = true;
+    public LayerMask enemyLayer;
+
     // Particles
     //public ParticleSystem iceTrail;
     public ParticleSystem dirtTrail;
@@ -56,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (stageManager.CheckGameContinue())
+        if (stageManager.CheckGameContinue() && stageManager.CanMove())
         {
             // Jump Input
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -69,6 +80,12 @@ public class PlayerController : MonoBehaviour
             {
                 staminaManager.RunStamina(2.0f);
             }
+
+            // Attack Input
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                PerformAttack();
+            }
         }
     }
 
@@ -76,8 +93,11 @@ public class PlayerController : MonoBehaviour
     {
         if (stageManager.CheckGameContinue())
         {
-            HandleMovement();
-            HandleJump();
+            if(stageManager.CanMove())
+            {
+                HandleMovement();
+                HandleJump();
+            }
             UpdateEffects();
         }
     }
@@ -108,7 +128,46 @@ public class PlayerController : MonoBehaviour
             //animator.SetTrigger("Jump_trig");
         }
     }
-    
+
+    private void PerformAttack()
+    {
+        if (!canAttack)
+        {
+            return;
+        }
+        canAttack = false;
+        Vector3 playerPosition = transform.position;
+        Vector3 forward = transform.forward;
+        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, enemyLayer);
+        IEnemy closestEnemy = null;
+        float closestDistance = float.MaxValue;
+        foreach (Collider hitCollider in hitColliders)
+        {
+            GameObject hitObject = hitCollider.gameObject;
+            IEnemy enemy = hitObject.GetComponent<IEnemy>();
+            if (enemy != null)
+            {
+                float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
+                if (distanceToEnemy < closestDistance)
+                {
+                    closestDistance = distanceToEnemy;
+                    closestEnemy = enemy;
+                }
+            }
+        }
+        if (closestEnemy != null)
+        {
+            closestEnemy.TakeDamage(attackDamage);
+        }
+        StartCoroutine(AttackCooldown());
+    }   
+
+    private IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
     // Add gravity direction force to reduce air time
     IEnumerator AddReverseForce()
     {
@@ -117,7 +176,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateAnimationAndSound(Vector3 direction)
-    {        
+    {
         //animator.SetFloat("Speed_f", currentSpeed);
         //animator.SetBool("Moving_b", movement != Vector3.zero);
 
@@ -167,7 +226,56 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true;
+            int validContacts = 0;
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                float angle = Vector3.Angle(contact.normal, Vector3.up);
+                if (angle < groundNormalThreshold)
+                {
+                    validContacts++;
+                }
+            }
+            if (validContacts >= collision.contacts.Length / 2)
+            {
+                isGrounded = true;
+            }
+        }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            int validContacts = 0;
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                float angle = Vector3.Angle(contact.normal, Vector3.up);
+                if (angle < groundNormalThreshold)
+                {
+                    validContacts++;
+                }
+            }
+            Debug.Log(validContacts + " / " + collision.contacts.Length);
+            IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
+            if (validContacts >= collision.contacts.Length / 2)
+            {
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(1);
+                }
+            }
+            else{
+                if (enemy != null)
+                {
+                    enemy.GiveDamage();
+                }
+            }
+            Vector3 currentVelocity = rb.velocity;
+            if (currentVelocity.magnitude > pushBackSpeedThreshold)
+            {
+                rb.velocity = -currentVelocity;
+            }
+            else
+            {
+                Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
+                rb.velocity = -currentVelocity.normalized * pushBackVelocity;
+            }
         }
     }
 
