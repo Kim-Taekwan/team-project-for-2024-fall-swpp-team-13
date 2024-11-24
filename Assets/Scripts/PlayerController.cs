@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     // Animator
     private Animator animator;
     private bool isMoving = false;
+    private bool isJumping = false;
+    private bool isFalling = false;
 
     // Audio
     public AudioSource audioSource;
@@ -62,7 +64,7 @@ public class PlayerController : MonoBehaviour
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -84,6 +86,7 @@ public class PlayerController : MonoBehaviour
             // Attack Input
             if (Input.GetKeyDown(KeyCode.Z))
             {
+                animator.SetTrigger("attackTrig");
                 PerformAttack();
             }
         }
@@ -122,10 +125,12 @@ public class PlayerController : MonoBehaviour
         {
             hasJumpInput = false;
             isGrounded = false;
+            isJumping = true;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
             //audioSource.PlayOneShot(jumpSound);
-            //animator.SetTrigger("Jump_trig");
+            animator.SetTrigger("jumpTrig");
+            animator.SetBool("isGrounded", false);
         }
     }
 
@@ -182,7 +187,7 @@ public class PlayerController : MonoBehaviour
 
         if (direction != Vector3.zero)
         {
-            isMoving = true;
+            animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
             /*if (!audioSource.isPlaying)
@@ -194,8 +199,18 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            animator.SetBool("isMoving", false);
             //audioSource.Stop();
             //audioSource.loop = false;
+        }
+
+        // Check falling state
+        if (!isJumping && !isFalling && rb.velocity.y < -2.0f)
+        {
+            isFalling = true;
+            isGrounded = false;
+            animator.SetBool("isGrounded", false);
+            animator.SetTrigger("fallTrig");
         }
     }
 
