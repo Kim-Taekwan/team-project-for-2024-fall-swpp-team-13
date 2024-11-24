@@ -648,8 +648,9 @@ GameObject:
   - component: {fileID: 341606117}
   - component: {fileID: 341606116}
   - component: {fileID: 341606119}
-  m_Layer: 0
-  m_Name: Enemy
+  - component: {fileID: 341606120}
+  m_Layer: 6
+  m_Name: Bug
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -745,13 +746,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1441ad09ab6323940a7948b7e57cdc3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 1
-  maxhp: 1
+  hp: 2
   damageAmount: 1
-  speed: 5
-  detectDistance: 10
-  returnDistance: 20
+  defaultPosition: {x: 0, y: 0, z: 0}
+  patrolRange: {x: 5, y: 0, z: 5}
+  speed: 3
+  detectDistance: 3
+  returnDistance: 5
   isAttacking: 0
+  reachedThreshold: 0.5
+--- !u!54 &341606120
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341606114}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 84
+  m_CollisionDetection: 0
 --- !u!1 &410465434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1863,11 +1882,13 @@ MonoBehaviour:
   maxStamina: 10
   currentPowerup: 0
   mouseForms:
-  - {fileID: 2028799892}
-  - {fileID: 1372943816}
-  - {fileID: 442684198}
-  - {fileID: 530934342}
-  - {fileID: 1963554503}
+  - {fileID: 921548335}
+  - {fileID: 788367179}
+  - {fileID: 1828301269}
+  - {fileID: 785508661}
+  - {fileID: 651911396}
+  getDamageCooldown: 1
+  stunCooldown: 0.5
 --- !u!1 &906210584
 GameObject:
   m_ObjectHideFlags: 0
@@ -7273,6 +7294,18 @@ PrefabInstance:
     - target: {fileID: 3618782452728500416, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: jumpForce
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: attackRange
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 3618782452728500420, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: m_Name
