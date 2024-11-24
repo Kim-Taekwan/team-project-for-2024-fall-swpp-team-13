@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: e5309592bcb6c4a5d9ff5d288642180b
+=======
 guid: 7f1605286ec1c0044b7c6d1f6a4b1b6f
+>>>>>>> origin/feat/animator-controller
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

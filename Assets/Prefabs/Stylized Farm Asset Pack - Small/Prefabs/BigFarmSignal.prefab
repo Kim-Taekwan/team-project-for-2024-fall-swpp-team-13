@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2489292251441268305
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1074350412023946751, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Size.x
+      value: 0.6219364
+      objectReference: {fileID: 0}
+    - target: {fileID: 1074350412023946751, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Center.x
+      value: 0.08814374
+      objectReference: {fileID: 0}
+    - target: {fileID: 1074350412023946751, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Center.y
+      value: 0.89408994
+      objectReference: {fileID: 0}
+    - target: {fileID: 1074350412023946751, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Center.z
+      value: 0.0052117663
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 22.00832
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 22.00832
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 22.54092
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 409.98492
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 52.12649
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 435.453
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5126356162791175462, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507807135083081628, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Name
+      value: Wooden Sign - Farm
+      objectReference: {fileID: 0}
+    - target: {fileID: 6053678841597158707, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Size.x
+      value: 0.62702674
+      objectReference: {fileID: 0}
+    - target: {fileID: 6053678841597158707, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Size.z
+      value: 1.8915889
+      objectReference: {fileID: 0}
+    - target: {fileID: 6053678841597158707, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Center.x
+      value: 0.23993418
+      objectReference: {fileID: 0}
+    - target: {fileID: 6053678841597158707, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
+      propertyPath: m_Center.z
+      value: -0.16446456
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d3ccfe76ed1e62849b1251abd66a7b44, type: 3}
