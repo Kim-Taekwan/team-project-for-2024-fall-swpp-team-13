@@ -1033,6 +1033,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &499661219 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683002840789806, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &568337285 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3618782452728500416, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
@@ -1123,7 +1128,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: X 00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1872,11 +1877,11 @@ MonoBehaviour:
   maxStamina: 10
   currentPowerup: 0
   mouseForms:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1130570319}
+  - {fileID: 1001310498}
+  - {fileID: 1490835466}
+  - {fileID: 1423097996}
+  - {fileID: 499661219}
   getDamageCooldown: 1
   stunCooldown: 0.5
 --- !u!1 &906210584
@@ -2222,6 +2227,11 @@ MonoBehaviour:
   spinSpeed: 90
   floatSpeed: 3
   floatLimit: 0.1
+--- !u!1 &1001310498 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683003030773932, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1043103284
 GameObject:
   m_ObjectHideFlags: 0
@@ -2478,6 +2488,11 @@ MonoBehaviour:
   - {fileID: 1969562167}
   - {fileID: 1798120575}
   currentButtonIndex: 0
+--- !u!1 &1130570319 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683003406764745, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1144343385
 GameObject:
   m_ObjectHideFlags: 0
@@ -4086,6 +4101,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1414021565}
   m_CullTransparentMesh: 1
+--- !u!1 &1423097996 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683001927344074, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1428421919
 GameObject:
   m_ObjectHideFlags: 0
@@ -4327,6 +4347,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1490835466 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683003911381517, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1507781290
 GameObject:
   m_ObjectHideFlags: 0
@@ -5740,7 +5765,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
