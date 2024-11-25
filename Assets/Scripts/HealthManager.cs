@@ -11,11 +11,13 @@ public class HealthManager : MonoBehaviour
     private void OnEnable()
     {
         StageManager.OnPlayerDamaged += UpdateHearts;
+        StageManager.OnPlayerHealed += UpdateHearts;
     }
 
     private void OnDisable()
     {
         StageManager.OnPlayerDamaged -= UpdateHearts;
+        StageManager.OnPlayerHealed -= UpdateHearts;
     }
 
     // Start is called before the first frame update

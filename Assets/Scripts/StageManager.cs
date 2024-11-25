@@ -13,7 +13,6 @@ public enum Powerup
     SweetPotato, // 1
     ChiliPepper, // 2
     Carrot,      // 3
-    Ice          // 4
 }
 
 // Manage stage & player status and UI on playing stage screen
@@ -31,14 +30,13 @@ public class StageManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI coinText;
     public Image recipeImage;
-    public Image[] powerupImages = new Image[5];
+    public Image[] powerupImages = new Image[4];
     public Canvas mainCanvas;
     public Canvas gameOverCanvas;
     public Canvas gameClearCanvas;
     private PauseUIManager pauseUIManager;
 
     // Player status
-    public GameObject player;
     public int hp = 6, maxHp = 6;
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
@@ -46,16 +44,19 @@ public class StageManager : MonoBehaviour
     public float stunCooldown = 0.5f;
     private bool canTakeDamage = true;    
     private bool canMove = true;
+    private GameObject player;
     private PlayerController playerController;
 
     // Events
     public static event Action OnPlayerDamaged;
+    public static event Action OnPlayerHealed;
     public static event Action OnGameCleared;
 
     // Start is called before the first frame update
     void Start()
     {
         pauseUIManager = GameObject.Find("PauseUIManager").GetComponent<PauseUIManager>();
+        player = GameObject.Find("Player");
         playerController = player.GetComponent<PlayerController>();
     }
 
@@ -102,22 +103,29 @@ public class StageManager : MonoBehaviour
             case "Carrot":
                 currentPowerup = Powerup.Carrot;
                 break;
-            case "Ice":
-                currentPowerup = Powerup.Ice;
-                break;
             default:
-                Debug.Log("Powerup not recognized");
+                Debug.Log("Error: Powerup not recognized");
                 break;
         }
 
         // Only activate current powerup form and UI image
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             Transform powerupForm = player.transform.GetChild(i);
             powerupForm.gameObject.SetActive(i == (int)currentPowerup);
             powerupImages[i].gameObject.SetActive(i == (int)currentPowerup);
         }
         playerController.animator = player.transform.GetChild((int)currentPowerup).GetComponent<Animator>();
+    }
+
+    public void HealHp(int amount)
+    {
+        if (!CheckGameContinue())
+        {
+            return;
+        }
+        hp = (maxHp <= hp + amount) ? maxHp : hp + amount;
+        OnPlayerHealed?.Invoke();
     }
 
     public void TakeDamage(int amount)

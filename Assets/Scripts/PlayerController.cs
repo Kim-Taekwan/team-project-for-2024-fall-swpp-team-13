@@ -27,19 +27,12 @@ public class PlayerController : MonoBehaviour
     private float pushBackSpeedThreshold = 2.0f;
     private float pushBackVelocity = 6.0f;
 
-    // Ice Ground
-    /*public bool isOnIce = false;
-    public float iceAcceleration = 1.5f;
-    public float maxIceSpeed = 5.0f;
-    private Vector3 iceVelocity = Vector3.zero;
-    public float iceDeceleration = 0.001f;*/
-
-    // Animator
+    // Animaton
     public Animator animator;
     private bool isMoving = false;
     private bool isJumping = false;
     private bool isFalling = false;
-    private bool isAttacking = false;
+    private float powerupPauseDelay = 1.2f;
 
     // Audio
     public AudioSource audioSource;
@@ -56,7 +49,6 @@ public class PlayerController : MonoBehaviour
     public LayerMask enemyLayer;
 
     // Particles
-    //public ParticleSystem iceTrail;
     public ParticleSystem dirtTrail;
 
     void Start()
@@ -218,11 +210,7 @@ public class PlayerController : MonoBehaviour
         if (isMoving)
         {
             /*
-            if (isOnIce && !iceTrail.isPlaying)
-            {
-                iceTrail.Play();
-            }
-            else if (!isOnIce && !dirtTrail.isPlaying)
+            if (!dirtTrail.isPlaying)
             {
                 dirtTrail.Play();
             }
@@ -230,7 +218,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            //iceTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             //dirtTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
     }
@@ -289,8 +276,9 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                //TODO: pushDirection을 활용한 넉백 구현
                 Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
-                rb.velocity = -currentVelocity.normalized * pushBackVelocity;
+                rb.velocity = -pushDirection * pushBackVelocity;
             }
         }
     }
@@ -301,6 +289,7 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             stageManager.AddCoins(1);
+            stageManager.HealHp(1);
         }
 
         if (other.gameObject.CompareTag("Recipe"))
@@ -314,7 +303,7 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
             rb.velocity = Vector3.zero;
 
-            //TODO: turn to the camera position
+            //TODO: Rotate to the camera position
             transform.rotation = Quaternion.LookRotation(Vector3.back);
             
             animator.SetBool("isGameClear", true);
@@ -324,10 +313,22 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Powerup"))
         {
             Destroy(other.gameObject);
+            stageManager.HealHp(stageManager.maxHp);
             stageManager.UpdatePowerup(other.gameObject.name);
 
+            //TODO: Rotate to the camera position
             transform.rotation = Quaternion.LookRotation(Vector3.back);
+
             animator.SetTrigger("powerupTrig");
+            StartCoroutine(PowerupPause());
         }
+    }
+
+    private IEnumerator PowerupPause()
+    {
+        rb.velocity = Vector3.zero;
+        stageManager.isGamePaused = true;
+        yield return new WaitForSeconds(powerupPauseDelay);
+        stageManager.isGamePaused = false;
     }
 }
