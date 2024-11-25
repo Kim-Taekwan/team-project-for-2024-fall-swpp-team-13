@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
     // Attack
     public float attackRange = 2.0f;
-    public float attackAngle = 90.0f;
+    public float attackAngle = 45.0f;
     public int attackDamage = 1;
     public float attackCooldown = 1.0f;
     private bool canAttack = true;
@@ -168,8 +168,10 @@ public class PlayerController : MonoBehaviour
             IEnemy enemy = hitObject.GetComponent<IEnemy>();
             if (enemy != null)
             {
+                Vector3 directionToEnemy = hitCollider.transform.position - playerPosition;
                 float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
-                if (distanceToEnemy < closestDistance)
+                float angle = Vector3.Angle(forward, directionToEnemy);
+                if (distanceToEnemy < closestDistance && angle < attackAngle)
                 {
                     closestDistance = distanceToEnemy;
                     closestEnemy = enemy;
