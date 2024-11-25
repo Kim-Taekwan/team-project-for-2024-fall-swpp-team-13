@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+
 public class PlayerController : MonoBehaviour
 {
     // Rigid Body
@@ -54,6 +55,16 @@ public class PlayerController : MonoBehaviour
     private bool canAttack = true;
     public LayerMask enemyLayer;
 
+    // Powerup
+    private bool canPowerup = true;
+    public float invincibleCooldown = 0.5f;
+    public float dashDuration = 0.5f;
+    public float powerupCooldown = 2.0f;
+    public float sweetPotatoAttackRange = 5.0f;
+    public int sweetPotatoAttackDamage = 2;
+    public bool isInvincible = false;
+    public float dashStrength = 2000.0f;
+
     // Particles
     //public ParticleSystem iceTrail;
     public ParticleSystem dirtTrail;
@@ -80,7 +91,7 @@ public class PlayerController : MonoBehaviour
             // For debugging stamina behavior
             if (Input.GetKeyDown(KeyCode.X))
             {
-                staminaManager.RunStamina(2.0f);
+                staminaManager.RunStamina();
             }
 
             // Attack Input
@@ -89,6 +100,11 @@ public class PlayerController : MonoBehaviour
                 animator.SetTrigger("attackTrig");
                 PerformAttack();
             }
+
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                UsePowerup();
+            }
         }
     }
 
@@ -96,7 +112,7 @@ public class PlayerController : MonoBehaviour
     {
         if (stageManager.CheckGameContinue())
         {
-            if(stageManager.CanMove())
+            if (stageManager.CanMove())
             {
                 HandleMovement();
                 HandleJump();
@@ -165,12 +181,18 @@ public class PlayerController : MonoBehaviour
             closestEnemy.TakeDamage(attackDamage);
         }
         StartCoroutine(AttackCooldown());
-    }   
+    }
 
     private IEnumerator AttackCooldown()
     {
         yield return new WaitForSeconds(attackCooldown);
         canAttack = true;
+    }
+
+    private IEnumerator PowerupCooldown()
+    {
+        yield return new WaitForSeconds(powerupCooldown);
+        canPowerup = true;
     }
 
     // Add gravity direction force to reduce air time
@@ -268,14 +290,15 @@ public class PlayerController : MonoBehaviour
             }
             Debug.Log(validContacts + " / " + collision.contacts.Length);
             IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
-            if (validContacts >= collision.contacts.Length / 2)
+            if (validContacts >= collision.contacts.Length / 2 || isInvincible)
             {
                 if (enemy != null)
                 {
                     enemy.TakeDamage(1);
                 }
             }
-            else{
+            else
+            {
                 if (enemy != null)
                 {
                     enemy.GiveDamage();
@@ -290,6 +313,99 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
                 rb.velocity = -currentVelocity.normalized * pushBackVelocity;
+            }
+        }
+    }
+
+    private void UsePowerup()
+    {
+        if (!staminaManager.CanUsePowerup() || !canPowerup) return;
+        switch (stageManager.currentPowerup)
+        {
+            case Powerup.SweetPotato:
+                staminaManager.RunStamina();
+                UseSweetPotato();
+                break;
+            case Powerup.ChiliPepper:
+                staminaManager.RunStamina();
+                UseChiliPepper();
+                break;
+            case Powerup.Carrot:
+                staminaManager.RunStamina();
+                UseCarrot();
+                break;
+            case Powerup.Ice:
+                staminaManager.RunStamina();
+                UseIce();
+                break;
+            default:
+                break;
+        }
+        StartCoroutine(PowerupCooldown());
+    }
+
+    private void UseSweetPotato()
+    {
+        Vector3 playerPosition = transform.position;
+        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, sweetPotatoAttackRange, enemyLayer);
+        foreach (Collider hitCollider in hitColliders)
+        {
+            GameObject hitObject = hitCollider.gameObject;
+            IEnemy enemy = hitObject.GetComponent<IEnemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(sweetPotatoAttackDamage);
+            }
+        }
+    }
+
+    private void UseChiliPepper()
+    {
+        StartCoroutine(Dash());
+    }
+
+    private void UseCarrot()
+    {
+
+    }
+
+    private void UseIce()
+    {
+
+    }
+
+    private IEnumerator Dash()
+    {
+        isInvincible = true;
+        Vector3 direction = transform.forward;
+        float elapsedTime = 0f;
+
+        Debug.Log(Time.deltaTime);
+
+        while (elapsedTime < dashDuration)
+        {
+            rb.AddForce(direction * dashStrength * Time.deltaTime, ForceMode.VelocityChange);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        isInvincible = false;
+    }
+
+    private IEnumerator InvincibleCooldown()
+    {
+        yield return new WaitForSeconds(invincibleCooldown);
+        isInvincible = false;
+    }
+
+    private void ActivateEnemies()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            IEnemy enemyScript = enemy.GetComponent<IEnemy>();
+            if (enemyScript != null)
+            {
+                enemyScript.ActivateEnemy();
             }
         }
     }

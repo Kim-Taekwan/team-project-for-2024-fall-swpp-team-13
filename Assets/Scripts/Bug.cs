@@ -18,6 +18,8 @@ public class Bug : MonoBehaviour, IEnemy
     public bool isAttacking = false;
     public float reachedThreshold = 0.5f;
 
+    public bool isActivated = true;
+
     private StageManager stageManager;
     private Vector3 patrolTarget;
     private Transform playerTransform;
@@ -42,6 +44,10 @@ public class Bug : MonoBehaviour, IEnemy
 
     void FixedUpdate()
     {
+        if(!isActivated)
+        {
+            return;
+        }
         if (playerTransform == null || rb == null)
         {
             return;
@@ -101,6 +107,11 @@ public class Bug : MonoBehaviour, IEnemy
     public void GiveDamage()
     {
         stageManager.TakeDamage(damageAmount);
+    }
+
+    public void ActivateEnemy()
+    {
+        isActivated = true;
     }
 
     // private void OnCollisionEnter(Collision collision)
