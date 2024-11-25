@@ -35,10 +35,11 @@ public class PlayerController : MonoBehaviour
     public float iceDeceleration = 0.001f;*/
 
     // Animator
-    private Animator animator;
+    public Animator animator;
     private bool isMoving = false;
     private bool isJumping = false;
     private bool isFalling = false;
+    private bool isAttacking = false;
 
     // Audio
     public AudioSource audioSource;
@@ -64,7 +65,7 @@ public class PlayerController : MonoBehaviour
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
-        animator = GetComponent<Animator>();
+        animator = transform.GetChild(0).GetComponent<Animator>();
     }
 
     private void Update()
@@ -85,8 +86,7 @@ public class PlayerController : MonoBehaviour
 
             // Attack Input
             if (Input.GetKeyDown(KeyCode.Z))
-            {
-                animator.SetTrigger("attackTrig");
+            {                
                 PerformAttack();
             }
         }
@@ -140,6 +140,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        animator.SetTrigger("attackTrig");
         canAttack = false;
         Vector3 playerPosition = transform.position;
         Vector3 forward = transform.forward;
@@ -182,9 +183,6 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimationAndSound(Vector3 direction)
     {
-        //animator.SetFloat("Speed_f", currentSpeed);
-        //animator.SetBool("Moving_b", movement != Vector3.zero);
-
         if (direction != Vector3.zero)
         {
             animator.SetBool("isMoving", true);
@@ -315,6 +313,11 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             rb.velocity = Vector3.zero;
+
+            //TODO: turn to the camera position
+            transform.rotation = Quaternion.LookRotation(Vector3.back);
+            
+            animator.SetBool("isGameClear", true);
             stageManager.GameClear();
         }
 
@@ -322,6 +325,9 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             stageManager.UpdatePowerup(other.gameObject.name);
+
+            transform.rotation = Quaternion.LookRotation(Vector3.back);
+            animator.SetTrigger("powerupTrig");
         }
     }
 }

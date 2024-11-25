@@ -38,14 +38,15 @@ public class StageManager : MonoBehaviour
     private PauseUIManager pauseUIManager;
 
     // Player status
+    public GameObject player;
     public int hp = 6, maxHp = 6;
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
-    public GameObject[] mouseForms = new GameObject[5];
     public float getDamageCooldown = 1.0f;
-    private bool canTakeDamage = true;
     public float stunCooldown = 0.5f;
+    private bool canTakeDamage = true;    
     private bool canMove = true;
+    private PlayerController playerController;
 
     // Events
     public static event Action OnPlayerDamaged;
@@ -55,6 +56,7 @@ public class StageManager : MonoBehaviour
     void Start()
     {
         pauseUIManager = GameObject.Find("PauseUIManager").GetComponent<PauseUIManager>();
+        playerController = player.GetComponent<PlayerController>();
     }
 
     // Checker method to determine the game continues
@@ -111,14 +113,16 @@ public class StageManager : MonoBehaviour
         // Only activate current powerup form and UI image
         for (int i = 0; i < 5; i++)
         {
-            mouseForms[i].SetActive(i == (int)currentPowerup);
+            Transform powerupForm = player.transform.GetChild(i);
+            powerupForm.gameObject.SetActive(i == (int)currentPowerup);
             powerupImages[i].gameObject.SetActive(i == (int)currentPowerup);
         }
+        playerController.animator = player.transform.GetChild((int)currentPowerup).GetComponent<Animator>();
     }
 
     public void TakeDamage(int amount)
     {
-        if (!canTakeDamage)
+        if (!canTakeDamage && !CheckGameContinue())
         {
             return;
         }
@@ -131,10 +135,14 @@ public class StageManager : MonoBehaviour
         if (hp == 0)
         {
             GameOver();
+            playerController.animator.SetBool("isDead", true);
         }
-
-        StartCoroutine(DamageCooldown());
-        StartCoroutine(StunCooldown());
+        else
+        {
+            playerController.animator.SetTrigger("damagedTrig");
+            StartCoroutine(DamageCooldown());
+            StartCoroutine(StunCooldown());
+        }
     }
 
     private IEnumerator DamageCooldown()
