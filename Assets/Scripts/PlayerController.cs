@@ -253,6 +253,9 @@ public class PlayerController : MonoBehaviour
             if (validContacts >= collision.contacts.Length / 2)
             {
                 isGrounded = true;
+                isFalling = false;
+                isJumping = false;
+                animator.SetBool("isGrounded", true);
             }
         }
         else if (collision.gameObject.CompareTag("Enemy"))
