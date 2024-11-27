@@ -222,6 +222,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void LookAtCamera()
+    {
+        GameObject camera = GameObject.Find("Main Camera");
+        transform.LookAt(camera.transform);
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -303,9 +310,7 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
             rb.velocity = Vector3.zero;
 
-            //TODO: Rotate to the camera position
-            transform.rotation = Quaternion.LookRotation(Vector3.back);
-            
+            LookAtCamera();
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
         }
@@ -316,9 +321,7 @@ public class PlayerController : MonoBehaviour
             stageManager.HealHp(stageManager.maxHp);
             stageManager.UpdatePowerup(other.gameObject.name);
 
-            //TODO: Rotate to the camera position
-            transform.rotation = Quaternion.LookRotation(Vector3.back);
-
+            LookAtCamera();
             animator.SetTrigger("powerupTrig");
             StartCoroutine(PowerupPause());
         }
