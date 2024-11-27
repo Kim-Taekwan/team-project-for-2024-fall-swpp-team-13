@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentSpeed: 0
   speed: 8
-  jumpForce: 200
+  jumpForce: 250
   isGrounded: 1
   groundNormalThreshold: 30
   animator: {fileID: 0}

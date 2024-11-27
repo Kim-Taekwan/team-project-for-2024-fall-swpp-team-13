@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4285348048645646}
   - component: {fileID: 33096090857459642}
   - component: {fileID: 23033412676538048}
+  - component: {fileID: 655467756}
   m_Layer: 0
   m_Name: WoodBox2
   m_TagString: Untagged
@@ -25,9 +26,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1634623217733474}
-  m_LocalRotation: {x: -0.00000003774895, y: -0.000000059604645, z: -2.2500128e-15, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.512729, y: 0.512729, z: 0.512729}
+  m_LocalScale: {x: 13.457567, y: 13.457568, z: 13.457567}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &655467756
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634623217733474}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.0000012, y: 2.000001, z: 4.0000052}
+  m_Center: {x: 0.00000358261, y: 0.9999989, z: -0.0000007774604}
