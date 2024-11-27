@@ -42,7 +42,7 @@ public class StageManager : MonoBehaviour
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
     public GameObject[] mouseForms = new GameObject[5];
-    public float getDamageCooldown = 1.0f;
+    public float getDamageCooldown = 0.5f;
     private bool canTakeDamage = true;
     public float stunCooldown = 0.5f;
     private bool canMove = true;

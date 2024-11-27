@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class StaminaManager : MonoBehaviour
 {
-    public float staminaCost = 1.0f;
     [SerializeField] float rechargeRate = 7.0f;
     private Slider staminaSlider;
     private Coroutine recharging;
@@ -30,7 +29,7 @@ public class StaminaManager : MonoBehaviour
         staminaSlider.value = stageManager.maxStamina;
     }
 
-    public void RunStamina()
+    public void RunStamina(float staminaCost)
     {
         stageManager.stamina = (stageManager.stamina >= staminaCost) ? stageManager.stamina - staminaCost : 0.0f;
         staminaSlider.value = stageManager.stamina;
@@ -40,7 +39,7 @@ public class StaminaManager : MonoBehaviour
         recharging = StartCoroutine(RechargeStamina());
     }
 
-    public bool CanUsePowerup()
+    public bool CanUsePowerup(float staminaCost)
     {
         return stageManager.stamina >= staminaCost;
     }

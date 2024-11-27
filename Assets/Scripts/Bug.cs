@@ -114,6 +114,11 @@ public class Bug : MonoBehaviour, IEnemy
         isActivated = true;
     }
 
+    public void DeactivateEnemy()
+    {
+        isActivated = false;
+    }
+
     // private void OnCollisionEnter(Collision collision)
     // {
     //     if (collision.gameObject.CompareTag("Player"))
