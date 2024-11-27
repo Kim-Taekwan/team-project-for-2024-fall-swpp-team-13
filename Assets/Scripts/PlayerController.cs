@@ -324,16 +324,10 @@ public class PlayerController : MonoBehaviour
                     enemy.GiveDamage();
                 }
             }
-            Vector3 currentVelocity = rb.velocity;
-            if (currentVelocity.magnitude > pushBackSpeedThreshold)
-            {
-                rb.velocity = -currentVelocity;
-            }
-            else
-            {
-                Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
-                rb.velocity = -currentVelocity.normalized * pushBackVelocity;
-            }
+            Vector3 pushDirection = collision.transform.position - transform.position;
+            pushDirection.y = 0;
+            pushDirection.Normalize();
+            rb.velocity = rb.velocity - pushDirection * pushBackVelocity;
         }
     }
 
@@ -443,7 +437,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void DeactivateEnemies()
+    public void DeactivateEnemies()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject enemy in enemies)

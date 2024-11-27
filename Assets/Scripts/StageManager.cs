@@ -36,15 +36,16 @@ public class StageManager : MonoBehaviour
     public Canvas gameOverCanvas;
     public Canvas gameClearCanvas;
     private PauseUIManager pauseUIManager;
+    private PlayerController playerController;
 
     // Player status
     public int hp = 6, maxHp = 6;
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
     public GameObject[] mouseForms = new GameObject[5];
-    public float getDamageCooldown = 0.5f;
+    public float getDamageCooldown = 0.3f;
     private bool canTakeDamage = true;
-    public float stunCooldown = 0.5f;
+    public float stunCooldown = 0.3f;
     private bool canMove = true;
 
     // Events
@@ -156,6 +157,8 @@ public class StageManager : MonoBehaviour
 
     public void GameOver()
     {
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerController.DeactivateEnemies();
         isGameOver = true;
         mainCanvas.gameObject.SetActive(false);
         gameOverCanvas.gameObject.SetActive(true);
