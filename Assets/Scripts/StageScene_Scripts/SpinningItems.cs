@@ -21,7 +21,7 @@ public class SpinningItems : MonoBehaviour
         transform.Rotate(Vector3.up, spinSpeed * Time.deltaTime, Space.World);
 
         // Float slightly up and down
-        float floatedY = startY + Mathf.Sin(Time.time * floatSpeed) * floatLimit;
+        float floatedY = startY + Mathf.Sin(Time.timeSinceLevelLoad * floatSpeed) * floatLimit;
         transform.position = new Vector3(transform.position.x, floatedY, transform.position.z);
     }
 }

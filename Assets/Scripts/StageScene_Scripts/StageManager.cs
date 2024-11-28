@@ -92,6 +92,7 @@ public class StageManager : MonoBehaviour
 
     public void UpdatePowerup(string powerupName)
     {
+        UpdateScore(1000);
         switch (powerupName)
         {
             case "Sweet Potato":
