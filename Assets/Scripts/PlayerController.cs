@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public Dictionary<Powerup, float> staminaCost = new Dictionary<Powerup, float>
     {
-        { Powerup.SweetPotato, 10.0f },
+        { Powerup.SweetPotato, 1.0f },
         { Powerup.ChiliPepper, 1.0f },
         { Powerup.Carrot, 1.0f },
         { Powerup.Ice, 1.0f }
@@ -76,6 +76,9 @@ public class PlayerController : MonoBehaviour
     public GameObject carrotPrefab;
     public float carrotSpeed = 10.0f;
     public float[] carrotAngles = { -30f, 0f, 30f };
+    private Coroutine currentPowerupCoroutine;
+    private float originalSpeed;
+    public float holdPowerupStaminaCooldown = 1.0f;
 
     public Vector3 yOffset = new Vector3(0, 0.5f, 0);
 
@@ -90,6 +93,7 @@ public class PlayerController : MonoBehaviour
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = GetComponent<Animator>();
+        originalSpeed = speed;
     }
 
     private void Update()
@@ -115,9 +119,50 @@ public class PlayerController : MonoBehaviour
                 PerformAttack();
             }
 
+            // Powerup Input
             if (Input.GetKeyDown(KeyCode.C))
             {
-                UsePowerup();
+                Powerup current = stageManager.currentPowerup;
+                if (current == Powerup.Carrot || current == Powerup.Ice)
+                {
+                    UsePowerup();
+                }
+                else if (current == Powerup.SweetPotato || current == Powerup.ChiliPepper)
+                {
+                    // Check if can use powerup
+                    float cost = staminaCost[current];
+                    if (staminaManager.CanUsePowerup(cost) && canPowerup)
+                    {
+                        staminaManager.RunStamina(cost);
+                        if (current == Powerup.SweetPotato)
+                        {
+                            currentPowerupCoroutine = StartCoroutine(SweetPotatoHoldCoroutine());
+                        }
+                        else if (current == Powerup.ChiliPepper)
+                        {
+                            currentPowerupCoroutine = StartCoroutine(ChiliPepperHoldCoroutine());
+                        }
+                    }
+                }
+            }
+
+            if (Input.GetKeyUp(KeyCode.C))
+            {
+                Powerup current = stageManager.currentPowerup;
+                if (current == Powerup.SweetPotato || current == Powerup.ChiliPepper)
+                {
+                    if (currentPowerupCoroutine != null)
+                    {
+                        StopCoroutine(currentPowerupCoroutine);
+                        currentPowerupCoroutine = null;
+                    }
+
+                    if (current == Powerup.ChiliPepper)
+                    {
+                        speed = originalSpeed;
+                        isInvincible = false;
+                    }
+                }
             }
         }
     }
@@ -337,14 +382,6 @@ public class PlayerController : MonoBehaviour
         if (!staminaManager.CanUsePowerup(powerupStaminaCost) || !canPowerup) return;
         switch (stageManager.currentPowerup)
         {
-            case Powerup.SweetPotato:
-                staminaManager.RunStamina(powerupStaminaCost);
-                StartCoroutine(SweetPotatoCoroutine());
-                break;
-            case Powerup.ChiliPepper:
-                staminaManager.RunStamina(powerupStaminaCost);
-                StartCoroutine(ChiliPepperCourtine());
-                break;
             case Powerup.Carrot:
                 staminaManager.RunStamina(powerupStaminaCost);
                 UseCarrot();
@@ -359,25 +396,25 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(PowerupCooldown());
     }
 
-    private IEnumerator SweetPotatoCoroutine()
+    private IEnumerator SweetPotatoHoldCoroutine()
     {
-        float elapsedTime = 0f;
-
-        while (elapsedTime < powerupDuration)
+        while (Input.GetKey(KeyCode.C) && canPowerup)
         {
             UseSweetPotato();
-            elapsedTime += sweetPotatoAttackInterval;
-
-            yield return new WaitForSeconds(sweetPotatoAttackInterval);
+            staminaManager.RunStamina(staminaCost[Powerup.SweetPotato]);
+            yield return new WaitForSeconds(holdPowerupStaminaCooldown);
         }
     }
 
-    private IEnumerator ChiliPepperCourtine()
+    private IEnumerator ChiliPepperHoldCoroutine()
     {
         isInvincible = true;
-        float originalSpeed = speed;
         speed = dashSpeed;
-        yield return new WaitForSeconds(powerupDuration);
+        while (Input.GetKey(KeyCode.C) && canPowerup)
+        {
+            staminaManager.RunStamina(staminaCost[Powerup.ChiliPepper]);
+            yield return new WaitForSeconds(holdPowerupStaminaCooldown);
+        }
         speed = originalSpeed;
         isInvincible = false;
     }
@@ -422,8 +459,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    
-    
     private void ActivateEnemies()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
