@@ -1069,6 +1069,11 @@ MonoBehaviour:
   spinSpeed: 90
   floatSpeed: 3
   floatLimit: 0.1
+--- !u!1 &592714105 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683003030773932, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &690049190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1879,7 +1884,7 @@ MonoBehaviour:
   currentPowerup: 0
   mouseForms:
   - {fileID: 1130570319}
-  - {fileID: 0}
+  - {fileID: 592714105}
   - {fileID: 1490835466}
   - {fileID: 1423097996}
   - {fileID: 499661219}
@@ -7299,6 +7304,10 @@ PrefabInstance:
       propertyPath: attackRange
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: carrotPrefab
+      value: 
+      objectReference: {fileID: 3502997246030779287, guid: 0c0402bbf95c44b9ea3f24a57e38019f, type: 3}
     - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: dashStrength
       value: 400
