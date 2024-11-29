@@ -11,6 +11,7 @@ TagManager:
   - Powerup
   - Enemy
   - Bug
+  - Wire
   layers:
   - Default
   - TransparentFX

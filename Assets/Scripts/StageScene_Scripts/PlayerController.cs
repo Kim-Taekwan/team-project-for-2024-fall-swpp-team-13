@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     // Default Ground - General
     [SerializeField] float currentSpeed; // for debugging speed
-    public float speed = 8.0f;
+    public float speed = 800.0f;
     public float jumpForce = 200.0f;
     public bool isGrounded = true;
     private float moveHorizontal = 0.0f;
@@ -106,7 +106,6 @@ public class PlayerController : MonoBehaviour
         Vector3 velocity = new Vector3(moveHorizontal * speed, rb.velocity.y, moveVertical * speed);
         Vector3 direction = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
         currentSpeed = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
-
         rb.velocity = velocity;
         UpdateAnimationAndSound(direction);
     }
@@ -156,6 +155,26 @@ public class PlayerController : MonoBehaviour
         if (closestEnemy != null)
         {
             closestEnemy.TakeDamage(attackDamage);
+        }
+
+        Collider[] wireColliders = Physics.OverlapSphere(playerPosition, attackRange);
+        foreach (Collider hit in wireColliders)
+        {
+            if (hit.CompareTag("Wire")) 
+            {
+                WireController wire = hit.GetComponent<WireController>();
+                if (wire != null)
+                {
+                    if (Physics.Raycast(playerPosition, forward, out RaycastHit hitInfo, attackRange))
+                    {
+                        wire.HandleWireAttack(hitInfo.point); 
+                    }
+                    else
+                    {
+                        wire.HandleWireAttack(hit.ClosestPoint(playerPosition));
+                    }
+                }
+            }
         }
         StartCoroutine(AttackCooldown());
     }   
@@ -276,7 +295,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                //TODO: pushDirectionÀ» È°¿ëÇÑ ³Ë¹é ±¸Çö
+                //TODO: pushDirectionï¿½ï¿½ È°ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¹ï¿½ ï¿½ï¿½ï¿½ï¿½
                 Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
                 rb.velocity = -pushDirection * pushBackVelocity;
             }
