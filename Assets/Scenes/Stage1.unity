@@ -21884,7 +21884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5296028362964944239, guid: b1b73f9b135f86a45825637d3b3d698f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.0479927
+      value: -6.21
       objectReference: {fileID: 0}
     - target: {fileID: 5296028362964944239, guid: b1b73f9b135f86a45825637d3b3d698f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -50683,6 +50683,10 @@ PrefabInstance:
     - target: {fileID: 4003689086508957181, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
       propertyPath: m_Name
       value: BigFenceBroken (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003689086508957181, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7550638153184653812, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
       propertyPath: m_LocalPosition.x

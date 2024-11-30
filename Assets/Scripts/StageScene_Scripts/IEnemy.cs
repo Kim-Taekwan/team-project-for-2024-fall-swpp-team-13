@@ -1,5 +1,4 @@
-public interface IEnemy
+public interface IEnemy : IDamageable
 {
     void GiveDamage();
-    void TakeDamage(int amount);
 }

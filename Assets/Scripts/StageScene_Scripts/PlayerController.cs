@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     public int attackDamage = 1;
     public float attackCooldown = 1.0f;
     private bool canAttack = true;
-    public LayerMask enemyLayer;
+    public LayerMask damageableLayer;
 
     // Particles
     public ParticleSystem dirtTrail;
@@ -136,26 +136,27 @@ public class PlayerController : MonoBehaviour
         canAttack = false;
         Vector3 playerPosition = transform.position;
         Vector3 forward = transform.forward;
-        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, enemyLayer);
-        IEnemy closestEnemy = null;
+        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, damageableLayer);
+        IDamageable closestDamageableObject = null;
         float closestDistance = float.MaxValue;
         foreach (Collider hitCollider in hitColliders)
         {
             GameObject hitObject = hitCollider.gameObject;
-            IEnemy enemy = hitObject.GetComponent<IEnemy>();
-            if (enemy != null)
+            IDamageable damageableObject = hitObject.GetComponent<IDamageable>();
+            if (damageableObject != null)
             {
                 float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
                 if (distanceToEnemy < closestDistance)
                 {
                     closestDistance = distanceToEnemy;
-                    closestEnemy = enemy;
+                    closestDamageableObject = damageableObject;
                 }
             }
         }
-        if (closestEnemy != null)
+        if (closestDamageableObject != null)
         {
-            closestEnemy.TakeDamage(attackDamage);
+            Debug.Log(closestDamageableObject);
+            closestDamageableObject.TakeDamage(attackDamage);
         }
         StartCoroutine(AttackCooldown());
     }   

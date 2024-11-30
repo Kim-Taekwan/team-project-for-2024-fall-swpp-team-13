@@ -65,7 +65,7 @@ MonoBehaviour:
   attackAngle: 90
   attackDamage: 1
   attackCooldown: 1
-  enemyLayer:
+  damageableLayer:
     serializedVersion: 2
     m_Bits: 64
   dirtTrail: {fileID: 0}
