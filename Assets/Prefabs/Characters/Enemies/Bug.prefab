@@ -115,7 +115,7 @@ MonoBehaviour:
   damageAmount: 1
   defaultPosition: {x: 0, y: 0, z: 0}
   patrolRange: {x: 3, y: 0, z: 3}
-  speed: 5
+  speed: 3
   detectDistance: 5
   returnDistance: 8
   isAttacking: 0

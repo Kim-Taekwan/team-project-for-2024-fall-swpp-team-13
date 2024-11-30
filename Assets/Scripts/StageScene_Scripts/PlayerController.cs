@@ -283,7 +283,6 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                //TODO: pushDirection을 활용한 넉백 구현
                 Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
                 rb.velocity = -pushDirection * pushBackVelocity;
             }

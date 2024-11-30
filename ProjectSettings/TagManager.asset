@@ -11,6 +11,8 @@ TagManager:
   - Powerup
   - Enemy
   - Bug
+  - Node
+  - Wall
   layers:
   - Default
   - TransparentFX
