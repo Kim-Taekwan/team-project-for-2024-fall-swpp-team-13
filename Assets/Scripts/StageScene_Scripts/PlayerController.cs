@@ -14,14 +14,15 @@ public class PlayerController : MonoBehaviour
     private StageManager stageManager;
     private StaminaManager staminaManager;
     private HealthManager healthManager;
+    private Camera mainCamera;
 
     // Default Ground - General
     [SerializeField] float currentSpeed; // for debugging speed
     public float speed = 8.0f;
     public float jumpForce = 200.0f;
     public bool isGrounded = true;
-    private float moveHorizontal = 0.0f;
-    private float moveVertical = 0.0f;
+    private float horizontalInput = 0.0f;
+    private float verticalInput = 0.0f;
     private bool hasJumpInput = false;
     public float groundNormalThreshold = 30.0f;
     private float pushBackSpeedThreshold = 2.0f;
@@ -60,6 +61,7 @@ public class PlayerController : MonoBehaviour
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+        mainCamera = Camera.main;
     }
 
     private void Update()
@@ -99,12 +101,17 @@ public class PlayerController : MonoBehaviour
     private void HandleMovement()
     {
         // Movement Input
-        moveHorizontal = Input.GetAxis("Horizontal");
-        moveVertical = Input.GetAxis("Vertical");
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+        currentSpeed = Mathf.Clamp(Math.Abs(horizontalInput) + Math.Abs(verticalInput), 0f, 1f) * speed;
 
-        Vector3 velocity = new Vector3(moveHorizontal * speed, rb.velocity.y, moveVertical * speed);
-        Vector3 direction = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
-        currentSpeed = new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude;
+        Vector3 forwardFromCamera = mainCamera.transform.TransformDirection(Vector3.forward);
+        forwardFromCamera.y = 0.0f;
+        Vector3 rightFromCamera = mainCamera.transform.TransformDirection(Vector3.right);
+        rightFromCamera.y = 0.0f;
+
+        Vector3 direction = (verticalInput * forwardFromCamera + horizontalInput * rightFromCamera).normalized;
+        Vector3 velocity = new Vector3(0.0f, rb.velocity.y, 0.0f) + direction * currentSpeed;
 
         rb.velocity = velocity;
         UpdateAnimationAndSound(direction);
@@ -224,8 +231,7 @@ public class PlayerController : MonoBehaviour
 
     private void LookAtCamera()
     {
-        GameObject camera = GameObject.Find("Main Camera");
-        transform.LookAt(camera.transform);
+        transform.LookAt(mainCamera.transform);
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 
