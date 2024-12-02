@@ -755,6 +755,7 @@ MonoBehaviour:
   returnDistance: 5
   isAttacking: 0
   reachedThreshold: 0.5
+  isActivated: 1
 --- !u!54 &341606120
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1068,6 +1069,11 @@ MonoBehaviour:
   spinSpeed: 90
   floatSpeed: 3
   floatLimit: 0.1
+--- !u!1 &592714105 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4537683003030773932, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &690049190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1878,11 +1884,11 @@ MonoBehaviour:
   currentPowerup: 0
   mouseForms:
   - {fileID: 1130570319}
-  - {fileID: 1001310498}
+  - {fileID: 592714105}
   - {fileID: 1490835466}
   - {fileID: 1423097996}
   - {fileID: 499661219}
-  getDamageCooldown: 1
+  getDamageCooldown: 0.5
   stunCooldown: 0.5
 --- !u!1 &906210584
 GameObject:
@@ -2227,11 +2233,6 @@ MonoBehaviour:
   spinSpeed: 90
   floatSpeed: 3
   floatLimit: 0.1
---- !u!1 &1001310498 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4537683003030773932, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
-  m_PrefabInstance: {fileID: 3618782452214707013}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1043103284
 GameObject:
   m_ObjectHideFlags: 0
@@ -7304,12 +7305,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: carrotPrefab
+      value: 
+      objectReference: {fileID: 3502997246030779287, guid: 0c0402bbf95c44b9ea3f24a57e38019f, type: 3}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: dashStrength
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: enemyLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 3618782452728500420, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500422, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: m_Drag
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3869372779611191830, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: m_LocalPosition.x

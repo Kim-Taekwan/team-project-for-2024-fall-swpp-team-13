@@ -39,6 +39,11 @@ public class StaminaManager : MonoBehaviour
         recharging = StartCoroutine(RechargeStamina());
     }
 
+    public bool CanUsePowerup(float staminaCost)
+    {
+        return stageManager.stamina >= staminaCost;
+    }
+
     IEnumerator RechargeStamina()
     {
         yield return new WaitForSeconds(1);
