@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
-            //audioSource.PlayOneShot(jumpSound);
+            AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
         }
@@ -131,6 +131,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        AudioManager.Instance.PlayAttackSound();
         animator.SetTrigger("attackTrig");
         canAttack = false;
         Vector3 playerPosition = transform.position;
@@ -199,18 +200,15 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            /*if (!audioSource.isPlaying)
+            if (!audioSource.isPlaying && isGrounded)
             {
                 audioSource.clip = movementSound;
-                audioSource.loop = true;
                 audioSource.Play();
-            }*/
+            }
         }
         else
         {
             animator.SetBool("isMoving", false);
-            //audioSource.Stop();
-            //audioSource.loop = false;
         }
 
         // Check falling state
@@ -260,6 +258,8 @@ public class PlayerController : MonoBehaviour
                 isFalling = false;
                 isJumping = false;
                 animator.SetBool("isGrounded", true);
+                if(audioSource != null && audioSource.isActiveAndEnabled)
+                    audioSource.PlayOneShot(groundImpactSound);
             }
         }
         else if (collision.gameObject.CompareTag("Enemy"))

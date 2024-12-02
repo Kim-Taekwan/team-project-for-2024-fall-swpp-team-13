@@ -75,6 +75,7 @@ public class StageManager : MonoBehaviour
     public void AddCoins(int coins)
     {
         stageCoins += coins;
+        AudioManager.Instance.PlayCoinSound();
         UpdateScore(coins * 100);
         coinText.text = "X " + stageCoins.ToString("D2");
     }
@@ -82,6 +83,7 @@ public class StageManager : MonoBehaviour
     public void ObtainRecipe()
     {
         obtainedRecipe = true;
+        AudioManager.Instance.PlayRecipeSound();
         UpdateScore(5000);
 
         // Make UI image color opaque
@@ -92,6 +94,7 @@ public class StageManager : MonoBehaviour
 
     public void UpdatePowerup(string powerupName)
     {
+        AudioManager.Instance.PlayPowerUpSound();
         switch (powerupName)
         {
             case "Sweet Potato":
@@ -137,6 +140,7 @@ public class StageManager : MonoBehaviour
 
         canTakeDamage = false;
         canMove = false;
+        AudioManager.Instance.PlayAttackedSound();
         hp = (hp <= amount) ? 0 : hp - amount;
         OnPlayerDamaged?.Invoke();
 
@@ -173,6 +177,7 @@ public class StageManager : MonoBehaviour
     public void GameOver()
     {
         isGameOver = true;
+        AudioManager.Instance.PlayGameOverSound();
         mainCanvas.gameObject.SetActive(false);
         gameOverCanvas.gameObject.SetActive(true);
     }
@@ -180,6 +185,8 @@ public class StageManager : MonoBehaviour
     public void GameClear()
     {
         isGameClear = true;
+        AudioManager.Instance.StopAllSounds();
+        AudioManager.Instance.PlayGameClearSound();
         mainCanvas.gameObject.SetActive(false);
         gameClearCanvas.gameObject.SetActive(true);
         OnGameCleared?.Invoke();

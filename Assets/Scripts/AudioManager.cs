@@ -10,6 +10,16 @@ public class AudioManager : MonoBehaviour
     public AudioSource bgmSource;
     public AudioSource sfxSource;
 
+    [Header("Sound Effects")]
+    public AudioClip coinSound;
+    public AudioClip recipeSound;
+    public AudioClip powerUpSound;
+    public AudioClip jumpSound;
+    public AudioClip gameClearSound;
+    public AudioClip gameOverSound;
+    public AudioClip attackSound;
+    public AudioClip attackedSound;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -57,4 +67,26 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip, sfxVolume);
         }
     }
+
+    public void StopAllSounds()
+    {
+        if (bgmSource != null && bgmSource.isPlaying)
+        {
+            bgmSource.Stop();
+        }
+
+        if (sfxSource != null && sfxSource.isPlaying)
+        {
+            sfxSource.Stop();
+        }
+    }
+
+    public void PlayCoinSound() => PlaySFX(coinSound);
+    public void PlayRecipeSound() => PlaySFX(recipeSound);
+    public void PlayPowerUpSound() => PlaySFX(powerUpSound);
+    public void PlayJumpSound() => PlaySFX(jumpSound);
+    public void PlayGameClearSound() => PlaySFX(gameClearSound);
+    public void PlayGameOverSound() => PlaySFX(gameOverSound);
+    public void PlayAttackSound() => PlaySFX(attackSound);
+    public void PlayAttackedSound() => PlaySFX(attackedSound);
 }
