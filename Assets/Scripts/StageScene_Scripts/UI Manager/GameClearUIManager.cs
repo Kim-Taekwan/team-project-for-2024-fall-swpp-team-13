@@ -35,7 +35,7 @@ public class GameClearUIManager : MonoBehaviour
 
     private void UpdateGameClearUI()
     {
-        scoreText.text = "Score " + stageManager.stageScore.ToString("D5");
+        scoreText.text = "½ºÄÚ¾î " + stageManager.stageScore.ToString("D5");
         coinText.text = "X " + stageManager.stageCoins.ToString("D2");
         recipeImage.sprite = stageManager.obtainedRecipe ? recipeSprites[1] : recipeSprites[0];
         goNextButton.Select();

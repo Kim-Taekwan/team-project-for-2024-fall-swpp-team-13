@@ -16,6 +16,12 @@ public class GameOverUIManager : MonoBehaviour
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
     }
 
+    void OnEnable()
+    {
+        currentButtonIndex = 0;
+        HighlightButton(currentButtonIndex);
+    }
+
     // Update is called once per frame
     void Update()
     {

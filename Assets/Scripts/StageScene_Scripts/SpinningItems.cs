@@ -7,7 +7,7 @@ public class SpinningItems : MonoBehaviour
     public float spinSpeed = 90.0f;
     public float floatSpeed = 3.0f;
     public float floatLimit = 0.1f;
-    private float startY;
+    public float startY;
 
     void Start()
     {

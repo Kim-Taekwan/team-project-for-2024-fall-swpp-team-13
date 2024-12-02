@@ -32,7 +32,9 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;
     private bool isJumping = false;
     private bool isFalling = false;
-    private float powerupPauseDelay = 1.2f;
+    [SerializeField] float powerupPauseDelay = 1.2f;
+    [SerializeField] float showRewardDelay = 1.5f;
+    [SerializeField] Vector3 rewardOffset = new Vector3(0.0f, 0.5f, 0.2f);
 
     // Audio
     public AudioSource audioSource;
@@ -62,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (stageManager.CheckGameContinue() && stageManager.CanMove())
+        if (stageManager.CheckGameContinue())
         {
             // Jump Input
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -88,11 +90,8 @@ public class PlayerController : MonoBehaviour
     {
         if (stageManager.CheckGameContinue())
         {
-            if(stageManager.CanMove())
-            {
-                HandleMovement();
-                HandleJump();
-            }
+            HandleMovement();
+            HandleJump();
             UpdateEffects();
         }
     }
@@ -307,12 +306,14 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Reward"))
         {
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
             rb.velocity = Vector3.zero;
 
             LookAtCamera();
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
+
+            StartCoroutine(ShowRewardLater(other.gameObject));
         }
 
         if (other.gameObject.CompareTag("Powerup"))
@@ -327,11 +328,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private IEnumerator ShowRewardLater(GameObject reward)
+    {
+        yield return new WaitForSeconds(showRewardDelay);
+        reward.transform.localScale *= 0.5f;
+        reward.transform.position = transform.position + rewardOffset;
+        reward.GetComponent<SpinningItems>().startY = reward.gameObject.transform.position.y;
+        reward.SetActive(true);
+    }
+
     private IEnumerator PowerupPause()
     {
         rb.velocity = Vector3.zero;
-        stageManager.isGamePaused = true;
+        stageManager.canMove = false;
         yield return new WaitForSeconds(powerupPauseDelay);
-        stageManager.isGamePaused = false;
+        stageManager.canMove = true;
     }
 }

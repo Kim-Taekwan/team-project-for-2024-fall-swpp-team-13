@@ -43,7 +43,7 @@ public class StageManager : MonoBehaviour
     public float getDamageCooldown = 1.0f;
     public float stunCooldown = 0.5f;
     private bool canTakeDamage = true;    
-    private bool canMove = true;
+    public bool canMove = true;
     private GameObject player;
     private PlayerController playerController;
 
@@ -63,7 +63,7 @@ public class StageManager : MonoBehaviour
     // Checker method to determine the game continues
     public bool CheckGameContinue()
     {
-        return !isGamePaused && !isGameClear && !isGameOver;
+        return !isGamePaused && !isGameClear && !isGameOver && canMove;
     }
 
     public void UpdateScore(int score)

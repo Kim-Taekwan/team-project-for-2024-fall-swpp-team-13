@@ -57,6 +57,9 @@ MonoBehaviour:
   isGrounded: 1
   groundNormalThreshold: 30
   animator: {fileID: 0}
+  powerupPauseDelay: 1.2
+  showRewardDelay: 1.7
+  rewardOffset: {x: 1.2, y: 0, z: -2}
   audioSource: {fileID: 0}
   jumpSound: {fileID: 0}
   groundImpactSound: {fileID: 0}
@@ -83,7 +86,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!65 &3618782452728500423
 BoxCollider:
