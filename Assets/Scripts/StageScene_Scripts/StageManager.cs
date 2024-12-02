@@ -35,6 +35,7 @@ public class StageManager : MonoBehaviour
     public Canvas gameOverCanvas;
     public Canvas gameClearCanvas;
     private PauseUIManager pauseUIManager;
+    private PlayerController playerController;
 
     // Player status
     public int hp = 6, maxHp = 6;
@@ -173,6 +174,8 @@ public class StageManager : MonoBehaviour
 
     public void GameOver()
     {
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerController.DeactivateEnemies();
         isGameOver = true;
         mainCanvas.gameObject.SetActive(false);
         gameOverCanvas.gameObject.SetActive(true);
