@@ -13,10 +13,9 @@ public class PlayerController : MonoBehaviour
 
     public Dictionary<Powerup, float> staminaCost = new Dictionary<Powerup, float>
     {
-        { Powerup.SweetPotato, 1.0f },
-        { Powerup.ChiliPepper, 1.0f },
-        { Powerup.Carrot, 1.0f },
-        { Powerup.Ice, 1.0f }
+        { Powerup.SweetPotato, 3.0f },
+        { Powerup.ChiliPepper, 2.5f },
+        { Powerup.Carrot, 2.0f },
     };
 
     private Rigidbody rb;
@@ -30,12 +29,10 @@ public class PlayerController : MonoBehaviour
     public float speed = 8.0f;
     public float jumpForce = 200.0f;
     public bool isGrounded = true;
+    public bool canMove = true; // for player movement only
     private float horizontalInput = 0.0f;
     private float verticalInput = 0.0f;
     private bool hasJumpInput = false;
-    public float groundNormalThreshold = 30.0f;
-    private float pushBackSpeedThreshold = 2.0f;
-    private float pushBackVelocity = 8.0f;
 
     // Animaton
     public Animator animator;
@@ -52,17 +49,23 @@ public class PlayerController : MonoBehaviour
     public AudioClip groundImpactSound;
     public AudioClip movementSound;
 
-    // Attack
+    // Attack & Damage
     public float attackRange = 2.0f;
     public float attackAngle = 45.0f;
     public int attackDamage = 1;
     public float attackCooldown = 1.0f;
     private bool canAttack = true;
     public LayerMask damageableLayer;
+    private bool canTakeDamage = true;
+    public float getDamageCooldown = 1.0f;
+    public float stunCooldown = 0.5f;
+    public float groundNormalThreshold = 30.0f;
+    private float pushBackSpeed = 8.0f;
+    public float bounceSpeed = 8.0f;
 
     // Powerup
     private bool canPowerup = true;
-    public float powerupCooldown = 1.0f;
+    public float powerupCooldown = 0.3f;
     public float powerupDuration = 10.0f;
     public float sweetPotatoAttackRange = 5.0f;
     public int sweetPotatoAttackDamage = 1;
@@ -72,7 +75,7 @@ public class PlayerController : MonoBehaviour
     public float dashSpeed = 12.0f;
     public GameObject carrotPrefab;
     public float carrotSpeed = 10.0f;
-    public float[] carrotAngles = { -30f, 0f, 30f };
+    public float[] carrotAngles = { -20f, 0f, 20f };
     private Coroutine currentPowerupCoroutine;
     private float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
@@ -95,22 +98,16 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (stageManager.CheckGameContinue())
+        if (stageManager.CheckGameContinue() && canMove)
         {
             // Jump Input
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
             {
                 hasJumpInput = true;
             }
 
-            // For debugging stamina behavior
-            // if (Input.GetKeyDown(KeyCode.X))
-            // {
-            //     staminaManager.RunStamina();
-            // }
-
             // Attack Input
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.X))
             {                
                 PerformAttack();
             }
@@ -118,45 +115,26 @@ public class PlayerController : MonoBehaviour
             // Powerup Input
             if (Input.GetKeyDown(KeyCode.C))
             {
-                Powerup current = stageManager.currentPowerup;
-                if (current == Powerup.Carrot || current == Powerup.Ice)
+                Powerup currentPowerup = stageManager.currentPowerup;
+                if (currentPowerup == Powerup.Carrot)
                 {
-                    UsePowerup();
+                    UseCarrotPowerup();
                 }
-                else if (current == Powerup.SweetPotato || current == Powerup.ChiliPepper)
+                else if (currentPowerup == Powerup.SweetPotato || currentPowerup == Powerup.ChiliPepper)
                 {
                     // Check if can use powerup
-                    float cost = staminaCost[current];
+                    float cost = staminaCost[currentPowerup];
                     if (staminaManager.CanUsePowerup(cost) && canPowerup)
                     {
                         staminaManager.RunStamina(cost);
-                        if (current == Powerup.SweetPotato)
+                        if (currentPowerup == Powerup.SweetPotato)
                         {
                             currentPowerupCoroutine = StartCoroutine(SweetPotatoHoldCoroutine());
                         }
-                        else if (current == Powerup.ChiliPepper)
+                        else if (currentPowerup == Powerup.ChiliPepper)
                         {
                             currentPowerupCoroutine = StartCoroutine(ChiliPepperHoldCoroutine());
                         }
-                    }
-                }
-            }
-
-            if (Input.GetKeyUp(KeyCode.C))
-            {
-                Powerup current = stageManager.currentPowerup;
-                if (current == Powerup.SweetPotato || current == Powerup.ChiliPepper)
-                {
-                    if (currentPowerupCoroutine != null)
-                    {
-                        StopCoroutine(currentPowerupCoroutine);
-                        currentPowerupCoroutine = null;
-                    }
-
-                    if (current == Powerup.ChiliPepper)
-                    {
-                        speed = originalSpeed;
-                        isInvincible = false;
                     }
                 }
             }
@@ -165,7 +143,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (stageManager.CheckGameContinue())
+        if (stageManager.CheckGameContinue() && canMove)
         {
             HandleMovement();
             HandleJump();
@@ -205,6 +183,13 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
         }
+    }
+
+    // Add gravity direction force to reduce air time
+    IEnumerator AddReverseForce()
+    {
+        yield return new WaitForSeconds(0.2f);
+        rb.AddForce(Physics.gravity * 10.0f, ForceMode.Impulse);
     }
 
     private void PerformAttack()
@@ -257,13 +242,6 @@ public class PlayerController : MonoBehaviour
         canPowerup = true;
     }
 
-    // Add gravity direction force to reduce air time
-    IEnumerator AddReverseForce()
-    {
-        yield return new WaitForSeconds(0.2f);
-        rb.AddForce(Physics.gravity * 10.0f, ForceMode.Impulse);
-    }
-
     private void UpdateAnimationAndSound(Vector3 direction)
     {
         if (direction != Vector3.zero)
@@ -313,6 +291,112 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ResetPowerupSettings()
+    {
+        if (currentPowerupCoroutine != null)
+        {
+            StopCoroutine(currentPowerupCoroutine);
+            currentPowerupCoroutine = null;
+        }
+        speed = originalSpeed;
+        isInvincible = false;
+    }
+
+    private void UseCarrotPowerup()
+    {
+        float powerupStaminaCost = staminaCost[stageManager.currentPowerup];
+        if (!staminaManager.CanUsePowerup(powerupStaminaCost) || !canPowerup) return;
+        staminaManager.RunStamina(powerupStaminaCost);
+        UseCarrot();
+        StartCoroutine(PowerupCooldown());
+    }
+
+    private IEnumerator SweetPotatoHoldCoroutine()
+    {
+        while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
+        {
+            UseSweetPotato();
+            staminaManager.RunStamina(staminaCost[Powerup.SweetPotato] / 50.0f);
+            yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
+        }
+        ResetPowerupSettings();
+    }
+
+    private IEnumerator ChiliPepperHoldCoroutine()
+    {
+        isInvincible = true;
+        speed = dashSpeed;
+        while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
+        {
+            staminaManager.RunStamina(staminaCost[Powerup.ChiliPepper] / 50.0f);
+            yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
+        }
+        ResetPowerupSettings();
+    }
+
+    private void UseSweetPotato()
+    {
+        Vector3 playerPosition = transform.position;
+        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, sweetPotatoAttackRange, damageableLayer);
+        foreach (Collider hitCollider in hitColliders)
+        {
+            GameObject hitObject = hitCollider.gameObject;
+            IDamageable damageable = hitObject.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(sweetPotatoAttackDamage);
+            }
+        }
+    }
+
+    private void UseCarrot()
+    {
+        Vector3 playerPosition = transform.position;
+        Quaternion playerRotation = transform.rotation;
+        foreach (float angle in carrotAngles)
+        {
+            Quaternion rotation = playerRotation * Quaternion.Euler(0, angle, 0);
+            Vector3 direction = rotation * Vector3.forward;
+
+            GameObject carrot = Instantiate(carrotPrefab, playerPosition + direction * 1.0f + yOffset, rotation);
+
+            Rigidbody carrotRb = carrot.GetComponent<Rigidbody>();
+            if (carrotRb != null)
+            {
+                carrotRb.velocity = direction * carrotSpeed;
+            }
+        }
+    }
+
+    public void TakeDamage(int amount)
+    {
+        if (!canTakeDamage || !stageManager.CheckGameContinue())
+        {
+            return;
+        }
+
+        canTakeDamage = false;
+        stageManager.LoseHp(amount);
+
+        if (stageManager.hp == 0)
+        {
+            stageManager.GameOver();
+            animator.SetBool("isDead", true);
+        }
+        else
+        {
+            animator.SetTrigger("damagedTrig");
+            StartCoroutine(DamageCooldown());
+            StartCoroutine(MovePause(stunCooldown));
+        }
+    }
+
+    private IEnumerator DamageCooldown()
+    {
+        yield return new WaitForSeconds(getDamageCooldown);
+        canTakeDamage = true;
+    }
+
     private void LookAtCamera()
     {
         transform.LookAt(mainCamera.transform);
@@ -353,11 +437,19 @@ public class PlayerController : MonoBehaviour
             }
             Debug.Log(validContacts + " / " + collision.contacts.Length);
             IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
-            if (validContacts >= collision.contacts.Length / 2 || isInvincible)
+            if (isInvincible)
             {
                 if (enemy != null)
                 {
                     enemy.TakeDamage(1);
+                }
+            }
+            else if (validContacts >= collision.contacts.Length / 2)
+            {
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(1);
+                    rb.velocity = new Vector3(rb.velocity.x, bounceSpeed, rb.velocity.z);
                 }
             }
             else
@@ -365,115 +457,12 @@ public class PlayerController : MonoBehaviour
                 if (enemy != null)
                 {
                     enemy.GiveDamage();
+
+                    Vector3 pushDirection = collision.transform.position - transform.position;
+                    pushDirection.y = 0;
+                    pushDirection.Normalize();
+                    rb.velocity = rb.velocity - pushDirection * pushBackSpeed;
                 }
-            }
-            Vector3 pushDirection = collision.transform.position - transform.position;
-            pushDirection.y = 0;
-            pushDirection.Normalize();
-            rb.velocity = rb.velocity - pushDirection * pushBackVelocity;
-        }
-    }
-
-    private void UsePowerup()
-    {
-        float powerupStaminaCost = staminaCost[stageManager.currentPowerup];
-        if (!staminaManager.CanUsePowerup(powerupStaminaCost) || !canPowerup) return;
-        switch (stageManager.currentPowerup)
-        {
-            case Powerup.Carrot:
-                staminaManager.RunStamina(powerupStaminaCost);
-                UseCarrot();
-                break;
-            case Powerup.Ice:
-                staminaManager.RunStamina(powerupStaminaCost);
-                UseIce();
-                break;
-            default:
-                break;
-        }
-        StartCoroutine(PowerupCooldown());
-    }
-
-    private IEnumerator SweetPotatoHoldCoroutine()
-    {
-        while (Input.GetKey(KeyCode.C) && canPowerup)
-        {
-            UseSweetPotato();
-            staminaManager.RunStamina(staminaCost[Powerup.SweetPotato]);
-            yield return new WaitForSeconds(holdPowerupStaminaCooldown);
-        }
-    }
-
-    private IEnumerator ChiliPepperHoldCoroutine()
-    {
-        isInvincible = true;
-        speed = dashSpeed;
-        while (Input.GetKey(KeyCode.C) && canPowerup)
-        {
-            staminaManager.RunStamina(staminaCost[Powerup.ChiliPepper]);
-            yield return new WaitForSeconds(holdPowerupStaminaCooldown);
-        }
-        speed = originalSpeed;
-        isInvincible = false;
-    }
-
-    private void UseSweetPotato()
-    {
-        Vector3 playerPosition = transform.position;
-        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, sweetPotatoAttackRange, enemyLayer);
-        foreach (Collider hitCollider in hitColliders)
-        {
-            GameObject hitObject = hitCollider.gameObject;
-            IEnemy enemy = hitObject.GetComponent<IEnemy>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(sweetPotatoAttackDamage);
-            }
-        }
-    }
-
-
-    private void UseCarrot()
-    {
-        Vector3 playerPosition = transform.position;
-        Quaternion playerRotation = transform.rotation;
-        foreach (float angle in carrotAngles)
-        {
-            Quaternion rotation = playerRotation * Quaternion.Euler(0, angle, 0);
-            Vector3 direction = rotation * Vector3.forward;
-
-            GameObject carrot = Instantiate(carrotPrefab, playerPosition + direction * 1.0f + yOffset, rotation);
-
-            Rigidbody rb = carrot.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = direction * carrotSpeed;
-            }
-        }
-    }
-
-    private void ActivateEnemies()
-    {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (GameObject enemy in enemies)
-        {
-            IEnemy enemyScript = enemy.GetComponent<IEnemy>();
-            if (enemyScript != null)
-            {
-                enemyScript.ActivateEnemy();
-            }
-        }
-    }
-
-    public void DeactivateEnemies()
-    {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (GameObject enemy in enemies)
-        {
-            IEnemy enemyScript = enemy.GetComponent<IEnemy>();
-            if (enemyScript != null)
-            {
-                enemyScript.DeactivateEnemy();
             }
         }
     }
@@ -500,7 +489,6 @@ public class PlayerController : MonoBehaviour
 
             LookAtCamera();
             animator.SetBool("isGameClear", true);
-            DeactivateEnemies();
             stageManager.GameClear();
 
             StartCoroutine(ShowRewardLater(other.gameObject));
@@ -514,7 +502,8 @@ public class PlayerController : MonoBehaviour
 
             LookAtCamera();
             animator.SetTrigger("powerupTrig");
-            StartCoroutine(PowerupPause());
+            rb.velocity = Vector3.zero;
+            StartCoroutine(stageManager.StageFreeze(powerupPauseDelay));
         }
     }
 
@@ -527,11 +516,11 @@ public class PlayerController : MonoBehaviour
         reward.SetActive(true);
     }
 
-    private IEnumerator PowerupPause()
+    public IEnumerator MovePause(float moveDelay)
     {
         rb.velocity = Vector3.zero;
-        stageManager.canMove = false;
-        yield return new WaitForSeconds(powerupPauseDelay);
-        stageManager.canMove = true;
+        canMove = false;
+        yield return new WaitForSeconds(moveDelay);
+        canMove = true;
     }
 }

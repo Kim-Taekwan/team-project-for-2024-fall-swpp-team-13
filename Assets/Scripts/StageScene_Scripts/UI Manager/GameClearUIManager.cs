@@ -39,6 +39,8 @@ public class GameClearUIManager : MonoBehaviour
         coinText.text = "X " + stageManager.stageCoins.ToString("D2");
         recipeImage.sprite = stageManager.obtainedRecipe ? recipeSprites[1] : recipeSprites[0];
         goNextButton.Select();
-        cameraController.playerOffset = newPlayerOffset;
+
+        //TODO: Reset camera position to show objects properly
+        //cameraController.playerOffset = newPlayerOffset;
     }
 }

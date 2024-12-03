@@ -44,6 +44,11 @@ public class StaminaManager : MonoBehaviour
         return stageManager.stamina >= staminaCost;
     }
 
+    public bool isEmpty()
+    {
+        return stageManager.stamina <= 0.0f;
+    }
+
     IEnumerator RechargeStamina()
     {
         yield return new WaitForSeconds(1);

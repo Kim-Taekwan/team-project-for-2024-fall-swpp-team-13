@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3618782452728500417}
   - component: {fileID: 3618782452728500422}
   - component: {fileID: 3618782452728500423}
-  - component: {fileID: 568337290}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -71,6 +70,22 @@ MonoBehaviour:
   damageableLayer:
     serializedVersion: 2
     m_Bits: 64
+  powerupCooldown: 1
+  powerupDuration: 10
+  sweetPotatoAttackRange: 5
+  sweetPotatoAttackDamage: 1
+  sweetPotatoAttackInterval: 1
+  isInvincible: 0
+  dashStrength: 2000
+  dashSpeed: 12
+  carrotPrefab: {fileID: 0}
+  carrotSpeed: 10
+  carrotAngles:
+  - -30
+  - 0
+  - 30
+  holdPowerupStaminaCooldown: 1
+  yOffset: {x: 0, y: 0.5, z: 0}
   dirtTrail: {fileID: 0}
 --- !u!54 &3618782452728500422
 Rigidbody:
@@ -101,20 +116,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.1858273, y: 4.1566043, z: 2.0987175}
   m_Center: {x: 0.0056360485, y: 2.0787675, z: 0.3928023}
---- !u!136 &568337290
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3618782452728500420}
-  m_Material: {fileID: 13400000, guid: 08fb556c752ddce4281bf946ce010b5b, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 1.2148333
-  m_Height: 4.0949855
-  m_Direction: 1
-  m_Center: {x: 0.007855515, y: 2.1287851, z: 0.39276516}
 --- !u!1001 &3618782451908638616
 PrefabInstance:
   m_ObjectHideFlags: 0

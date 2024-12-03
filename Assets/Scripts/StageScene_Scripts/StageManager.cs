@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,7 @@ public class StageManager : MonoBehaviour
     public bool isGameOver = false;
     public bool isGameClear = false;
     public bool isGamePaused = false;
+    public bool isFreezed = false; // for movement of all dynamic objects like player, enemies, obstacles
 
     // Stage UI
     public TextMeshProUGUI scoreText;
@@ -35,16 +37,11 @@ public class StageManager : MonoBehaviour
     public Canvas gameOverCanvas;
     public Canvas gameClearCanvas;
     private PauseUIManager pauseUIManager;
-    private PlayerController playerController;
 
     // Player status
     public int hp = 6, maxHp = 6;
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
-    public float getDamageCooldown = 1.0f;
-    public float stunCooldown = 0.5f;
-    private bool canTakeDamage = true;    
-    public bool canMove = true;
     private GameObject player;
     private PlayerController playerController;
 
@@ -64,7 +61,7 @@ public class StageManager : MonoBehaviour
     // Checker method to determine the game continues
     public bool CheckGameContinue()
     {
-        return !isGamePaused && !isGameClear && !isGameOver && canMove;
+        return !isGamePaused && !isGameClear && !isGameOver && !isFreezed;
     }
 
     public void UpdateScore(int score)
@@ -77,7 +74,7 @@ public class StageManager : MonoBehaviour
     {
         stageCoins += coins;
         UpdateScore(coins * 100);
-        coinText.text = "X " + stageCoins.ToString("D2");
+        coinText.text = "¡¿ " + stageCoins.ToString("D2");
     }
 
     public void ObtainRecipe()
@@ -118,6 +115,7 @@ public class StageManager : MonoBehaviour
             powerupImages[i].gameObject.SetActive(i == (int)currentPowerup);
         }
         playerController.animator = player.transform.GetChild((int)currentPowerup).GetComponent<Animator>();
+        playerController.ResetPowerupSettings();
     }
 
     public void HealHp(int amount)
@@ -130,52 +128,18 @@ public class StageManager : MonoBehaviour
         OnPlayerHealed?.Invoke();
     }
 
-    public void TakeDamage(int amount)
+    public void LoseHp(int amount)
     {
-        if (!canTakeDamage && !CheckGameContinue())
+        if (!CheckGameContinue())
         {
             return;
         }
-
-        canTakeDamage = false;
-        canMove = false;
         hp = (hp <= amount) ? 0 : hp - amount;
         OnPlayerDamaged?.Invoke();
-
-        if (hp == 0)
-        {
-            GameOver();
-            playerController.animator.SetBool("isDead", true);
-        }
-        else
-        {
-            playerController.animator.SetTrigger("damagedTrig");
-            StartCoroutine(DamageCooldown());
-            StartCoroutine(StunCooldown());
-        }
-    }
-
-    private IEnumerator DamageCooldown()
-    {
-        yield return new WaitForSeconds(getDamageCooldown);
-        canTakeDamage = true;
-    }
-
-    private IEnumerator StunCooldown()
-    {
-        yield return new WaitForSeconds(stunCooldown);
-        canMove = true;
-    }
-
-    public bool CanMove()
-    {
-        return canMove;
     }
 
     public void GameOver()
     {
-        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        playerController.DeactivateEnemies();
         isGameOver = true;
         mainCanvas.gameObject.SetActive(false);
         gameOverCanvas.gameObject.SetActive(true);
@@ -196,5 +160,12 @@ public class StageManager : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public IEnumerator StageFreeze(float freezeDelay)
+    {
+        isFreezed = true;
+        yield return new WaitForSeconds(freezeDelay);
+        isFreezed = false;
     }
 }

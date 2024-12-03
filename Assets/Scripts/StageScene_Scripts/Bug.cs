@@ -1,3 +1,4 @@
+using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,65 +11,66 @@ public class Bug : MonoBehaviour, IEnemy
     public Vector3 defaultPosition;
     public Vector3 patrolRange = new Vector3(5.0f, 0, 5.0f);
     public float speed = 3.0f;
-    // 플레이어 감지 거리
-    public float detectDistance = 3.0f;
-    // 플레이어를 추적하다가 돌아가는 거리
-    public float returnDistance = 5.0f;
-
+    public float detectDistance = 3.0f; // 플레이어 감지 거리
+    public float returnDistance = 5.0f; // 플레이어를 추적하다가 돌아가는 거리
     public bool isAttacking = false;
     public float reachedThreshold = 0.5f;
+    [SerializeField] float currentSpeed;
 
-    public bool isActivated = true;
+    //public bool isActivated = true;
 
     private StageManager stageManager;
     private Vector3 patrolTarget;
     private Transform playerTransform;
     private Rigidbody rb;
+    private GameObject player;
+    private Animator animator;
+    private bool isDead = false;
 
     void Awake()
     {
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
-        GameObject player = GameObject.Find("Player");
+        player = GameObject.Find("Player");
         if (player != null)
         {
             playerTransform = player.transform;
         }
         rb = GetComponent<Rigidbody>();
+        animator = transform.GetChild(0).GetComponent<Animator>();
     }
 
     void Start()
     {
+        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         defaultPosition = transform.position;
         SetNewPatrolTarget();
     }
 
     void FixedUpdate()
     {
-        if(!isActivated)
-        {
-            return;
-        }
-        if (playerTransform == null || rb == null)
+        if(!stageManager.CheckGameContinue() || isDead || playerTransform == null || rb == null)
         {
             return;
         }
 
         Vector3 playerPosition = playerTransform.position;
-        float distance = Vector3.Distance(playerPosition, transform.position);
+        float distanceToPlayer = Vector3.Distance(playerPosition, transform.position);
 
-        if (isAttacking && distance > returnDistance)
+        if (isAttacking && distanceToPlayer > returnDistance)
         {
             isAttacking = false;
             SetNewPatrolTarget();
         }
-        else if (!isAttacking && distance < detectDistance)
+        else if (!isAttacking && distanceToPlayer < detectDistance)
         {
             isAttacking = true;
         }
 
+        Vector3 direction;
         if (isAttacking)
         {
-            Vector3 direction = (playerPosition - transform.position).normalized;
+            direction = playerPosition - transform.position;
+            direction.y = 0;
+            direction.Normalize();
             Vector3 targetVelocity = direction * speed;
             rb.velocity = new Vector3(targetVelocity.x, 0, targetVelocity.z);
         }
@@ -80,10 +82,16 @@ public class Bug : MonoBehaviour, IEnemy
             {
                 SetNewPatrolTarget();
             }
-            Vector3 direction = (patrolTarget - transform.position).normalized;
+            direction = (patrolTarget - transform.position).normalized;
             Vector3 targetVelocity = direction * speed;
             rb.velocity = new Vector3(targetVelocity.x, rb.velocity.y, targetVelocity.z);
         }
+
+        // Turn Animation
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
+        currentSpeed = new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
+        animator.SetFloat("Speed_f", currentSpeed);
     }
 
     void SetNewPatrolTarget()
@@ -100,15 +108,27 @@ public class Bug : MonoBehaviour, IEnemy
         hp -= amount;
         if (hp <= 0)
         {
-            Destroy(gameObject);
+            isDead = true;
+            rb.velocity = Vector3.zero;
+            GetComponent<BoxCollider>().enabled = false;
+            animator.SetTrigger("DeathTrig");
+            StartCoroutine(DelayDeath());
         }
+    }
+
+    private IEnumerator DelayDeath()
+    {
+        yield return new WaitForSeconds(0.3f);
+        //TODO: Add Particle Effect
+        Destroy(gameObject);
     }
 
     public void GiveDamage()
     {
-        stageManager.TakeDamage(damageAmount);
+        player.GetComponent<PlayerController>().TakeDamage(damageAmount);
     }
-
+    
+    /*
     public void ActivateEnemy()
     {
         isActivated = true;
@@ -118,6 +138,7 @@ public class Bug : MonoBehaviour, IEnemy
     {
         isActivated = false;
     }
+    */
 
     // private void OnCollisionEnter(Collision collision)
     // {
