@@ -91,11 +91,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|Victory (1)
-      takeName: Armature|Victory
+      name: Armature|Death
+      takeName: Armature|Death
       internalID: -982115091633673366
       firstFrame: 0
-      lastFrame: 420
+      lastFrame: 80
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
