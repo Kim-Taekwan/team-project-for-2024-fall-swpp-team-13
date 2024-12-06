@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
 
     // Audio
     public AudioSource audioSource;
-    public AudioClip jumpSound;
     public AudioClip groundImpactSound;
     public AudioClip movementSound;
 
@@ -403,6 +402,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            AudioManager.Instance.PlayDamagedSound();
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
             StartCoroutine(MovePause(stunCooldown));
@@ -440,8 +440,8 @@ public class PlayerController : MonoBehaviour
                 isFalling = false;
                 isJumping = false;
                 animator.SetBool("isGrounded", true);
-                if(audioSource != null && audioSource.isActiveAndEnabled)
-                    audioSource.PlayOneShot(groundImpactSound);
+                //if(audioSource != null && audioSource.isActiveAndEnabled)
+                //    audioSource.PlayOneShot(groundImpactSound);
             }
         }
         else if (collision.gameObject.CompareTag("Enemy"))

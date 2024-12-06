@@ -136,7 +136,6 @@ public class StageManager : MonoBehaviour
         {
             return;
         }
-        AudioManager.Instance.PlayAttackedSound();
         hp = (hp <= amount) ? 0 : hp - amount;
         OnPlayerDamaged?.Invoke();
     }

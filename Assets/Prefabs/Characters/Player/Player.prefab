@@ -54,15 +54,14 @@ MonoBehaviour:
   speed: 8
   jumpForce: 250
   isGrounded: 1
-  groundNormalThreshold: 30
+  canMove: 1
   animator: {fileID: 0}
   powerupPauseDelay: 1.2
   showRewardDelay: 1.7
   rewardOffset: {x: 1.2, y: 0, z: -2}
   audioSource: {fileID: 0}
-  jumpSound: {fileID: 0}
-  groundImpactSound: {fileID: 0}
-  movementSound: {fileID: 0}
+  groundImpactSound: {fileID: 8300000, guid: e9db33e6d83003d448b75880c68dbfe5, type: 3}
+  movementSound: {fileID: 8300000, guid: a8c197c6b62a1b14287f42731bed01b4, type: 3}
   attackRange: 2
   attackAngle: 90
   attackDamage: 1
@@ -70,6 +69,10 @@ MonoBehaviour:
   damageableLayer:
     serializedVersion: 2
     m_Bits: 64
+  getDamageCooldown: 1
+  stunCooldown: 0.5
+  groundNormalThreshold: 30
+  bounceSpeed: 8
   powerupCooldown: 1
   powerupDuration: 10
   sweetPotatoAttackRange: 5

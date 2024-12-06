@@ -1663,6 +1663,14 @@ MonoBehaviour:
   sfxVolume: 1
   bgmSource: {fileID: 0}
   sfxSource: {fileID: 0}
+  coinSound: {fileID: 0}
+  recipeSound: {fileID: 0}
+  powerUpSound: {fileID: 0}
+  jumpSound: {fileID: 0}
+  gameClearSound: {fileID: 0}
+  gameOverSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  attackedSound: {fileID: 0}
 --- !u!1001 &1247106315
 PrefabInstance:
   m_ObjectHideFlags: 0

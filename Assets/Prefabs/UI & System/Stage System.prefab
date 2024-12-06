@@ -50,6 +50,7 @@ MonoBehaviour:
   isGameOver: 0
   isGameClear: 0
   isGamePaused: 0
+  isFreezed: 0
   scoreText: {fileID: 4025244122453030778}
   coinText: {fileID: 4025244121304145543}
   recipeImage: {fileID: 4025244122858788690}
@@ -67,9 +68,6 @@ MonoBehaviour:
   stamina: 10
   maxStamina: 10
   currentPowerup: 0
-  getDamageCooldown: 1
-  stunCooldown: 0.5
-  canMove: 1
 --- !u!1 &1466552897
 GameObject:
   m_ObjectHideFlags: 0

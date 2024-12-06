@@ -38467,13 +38467,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 723944748}
   m_Follow: {fileID: 0}
   m_ShowDebugText: 0
-  m_ChildCameras:
-  - {fileID: 1644265107}
-  - {fileID: 881235028}
-  - {fileID: 105629878}
-  - {fileID: 1230423984}
-  - {fileID: 1675541251}
-  - {fileID: 783488263}
+  m_ChildCameras: []
   m_ActivateAfter: 0
   m_MinDuration: 0
   m_RandomizeChoice: 0

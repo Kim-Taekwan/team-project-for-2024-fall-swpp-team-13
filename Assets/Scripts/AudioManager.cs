@@ -18,7 +18,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip gameClearSound;
     public AudioClip gameOverSound;
     public AudioClip attackSound;
-    public AudioClip attackedSound;
+    public AudioClip damagedSound;
+    public AudioClip moveSound;
 
     private void Awake()
     {
@@ -85,8 +86,9 @@ public class AudioManager : MonoBehaviour
     public void PlayRecipeSound() => PlaySFX(recipeSound);
     public void PlayPowerUpSound() => PlaySFX(powerUpSound);
     public void PlayJumpSound() => PlaySFX(jumpSound);
-    public void PlayGameClearSound() => PlaySFX(gameClearSound);
+    public void PlayGameClearSound() => PlayBGM(gameClearSound);
     public void PlayGameOverSound() => PlaySFX(gameOverSound);
     public void PlayAttackSound() => PlaySFX(attackSound);
-    public void PlayAttackedSound() => PlaySFX(attackedSound);
+    public void PlayDamagedSound() => PlaySFX(damagedSound);
+    public void PlayMoveSound() => PlaySFX(moveSound);
 }
