@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     // Default Ground - General
     [SerializeField] float currentSpeed; // for debugging speed
-    public float speed = 8.0f;
+    public float speed = 800.0f;
     public float jumpForce = 200.0f;
     public bool isGrounded = true;
     public bool canMove = true; // for player movement only
@@ -179,7 +179,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
-            //audioSource.PlayOneShot(jumpSound);
+            AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
         }
@@ -198,6 +198,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        AudioManager.Instance.PlayAttackSound();
         animator.SetTrigger("attackTrig");
         canAttack = false;
         Vector3 playerPosition = transform.position;
@@ -226,6 +227,26 @@ public class PlayerController : MonoBehaviour
             Debug.Log(closestDamageableObject);
             closestDamageableObject.TakeDamage(attackDamage);
         }
+
+        Collider[] wireColliders = Physics.OverlapSphere(playerPosition, attackRange);
+        foreach (Collider hit in wireColliders)
+        {
+            if (hit.CompareTag("Wire")) 
+            {
+                WireController wire = hit.GetComponent<WireController>();
+                if (wire != null)
+                {
+                    if (Physics.Raycast(playerPosition, forward, out RaycastHit hitInfo, attackRange))
+                    {
+                        wire.HandleWireAttack(hitInfo.point); 
+                    }
+                    else
+                    {
+                        wire.HandleWireAttack(hit.ClosestPoint(playerPosition));
+                    }
+                }
+            }
+        }
         StartCoroutine(AttackCooldown());
     }
 
@@ -249,18 +270,15 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            /*if (!audioSource.isPlaying)
+            if (!audioSource.isPlaying && isGrounded)
             {
                 audioSource.clip = movementSound;
-                audioSource.loop = true;
                 audioSource.Play();
-            }*/
+            }
         }
         else
         {
             animator.SetBool("isMoving", false);
-            //audioSource.Stop();
-            //audioSource.loop = false;
         }
 
         // Check falling state
@@ -422,6 +440,8 @@ public class PlayerController : MonoBehaviour
                 isFalling = false;
                 isJumping = false;
                 animator.SetBool("isGrounded", true);
+                if(audioSource != null && audioSource.isActiveAndEnabled)
+                    audioSource.PlayOneShot(groundImpactSound);
             }
         }
         else if (collision.gameObject.CompareTag("Enemy"))

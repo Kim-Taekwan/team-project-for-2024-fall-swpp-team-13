@@ -73,13 +73,15 @@ public class StageManager : MonoBehaviour
     public void AddCoins(int coins)
     {
         stageCoins += coins;
+        AudioManager.Instance.PlayCoinSound();
         UpdateScore(coins * 100);
-        coinText.text = "¡¿ " + stageCoins.ToString("D2");
+        coinText.text = "ï¿½ï¿½ " + stageCoins.ToString("D2");
     }
 
     public void ObtainRecipe()
     {
         obtainedRecipe = true;
+        AudioManager.Instance.PlayRecipeSound();
         UpdateScore(5000);
 
         // Make UI image color opaque
@@ -134,6 +136,7 @@ public class StageManager : MonoBehaviour
         {
             return;
         }
+        AudioManager.Instance.PlayAttackedSound();
         hp = (hp <= amount) ? 0 : hp - amount;
         OnPlayerDamaged?.Invoke();
     }
@@ -141,6 +144,7 @@ public class StageManager : MonoBehaviour
     public void GameOver()
     {
         isGameOver = true;
+        AudioManager.Instance.PlayGameOverSound();
         mainCanvas.gameObject.SetActive(false);
         gameOverCanvas.gameObject.SetActive(true);
     }
@@ -148,6 +152,8 @@ public class StageManager : MonoBehaviour
     public void GameClear()
     {
         isGameClear = true;
+        AudioManager.Instance.StopAllSounds();
+        AudioManager.Instance.PlayGameClearSound();
         mainCanvas.gameObject.SetActive(false);
         gameClearCanvas.gameObject.SetActive(true);
         OnGameCleared?.Invoke();
