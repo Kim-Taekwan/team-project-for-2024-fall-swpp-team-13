@@ -11,6 +11,10 @@ TagManager:
   - Powerup
   - Enemy
   - Bug
+  - Node
+  - Wall
+  - Projectile
+  - Wire
   layers:
   - Default
   - TransparentFX
@@ -18,7 +22,7 @@ TagManager:
   - 
   - Water
   - UI
-  - Enemy
+  - Damageable
   - 
   - 
   - 

@@ -3,7 +3,7 @@ using UnityEngine;
 public class CarrotProjectile : MonoBehaviour
 {
     public int damage = 1;
-    public float lifetime = 5.0f;
+    public float lifetime = 1f;
     //public GameObject hitEffectPrefab;
 
     void Start()
@@ -19,6 +19,7 @@ public class CarrotProjectile : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+                Destroy(gameObject);
             }
 
             // if (hitEffectPrefab != null)
@@ -26,6 +27,5 @@ public class CarrotProjectile : MonoBehaviour
             //     Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
             // }
         }
-        Destroy(gameObject);
     }
 }
