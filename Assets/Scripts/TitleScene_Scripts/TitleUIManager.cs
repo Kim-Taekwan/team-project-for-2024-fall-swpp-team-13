@@ -11,6 +11,7 @@ public class TitleUIManager : MonoBehaviour
     public GameObject originalPlane;
     public GameObject quitAskPlane;
     public GameObject quitAskText;
+    public GameObject TitleText;
     public GameObject quitYesButton;
     public GameObject quitNoButton;
     public GameObject[] selectTriangleList;
@@ -176,6 +177,7 @@ public class TitleUIManager : MonoBehaviour
         Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         planeRenderer.material.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
         isQuitAsk = true;
+        TitleText.SetActive(false);
         quitAskPlane.SetActive(true);
         quitAskText.SetActive(true);
         quitYesButton.SetActive(true);
@@ -192,6 +194,7 @@ public class TitleUIManager : MonoBehaviour
         Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         planeRenderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         isQuitAsk = false;
+        TitleText.SetActive(true);
         quitAskPlane.SetActive(false);
         quitAskText.SetActive(false);
         quitYesButton.SetActive(false);
@@ -203,12 +206,12 @@ public class TitleUIManager : MonoBehaviour
         Outline quitYesOutline = quitYesButton.gameObject.GetComponent<Outline>();
         Outline quitNoOutline = quitNoButton.gameObject.GetComponent<Outline>();
         if(selectedQuitButton == 0){
-            quitYesOutline.effectColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            quitYesOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
             quitNoOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         }
         if(selectedQuitButton == 1){
             quitYesOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-            quitNoOutline.effectColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            quitNoOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
         }
     }
 }
