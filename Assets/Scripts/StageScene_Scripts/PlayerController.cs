@@ -262,6 +262,9 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isGrounded", true);
             }
         }
+        else if(collision.gameObject.CompareTag("Obstacle")){
+            stageManager.TakeDamage(1);
+        }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
             int validContacts = 0;
