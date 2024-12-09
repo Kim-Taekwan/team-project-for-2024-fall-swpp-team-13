@@ -2694,6 +2694,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 901742847, guid: 01ba3ee96a8fe5746ac453bf653e4868, type: 3}
+      propertyPath: clearParticlePrefab
+      value: 
+      objectReference: {fileID: 5188872984447376182, guid: 848e19326a3e611488c952f5ba97c0cb, type: 3}
     - target: {fileID: 4025244122087018255, guid: 01ba3ee96a8fe5746ac453bf653e4868, type: 3}
       propertyPath: m_IsActive
       value: 0

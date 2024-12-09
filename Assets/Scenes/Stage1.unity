@@ -38077,6 +38077,10 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 84
       objectReference: {fileID: 0}
+    - target: {fileID: 2803333794917593608, guid: f48c01910b9b60a498b8dc0c78f3a54c, type: 3}
+      propertyPath: deathParticlePrefab
+      value: 
+      objectReference: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
     - target: {fileID: 2803333794917593612, guid: f48c01910b9b60a498b8dc0c78f3a54c, type: 3}
       propertyPath: m_RootOrder
       value: 0
