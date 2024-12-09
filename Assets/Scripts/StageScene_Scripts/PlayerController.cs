@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private StageManager stageManager;
     private StaminaManager staminaManager;
     private HealthManager healthManager;
+    private HPScript hpScript;
     private Camera mainCamera;
 
     // Default Ground - General
@@ -91,6 +92,7 @@ public class PlayerController : MonoBehaviour
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+        hpScript = GetComponent<HPScript>();
         mainCamera = Camera.main;
         originalSpeed = speed;
     }
@@ -178,7 +180,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
-            AudioManager.Instance.PlayJumpSound();
+            //AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
         }
@@ -269,7 +271,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            if (!audioSource.isPlaying && isGrounded)
+            if (audioSource && !audioSource.isPlaying && isGrounded)
             {
                 audioSource.clip = movementSound;
                 audioSource.Play();
@@ -393,6 +395,7 @@ public class PlayerController : MonoBehaviour
         }
 
         canTakeDamage = false;
+        hpScript.ChangeHP(transform.position);
         stageManager.LoseHp(amount);
 
         if (stageManager.hp == 0)
@@ -402,7 +405,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            AudioManager.Instance.PlayDamagedSound();
+            //AudioManager.Instance.PlayDamagedSound();
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
             StartCoroutine(MovePause(stunCooldown));
