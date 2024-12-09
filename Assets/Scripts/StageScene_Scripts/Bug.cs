@@ -16,6 +16,7 @@ public class Bug : MonoBehaviour, IEnemy
     public bool isAttacking = false;
     public float reachedThreshold = 0.5f;
     [SerializeField] float currentSpeed;
+    public GameObject deathParticlePrefab;
 
     //public bool isActivated = true;
 
@@ -119,7 +120,12 @@ public class Bug : MonoBehaviour, IEnemy
     private IEnumerator DelayDeath()
     {
         yield return new WaitForSeconds(0.3f);
-        //TODO: Add Particle Effect
+        
+        if (deathParticlePrefab != null)
+        {
+            Instantiate(deathParticlePrefab, transform.position, Quaternion.identity);
+        }
+        
         Destroy(gameObject);
     }
 

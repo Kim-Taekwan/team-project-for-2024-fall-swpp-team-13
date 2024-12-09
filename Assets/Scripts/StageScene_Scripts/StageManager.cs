@@ -73,7 +73,7 @@ public class StageManager : MonoBehaviour
     public void AddCoins(int coins)
     {
         stageCoins += coins;
-        AudioManager.Instance.PlayCoinSound();
+        //AudioManager.Instance.PlayCoinSound();
         UpdateScore(coins * 100);
         coinText.text = "�� " + stageCoins.ToString("D2");
     }
