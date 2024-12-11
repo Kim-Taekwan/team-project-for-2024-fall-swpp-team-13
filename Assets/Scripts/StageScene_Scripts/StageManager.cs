@@ -158,14 +158,14 @@ public class StageManager : MonoBehaviour
         mainCanvas.gameObject.SetActive(false);
         gameClearCanvas.gameObject.SetActive(true);
         OnGameCleared?.Invoke();
-        StartCoroutine(GameClearDelay(0.3f));
+        StartCoroutine(InstantiateGameClearParticle(0.3f));
         //Instantiate(clearParticlePrefab, player.transform.position, Quaternion.identity);
 
         // Save log right after stage clear
         GameManager.Instance.UpdateStageClear(stageScore, obtainedRecipe);
     }
 
-    private IEnumerator GameClearDelay(float delay)
+    private IEnumerator InstantiateGameClearParticle(float delay)
     {
         yield return new WaitForSeconds(delay);
         Instantiate(clearParticlePrefab, player.transform.position, Quaternion.identity);

@@ -80,6 +80,8 @@ public class PlayerController : MonoBehaviour
     private float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
 
+    public GameObject dustPrefab;
+
     public Vector3 yOffset = new Vector3(0, 0.5f, 0);
 
     // Particles
@@ -168,6 +170,9 @@ public class PlayerController : MonoBehaviour
         Vector3 velocity = new Vector3(0.0f, rb.velocity.y, 0.0f) + direction * currentSpeed;
 
         rb.velocity = velocity;
+
+        if(isGrounded && (velocity.magnitude > 0.1f)) StartCoroutine(PlayDustEffect());
+        //Instantiate(dustPrefab, transform.position, Quaternion.identity);
         UpdateAnimationAndSound(direction);
     }
 
@@ -183,6 +188,15 @@ public class PlayerController : MonoBehaviour
             //AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
+        }
+    }
+
+    IEnumerator PlayDustEffect()
+    {
+        if(UnityEngine.Random.Range(0, 2) == 0){
+            GameObject dust = Instantiate(dustPrefab, transform.position - transform.forward * 0.2f + new Vector3(0.0f, 0.2f, 0.0f), Quaternion.identity);
+            yield return new WaitForSeconds(0.1f);
+            Destroy(dust);
         }
     }
 

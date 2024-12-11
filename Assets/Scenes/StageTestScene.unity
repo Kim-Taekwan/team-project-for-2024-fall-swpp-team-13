@@ -345,6 +345,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f0c26aea5bfd1b469da62fd0acc2b6c, type: 3}
+--- !u!1 &230715680 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3618782452728500420, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+  m_PrefabInstance: {fileID: 3618782452214707013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &332228629
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -452,6 +457,10 @@ PrefabInstance:
     - target: {fileID: 5296028362964944239, guid: b1b73f9b135f86a45825637d3b3d698f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788928001025935831, guid: b1b73f9b135f86a45825637d3b3d698f, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6019490188360991211, guid: b1b73f9b135f86a45825637d3b3d698f, type: 3}
       propertyPath: m_Name
@@ -743,6 +752,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3618782452728500416, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
   m_PrefabInstance: {fileID: 3618782452214707013}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &568337289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230715680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc8cce90de08482b953e2229682deeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HPParticle: {fileID: 0}
+  DefaultForce: {x: 0, y: 1, z: 0}
+  DefaultForceScatter: 0.5
 --- !u!1001 &675276004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2490,6 +2514,10 @@ PrefabInstance:
       propertyPath: hole2
       value: 
       objectReference: {fileID: 2007745935}
+    - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 6403252182692130976, guid: 4e12b3c53c0f8ee4da83655d8d2770d5, type: 3}
     - target: {fileID: 509833985872043191, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
       propertyPath: m_Name
       value: HoleManager
@@ -2665,6 +2693,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 2860425260954049642, guid: 91ccdc26ee9f640a69b120f1b1deaecb, type: 3}
     - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: audioSource
       value: 

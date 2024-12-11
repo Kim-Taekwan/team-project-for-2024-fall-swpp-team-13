@@ -12,6 +12,7 @@ public class HoleManager : MonoBehaviour
     private GameObject player;
     private StageManager stageManager;
     private PlayerController playerController;
+    public GameObject dustPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,8 @@ public class HoleManager : MonoBehaviour
             if (distanceToHole1 < 1.5f)
             {
                 //TODO: Particle effects on both side
+                StartCoroutine(PlayDustEffect(hole1.transform.position));
+                StartCoroutine(PlayDustEffect(hole2.transform.position));
                 Vector3 hole2ExitPosition = hole2.transform.GetChild(0).position;
                 player.transform.position = hole2ExitPosition;
                 StartCoroutine(playerController.MovePause(exitDelay));
@@ -39,10 +42,19 @@ public class HoleManager : MonoBehaviour
             else if (distanceToHole2 < 1.5f)
             {
                 //TODO: Particle effects on both side
+                StartCoroutine(PlayDustEffect(hole1.transform.position));
+                StartCoroutine(PlayDustEffect(hole2.transform.position));
                 Vector3 hole1ExitPosition = hole1.transform.GetChild(0).position;
                 player.transform.position = hole1ExitPosition;
                 StartCoroutine(playerController.MovePause(exitDelay));
             }
         }        
+    }
+
+    IEnumerator PlayDustEffect(Vector3 pos)
+    {
+        GameObject dust = Instantiate(dustPrefab, pos + new Vector3(0.0f, 0.2f, 0.0f), Quaternion.identity);
+        yield return new WaitForSeconds(0.5f);
+        Destroy(dust);
     }
 }
