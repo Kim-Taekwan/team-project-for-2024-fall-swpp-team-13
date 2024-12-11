@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ public class StageManager : MonoBehaviour
     public Canvas mainCanvas;
     public Canvas gameOverCanvas;
     public Canvas gameClearCanvas;
+    public CinemachineVirtualCamera victoryCam;
     private PauseUIManager pauseUIManager;
 
     // Player status
@@ -156,6 +158,10 @@ public class StageManager : MonoBehaviour
         mainCanvas.gameObject.SetActive(false);
         gameClearCanvas.gameObject.SetActive(true);
         OnGameCleared?.Invoke();
+
+        // victory Camera action
+        playerController.LookAtCamera(victoryCam.gameObject);
+        victoryCam.Priority = 20;
 
         // Save log right after stage clear
         GameManager.Instance.UpdateStageClear(stageScore, obtainedRecipe);

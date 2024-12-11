@@ -422,9 +422,16 @@ public class PlayerController : MonoBehaviour
         canTakeDamage = true;
     }
 
-    private void LookAtCamera()
+    public void LookAtCamera(GameObject optionCam)
     {
-        transform.LookAt(mainCamera.transform);
+        if (optionCam != null)
+        {
+            transform.LookAt(optionCam.transform);
+        }
+        else
+        {
+            transform.LookAt(mainCamera.transform);
+        }
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 
@@ -514,7 +521,6 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
             rb.velocity = Vector3.zero;
 
-            LookAtCamera();
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
 
@@ -527,7 +533,7 @@ public class PlayerController : MonoBehaviour
             stageManager.HealHp(stageManager.maxHp);
             stageManager.UpdatePowerup(other.gameObject.name);
 
-            LookAtCamera();
+            LookAtCamera(null);
             animator.SetTrigger("powerupTrig");
             rb.velocity = Vector3.zero;
             StartCoroutine(stageManager.StageFreeze(powerupPauseDelay));
