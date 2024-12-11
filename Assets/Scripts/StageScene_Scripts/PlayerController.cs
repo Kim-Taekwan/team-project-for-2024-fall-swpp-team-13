@@ -44,13 +44,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector3 rewardOffset = new Vector3(0.0f, 0.5f, 0.2f);
 
     // Audio
-    public AudioSource audioSource;
-    public AudioClip groundImpactSound;
-    public AudioClip movementSound;
+    //public AudioSource audioSource;
+    //public AudioClip groundImpactSound;
+    //public AudioClip movementSound;
 
     // Attack & Damage
     public float attackRange = 2.0f;
     public float attackAngle = 45.0f;
+    public float attackTime = 0.5f;
     public int attackDamage = 1;
     public float attackCooldown = 1.0f;
     private bool canAttack = true;
@@ -197,36 +198,12 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        AudioManager.Instance.PlayAttackSound();
         animator.SetTrigger("attackTrig");
         canAttack = false;
+        StartCoroutine(AttackStay());
+
         Vector3 playerPosition = transform.position;
         Vector3 forward = transform.forward;
-        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, damageableLayer);
-        IDamageable closestDamageableObject = null;
-        float closestDistance = float.MaxValue;
-        foreach (Collider hitCollider in hitColliders)
-        {
-            GameObject hitObject = hitCollider.gameObject;
-            IDamageable damageableObject = hitObject.GetComponent<IDamageable>();
-            if (damageableObject != null)
-            {
-                Vector3 directionToEnemy = hitCollider.transform.position - playerPosition;
-                float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
-                float angle = Vector3.Angle(forward, directionToEnemy);
-                if (distanceToEnemy < closestDistance && angle < attackAngle)
-                {
-                    closestDistance = distanceToEnemy;
-                    closestDamageableObject = damageableObject;
-                }
-            }
-        }
-        if (closestDamageableObject != null)
-        {
-            Debug.Log(closestDamageableObject);
-            closestDamageableObject.TakeDamage(attackDamage);
-        }
-
         Collider[] wireColliders = Physics.OverlapSphere(playerPosition, attackRange);
         foreach (Collider hit in wireColliders)
         {
@@ -247,6 +224,36 @@ public class PlayerController : MonoBehaviour
             }
         }
         StartCoroutine(AttackCooldown());
+        StartCoroutine(InputPause(attackTime));
+    }
+
+    // Continue hit detection during attackTime
+    private IEnumerator AttackStay()
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + attackTime)
+        {
+            Vector3 playerPosition = transform.position;
+            Vector3 forward = transform.forward;
+            Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, damageableLayer);
+            foreach (Collider hitCollider in hitColliders)
+            {
+                GameObject hitObject = hitCollider.gameObject;
+                IDamageable damageableObject = hitObject.GetComponent<IDamageable>();
+                if (damageableObject != null)
+                {
+                    Vector3 directionToEnemy = hitCollider.transform.position - playerPosition;
+                    float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
+                    float angle = Vector3.Angle(forward, directionToEnemy);
+                    if (angle < attackAngle)
+                    {
+                        damageableObject.TakeDamage(attackDamage);
+                    }
+                }
+            }
+            yield return new WaitForSeconds(attackTime / 10.0f);
+        }
+        
     }
 
     private IEnumerator AttackCooldown()
@@ -269,11 +276,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            if (!audioSource.isPlaying && isGrounded)
+            /*if (!audioSource.isPlaying && isGrounded)
             {
                 audioSource.clip = movementSound;
                 audioSource.Play();
-            }
+            }*/
         }
         else
         {
@@ -534,6 +541,13 @@ public class PlayerController : MonoBehaviour
         reward.transform.position = transform.position + rewardOffset;
         reward.GetComponent<SpinningItems>().startY = reward.gameObject.transform.position.y;
         reward.SetActive(true);
+    }
+
+    public IEnumerator InputPause(float moveDelay)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(moveDelay);
+        canMove = true;
     }
 
     public IEnumerator MovePause(float moveDelay)
