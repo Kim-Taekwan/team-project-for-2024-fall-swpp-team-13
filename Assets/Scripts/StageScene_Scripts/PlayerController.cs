@@ -98,6 +98,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Time.timeScale = 0.3f;
         if (stageManager.CheckGameContinue() && canMove)
         {
             // Jump Input
@@ -167,7 +168,7 @@ public class PlayerController : MonoBehaviour
         Vector3 velocity = new Vector3(0.0f, rb.velocity.y, 0.0f) + direction * currentSpeed;
 
         rb.velocity = velocity;
-        UpdateAnimationAndSound(direction);
+        UpdateAnimation(direction);
     }
 
     private void HandleJump()
@@ -269,7 +270,7 @@ public class PlayerController : MonoBehaviour
         canPowerup = true;
     }
 
-    private void UpdateAnimationAndSound(Vector3 direction)
+    private void UpdateAnimation(Vector3 direction)
     {
         if (direction != Vector3.zero)
         {

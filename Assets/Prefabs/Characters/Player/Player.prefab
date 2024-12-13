@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3618782452728500417}
   - component: {fileID: 3618782452728500422}
   - component: {fileID: 3618782452728500423}
+  - component: {fileID: 2005446108410957071}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -59,11 +60,9 @@ MonoBehaviour:
   powerupPauseDelay: 1.2
   showRewardDelay: 1.7
   rewardOffset: {x: 1.2, y: 0, z: -2}
-  audioSource: {fileID: 0}
-  groundImpactSound: {fileID: 8300000, guid: e9db33e6d83003d448b75880c68dbfe5, type: 3}
-  movementSound: {fileID: 8300000, guid: a8c197c6b62a1b14287f42731bed01b4, type: 3}
   attackRange: 2
   attackAngle: 90
+  attackTime: 0.5
   attackDamage: 1
   attackCooldown: 1
   damageableLayer:
@@ -119,6 +118,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.1858273, y: 4.1566043, z: 2.0987175}
   m_Center: {x: 0.0056360485, y: 2.0787675, z: 0.3928023}
+--- !u!114 &2005446108410957071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3618782452728500420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b0e6f424e9a8f74fb187e7709478cad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxScale: {x: 0.85, y: 0.3, z: 0.83}
+  offset: {x: 0, y: 0.2, z: 0.158}
+  maxDistance: 0.3
+  isHit: 0
 --- !u!1001 &3618782451908638616
 PrefabInstance:
   m_ObjectHideFlags: 0
