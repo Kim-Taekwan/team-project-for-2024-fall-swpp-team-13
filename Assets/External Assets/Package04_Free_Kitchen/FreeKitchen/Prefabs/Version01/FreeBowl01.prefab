@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2214175021744792690}
   - component: {fileID: 4133920979954225336}
   - component: {fileID: -7175350872968286273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FreeBowl01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

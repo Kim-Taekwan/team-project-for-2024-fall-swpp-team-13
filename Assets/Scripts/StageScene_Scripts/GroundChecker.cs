@@ -9,13 +9,13 @@ public class GroundChecker : MonoBehaviour
     [SerializeField] Vector3 offset;
     [SerializeField] float maxDistance;
     [SerializeField] bool isHit;
-    //[SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask groundLayer;
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        //Gizmos.DrawCube(transform.position + offset - transform.up * maxDistance, boxScale);
-        isHit = Physics.BoxCast(transform.position + offset, boxScale / 2.0f, -transform.up, out RaycastHit hit, transform.rotation, maxDistance);
+        Gizmos.DrawCube(transform.position + offset - transform.up * maxDistance, boxScale);
+        isHit = Physics.BoxCast(transform.position + offset, boxScale / 2.0f, -transform.up, out RaycastHit hit, transform.rotation, maxDistance, groundLayer);
         if (isHit)
         {
             Gizmos.DrawRay(transform.position + offset, -transform.up * hit.distance);
@@ -28,7 +28,7 @@ public class GroundChecker : MonoBehaviour
     }
 
     public bool IsGrounded()
-    {        
-        return Physics.BoxCast(transform.position + offset, boxScale / 2.0f, -transform.up, out RaycastHit hit, transform.rotation, maxDistance);
+    {
+        return Physics.BoxCast(transform.position + offset, boxScale / 2.0f, -transform.up, out RaycastHit hit, transform.rotation, maxDistance, groundLayer);
     }
 }

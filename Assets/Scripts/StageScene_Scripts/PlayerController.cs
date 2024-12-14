@@ -24,17 +24,21 @@ public class PlayerController : MonoBehaviour
     private HealthManager healthManager;
     private Camera mainCamera;
 
-    // Default Ground - General
+    [Header("Ground Interaction")]
     [SerializeField] float currentSpeed; // for debugging speed
-    public float speed = 800.0f;
-    public float jumpForce = 200.0f;
+    public float speed = 8.0f;
+    public float jumpForce = 250.0f;
     public bool isGrounded = true;
     public bool canMove = true; // for player movement only
     private float horizontalInput = 0.0f;
     private float verticalInput = 0.0f;
     private bool hasJumpInput = false;
+    private GroundChecker groundChecker;
+    private BoxCollider boxCollider;
+    public PhysicMaterial slip;
 
-    // Animaton
+
+    [Header("Animation")]
     public Animator animator;
     private bool isMoving = false;
     private bool isJumping = false;
@@ -43,12 +47,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float showRewardDelay = 1.5f;
     [SerializeField] Vector3 rewardOffset = new Vector3(0.0f, 0.5f, 0.2f);
 
-    // Audio
-    //public AudioSource audioSource;
-    //public AudioClip groundImpactSound;
-    //public AudioClip movementSound;
-
-    // Attack & Damage
+    [Header("Attack & Damage")]
     public float attackRange = 2.0f;
     public float attackAngle = 45.0f;
     public float attackTime = 0.5f;
@@ -63,7 +62,7 @@ public class PlayerController : MonoBehaviour
     private float pushBackSpeed = 8.0f;
     public float bounceSpeed = 8.0f;
 
-    // Powerup
+    [Header("Power Up")]
     private bool canPowerup = true;
     public float powerupCooldown = 0.3f;
     public float powerupDuration = 10.0f;
@@ -79,10 +78,9 @@ public class PlayerController : MonoBehaviour
     private Coroutine currentPowerupCoroutine;
     private float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
+    public Vector3 carrotYOffset = new Vector3(0, 0.5f, 0);
 
-    public Vector3 yOffset = new Vector3(0, 0.5f, 0);
-
-    // Particles
+    [Header("Particles")]
     public ParticleSystem dirtTrail;
 
     void Start()
@@ -92,17 +90,18 @@ public class PlayerController : MonoBehaviour
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+        groundChecker = GetComponent<GroundChecker>();
+        boxCollider = GetComponent<BoxCollider>();
         mainCamera = Camera.main;
         originalSpeed = speed;
     }
 
     private void Update()
     {
-        Time.timeScale = 0.3f;
         if (stageManager.CheckGameContinue() && canMove)
         {
             // Jump Input
-            if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
+            if (Input.GetKeyDown(KeyCode.Z) && groundChecker.IsGrounded())
             {
                 hasJumpInput = true;
             }
@@ -183,6 +182,25 @@ public class PlayerController : MonoBehaviour
             AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
+            boxCollider.material = slip;
+        }
+        // Check falling state
+        else if (!isJumping && !isFalling && rb.velocity.y < -2.0f)
+        {
+            isGrounded = false;
+            isFalling = true;
+            animator.SetBool("isGrounded", false);
+            animator.SetTrigger("fallTrig");
+            boxCollider.material = null;
+        }
+        // Check grounded state
+        else if ((isJumping || isFalling) && groundChecker.IsGrounded() && rb.velocity.y < 0.0f)
+        {
+            isGrounded = true;
+            isFalling = false;
+            isJumping = false;
+            animator.SetBool("isGrounded", true);
+            boxCollider.material = null;
         }
     }
 
@@ -287,15 +305,6 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("isMoving", false);
         }
-
-        // Check falling state
-        if (!isJumping && !isFalling && rb.velocity.y < -2.0f)
-        {
-            isFalling = true;
-            isGrounded = false;
-            animator.SetBool("isGrounded", false);
-            animator.SetTrigger("fallTrig");
-        }
     }
 
     // Particle Effects
@@ -383,7 +392,7 @@ public class PlayerController : MonoBehaviour
             Quaternion rotation = playerRotation * Quaternion.Euler(0, angle, 0);
             Vector3 direction = rotation * Vector3.forward;
 
-            GameObject carrot = Instantiate(carrotPrefab, playerPosition + direction * 1.0f + yOffset, rotation);
+            GameObject carrot = Instantiate(carrotPrefab, playerPosition + direction * 1.0f + carrotYOffset, rotation);
 
             Rigidbody carrotRb = carrot.GetComponent<Rigidbody>();
             if (carrotRb != null)
@@ -437,29 +446,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            int validContacts = 0;
-            foreach (ContactPoint contact in collision.contacts)
-            {
-                float angle = Vector3.Angle(contact.normal, Vector3.up);
-                if (angle < groundNormalThreshold)
-                {
-                    validContacts++;
-                }
-            }
-            if (validContacts >= collision.contacts.Length / 2)
-            {
-                isGrounded = true;
-                isFalling = false;
-                isJumping = false;
-                animator.SetBool("isGrounded", true);
-                //if(audioSource != null && audioSource.isActiveAndEnabled)
-                //    audioSource.PlayOneShot(groundImpactSound);
-            }
-        }
-        else if (collision.gameObject.CompareTag("Enemy"))
+    {        
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             int validContacts = 0;
             foreach (ContactPoint contact in collision.contacts)

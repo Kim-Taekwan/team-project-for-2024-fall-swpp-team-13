@@ -12,7 +12,7 @@ public class PopUpSpot : MonoBehaviour
     private GameObject mainCanvas;
     private GameObject keyGuideInstance;
 
-    void OnDisable()
+    void OnDestroy()
     {
         if (keyGuideInstance != null)
         {
