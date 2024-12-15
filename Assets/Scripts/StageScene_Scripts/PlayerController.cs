@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -51,6 +52,10 @@ public class PlayerController : MonoBehaviour
     // Particles
     public ParticleSystem dirtTrail;
 
+    // Cinemachine
+    public CinemachineVirtualCamera VC1; 
+    public float requiredPosition = 1.0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -62,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (stageManager.CheckGameContinue() && stageManager.CanMove())
+        if (stageManager.CheckGameContinue() && stageManager.CanMove() && DollyTrackReached())
         {
             // Jump Input
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -86,7 +91,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (stageManager.CheckGameContinue())
+        if (stageManager.CheckGameContinue() && DollyTrackReached())
         {
             if(stageManager.CanMove())
             {
@@ -97,11 +102,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private bool DollyTrackReached()
+    {
+        if (VC1 != null)
+        {
+            var dolly = VC1.GetCinemachineComponent<CinemachineTrackedDolly>();
+            return dolly != null && dolly.m_PathPosition >= requiredPosition;
+        }
+        return true;
+    }
+
     private void HandleMovement()
     {
         // Movement Input
         moveHorizontal = Input.GetAxis("Horizontal");
         moveVertical = Input.GetAxis("Vertical");
+
+        CinemachineBrain brain = CinemachineCore.Instance.GetActiveBrain(0);
+        if (brain != null && brain.ActiveVirtualCamera.Name == "VC2")
+        {
+            float temp = moveHorizontal;
+            moveHorizontal = -moveVertical;
+            moveVertical = temp;
+        }
 
         Vector3 velocity = new Vector3(moveHorizontal * speed, rb.velocity.y, moveVertical * speed);
         Vector3 direction = new Vector3(moveHorizontal, 0.0f, moveVertical).normalized;
