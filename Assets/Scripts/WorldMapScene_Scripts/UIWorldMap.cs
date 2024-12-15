@@ -12,7 +12,7 @@ public class UIWorldMap : MonoBehaviour
 
     public int currentStageIndex = 0;
     public List<GameObject> stageNodes = new List<GameObject>();
-    public List<bool> stageUnlocked = new List<bool> { true, false, false, false };
+    public List<bool> stageUnlocked = new List<bool> { true, false, false};
 
     public List<GameObject> lines = new List<GameObject>();
 
@@ -23,14 +23,12 @@ public class UIWorldMap : MonoBehaviour
 
         // Manually activating levels here, this will actually have to be handled at each Stage scene's scripts
         PlayerPrefs.DeleteAll();
-        PlayerProgress.MarkLevelCompleted(2); // Activate level 2
-        PlayerProgress.MarkLevelCompleted(3);
-        //PlayerProgress.MarkLevelCompleted(4);
+        //PlayerProgress.MarkLevelCompleted(2); // Activate level 2
+        //PlayerProgress.MarkLevelCompleted(3);
 
         stageUnlocked[0] = true; 
-        stageUnlocked[1] = PlayerProgress.IsLevelCompleted(2); // check if level 2 is completed
-        stageUnlocked[2] = PlayerProgress.IsLevelCompleted(3); 
-        stageUnlocked[3] = PlayerProgress.IsLevelCompleted(4); 
+        //stageUnlocked[1] = PlayerProgress.IsLevelCompleted(2); // check if level 2 is completed
+        //stageUnlocked[2] = PlayerProgress.IsLevelCompleted(3); 
 
         // The level with the greatest index is initially selected when starting to load the scene
         for (int i = stageUnlocked.Count - 1; i >= 0; i--)
@@ -84,7 +82,6 @@ public class UIWorldMap : MonoBehaviour
         stageNodes.Add(GameObject.Find("NodeStage1"));
         stageNodes.Add(GameObject.Find("NodeStage2"));
         stageNodes.Add(GameObject.Find("NodeStage3"));
-        stageNodes.Add(GameObject.Find("NodeStage4"));
 
         UIWorldMap uiWorldMap = FindObjectOfType<UIWorldMap>(); 
 
@@ -99,7 +96,6 @@ public class UIWorldMap : MonoBehaviour
     {
         lines.Add(GameObject.Find("Line12"));
         lines.Add(GameObject.Find("Line23"));
-        lines.Add(GameObject.Find("Line34"));
     }
 
     public void LoadLevel(int index)
@@ -108,10 +104,9 @@ public class UIWorldMap : MonoBehaviour
         {
             switch (index)
             {
-                case 0: SceneManager.LoadScene("StageOne"); break;
-                case 1: SceneManager.LoadScene("StageTwo"); break;
-                case 2: SceneManager.LoadScene("StageThree"); break;
-                case 3: SceneManager.LoadScene("StageFour"); break;
+                case 0: LoadingSceneController.LoadScene("Stage1"); break;
+                case 1: LoadingSceneController.LoadScene("Stage2"); break;
+                case 2: LoadingSceneController.LoadScene("Stage3"); break;
             }
         }
     }

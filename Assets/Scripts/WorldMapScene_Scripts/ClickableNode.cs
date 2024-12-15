@@ -43,6 +43,33 @@ public class ClickableNode : MonoBehaviour
     // Click on stage works as Enter key down
     void OnMouseDown()
     {
-        uiWorldMap.SelectLevel(nodeIndex); 
+        UIWorldMap uiWorldMap = FindObjectOfType<UIWorldMap>();
+        if (uiWorldMap == null)
+        {
+            Debug.LogError("UIWorldMap instance not found");
+            return;
+        }
+
+        if (uiWorldMap.stageUnlocked[nodeIndex])
+        {
+            string nextSceneName = "";
+
+            switch (nodeIndex)
+            {
+                case 0: nextSceneName = "Stage1"; break;
+                case 1: nextSceneName = "Stage2"; break;
+                case 2: nextSceneName = "Stage3"; break;
+                default:
+                    Debug.LogError("Invalid node index: " + nodeIndex);
+                    return;
+            }
+
+            LoadingSceneController.LoadScene(nextSceneName);
+        }
+        else
+        {
+            Debug.Log("This stage is locked.");
+        }
     }
+
 }

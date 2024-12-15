@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -11,24 +12,18 @@ public class SettingsManager : MonoBehaviour
     public Slider brightnessSlider;
     public Slider bgmVolumeSlider;
     public Slider sfxVolumeSlider;
-    public Dropdown resolutionDropdown;
-    public Dropdown fullscreenDropdown;
+    public TMP_Dropdown resolutionDropdown;
+    public TMP_Dropdown fullscreenDropdown;
 
-    public GameObject brightnessValueText;
-    public GameObject bgmVolumeValueText;
-    public GameObject sfxVolumeValueText;
-    public GameObject resolutionValueText;
-    public GameObject fullscreenValueText;
-    
-    public GameObject originalPlane;
-    public GameObject quitAskPlane;
-    public GameObject quitAskText;
-    public GameObject quitYesButton;
-    public GameObject quitNoButton;
+    public GameObject settingsPanel;
+    public GameObject quitPanel; 
+    public TextMeshProUGUI quitAskText;
+    public Button quitYesButton;
+    public Button quitNoButton;
+
+    public Image brightnessOverlay;
 
     public bool isSaved;
-    public bool isQuitAsk;
-    public int selectedQuitButton = 0;
 
     public Resolution[] resolutions;
     private Resolution[] predefinedResolutions = new Resolution[]
@@ -81,32 +76,49 @@ public class SettingsManager : MonoBehaviour
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
-        quitAskPlane.SetActive(false);
-        quitAskText.SetActive(false);
-        quitYesButton.SetActive(false);
-        quitNoButton.SetActive(false);
+        resolutionDropdown.onValueChanged.AddListener(SetResolution);
 
-        isQuitAsk = false;
+        fullscreenDropdown.value = Screen.fullScreen ? 1 : 0;
+        fullscreenDropdown.RefreshShownValue();
+
+        fullscreenDropdown.onValueChanged.AddListener(SetFullscreen);
+
+        settingsPanel.SetActive(false);
+        quitPanel.SetActive(false);
+
         isSaved = true;
 
         LoadSettings();
     }
 
-    public void SetBrightness(int brightness)
+    public void SetBrightness(float brightness)
     {
-        RenderSettings.ambientLight = new Color(brightness, brightness, brightness / 100, 1);
+        if (brightnessOverlay != null)
+        {
+            float alpha = 1f - brightness; 
+            brightnessOverlay.color = new Color(0, 0, 0, alpha);
+        }
+
         isSaved = false;
     }
 
-    public void SetBGMVolume(int volume)
+    public void SetBGMVolume(float volume)
     {
-        AudioManager.Instance.SetBGMVolume(volume / 100);
+        if (volume < 0 || volume > 100)
+        {
+            return; 
+        }
+        AudioManager.Instance.SetBGMVolume(volume);
         isSaved = false;
     }
 
-    public void SetSFXVolume(int volume)
+    public void SetSFXVolume(float volume)
     {
-        AudioManager.Instance.SetSFXVolume(volume / 100);
+        if (volume < 0 || volume > 100)
+        {
+            return; 
+        }
+        AudioManager.Instance.SetSFXVolume(volume);
         isSaved = false;
     }
 
@@ -114,7 +126,6 @@ public class SettingsManager : MonoBehaviour
     {
         if (resolutionIndex < 0 || resolutionIndex >= resolutions.Length)
         {
-            Debug.LogWarning("Invalid resolution index");
             return;
         }
         Resolution resolution = resolutions[resolutionIndex];
@@ -122,27 +133,41 @@ public class SettingsManager : MonoBehaviour
         isSaved = false;
     }
 
-    public void SetFullscreen(int isFullscreen)
+    public void SetFullscreen(int fullscreenIndex)
     {
-        Screen.fullScreen = isFullscreen == 1;
+        bool isFullscreen = fullscreenIndex == 1;
+        Screen.fullScreen = isFullscreen;
         isSaved = false;
     }
 
     public void Back()
     {
-        if(isSaved){
-            // last scene 없을 때 오류 출력
-            SceneManager.UnloadSceneAsync("SettingsScene");
-            //SceneManager.LoadScene(PlayerPrefs.GetString("LastScene"));
+        if (quitPanel.activeSelf)
+        {
+            quitPanel.SetActive(false);
         }
-        else{
-            QuitAsk();
+        else if (settingsPanel.activeSelf)
+        {
+            quitPanel.SetActive(true);
         }
+    }
+
+    public void QuitYes()
+    {
+        SaveSettings();
+        settingsPanel.SetActive(false);
+        quitPanel.SetActive(false);
+        Time.timeScale = 1; 
+    }
+
+    public void QuitNo()
+    {
+        quitPanel.SetActive(false);
     }
 
     public void SaveSettings()
     {
-        PlayerPrefs.SetFloat("Brightness", RenderSettings.ambientLight.r);
+        PlayerPrefs.SetFloat("Brightness", 1f - brightnessOverlay.color.a);
         PlayerPrefs.SetFloat("BGMVolume", AudioManager.Instance.bgmVolume);
         PlayerPrefs.SetFloat("SFXVolume", AudioManager.Instance.sfxVolume);
         PlayerPrefs.SetInt("Resolution", resolutionDropdown.value);
@@ -159,15 +184,33 @@ public class SettingsManager : MonoBehaviour
             PlayerPrefs.SetInt("Resolution", 0);
             PlayerPrefs.SetInt("Fullscreen", 1);
         }
+        float brightness = PlayerPrefs.GetFloat("Brightness", 1f);
+        brightnessSlider.value = brightness;
+        brightnessSlider.onValueChanged.RemoveAllListeners();
+        brightnessSlider.value = brightness;
+        brightnessSlider.onValueChanged.AddListener(SetBrightness);
 
-        RenderSettings.ambientLight = new Color(PlayerPrefs.GetFloat("Brightness"), PlayerPrefs.GetFloat("Brightness"), PlayerPrefs.GetFloat("Brightness"), 1);
-        brightnessSlider.value = PlayerPrefs.GetFloat("Brightness");
+        if (brightnessOverlay != null)
+        {
+            float alpha = 1f - brightness;
+            brightnessOverlay.color = new Color(0, 0, 0, alpha);
+        }
 
-        AudioManager.Instance.SetBGMVolume(PlayerPrefs.GetFloat("BGMVolume"));
-        bgmVolumeSlider.value = PlayerPrefs.GetFloat("BGMVolume");
+        float bgmVolume = PlayerPrefs.GetFloat("BGMVolume", 0.5f);
+        float sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 0.5f);
 
-        AudioManager.Instance.SetSFXVolume(PlayerPrefs.GetFloat("SFXVolume"));
-        sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+        bgmVolumeSlider.onValueChanged.RemoveAllListeners();
+        sfxVolumeSlider.onValueChanged.RemoveAllListeners();
+
+        AudioManager.Instance.SetBGMVolume(bgmVolume);
+        bgmVolumeSlider.value = bgmVolume;
+
+        bgmVolumeSlider.onValueChanged.AddListener(SetBGMVolume);
+
+        AudioManager.Instance.SetSFXVolume(sfxVolume);
+        sfxVolumeSlider.value = sfxVolume;
+
+        sfxVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
 
         resolutionDropdown.value = PlayerPrefs.GetInt("Resolution");
         SetResolution(PlayerPrefs.GetInt("Resolution"));
@@ -176,77 +219,11 @@ public class SettingsManager : MonoBehaviour
         SetFullscreen(fullscreenDropdown.value);
     }
 
-    public void QuitAsk()
-    {
-        Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
-        planeRenderer.material.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
-        isQuitAsk = true;
-        quitAskPlane.SetActive(true);
-        quitAskText.SetActive(true);
-        quitYesButton.SetActive(true);
-        quitNoButton.SetActive(true);
-        selectedQuitButton = 0;
-        showQuitSelect();
-    }
-
-    public void QuitYes()
-    {
-        LoadSettings();
-        SceneManager.LoadScene(PlayerPrefs.GetString("LastScene"));
-    }
-
-    public void QuitNo()
-    {
-        Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
-        planeRenderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        isQuitAsk = false;
-        quitAskPlane.SetActive(false);
-        quitAskText.SetActive(false);
-        quitYesButton.SetActive(false);
-        quitNoButton.SetActive(false);
-        selectedQuitButton = 0;
-    }
-
-    public void showQuitSelect()
-    {
-        Outline quitYesOutline = quitYesButton.gameObject.GetComponent<Outline>();
-        Outline quitNoOutline = quitNoButton.gameObject.GetComponent<Outline>();
-        
-        if(selectedQuitButton == 0){
-            quitYesOutline.effectColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-            quitNoOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        }
-        if(selectedQuitButton == 1){
-            quitYesOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-            quitNoOutline.effectColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-        }
-    }
-
     public void Update()
     {
-        if (isQuitAsk)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                selectedQuitButton = 1 - selectedQuitButton;
-                showQuitSelect();
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                selectedQuitButton = 1 - selectedQuitButton;
-                showQuitSelect();
-            }
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                if (selectedQuitButton == 0)
-                {
-                    QuitYes();
-                }
-                if (selectedQuitButton == 1)
-                {
-                    QuitNo();
-                }
-            }
+            Back();
         }
     }
 }

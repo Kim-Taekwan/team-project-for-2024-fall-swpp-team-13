@@ -11,9 +11,9 @@ public class TitleUIManager : MonoBehaviour
     public GameObject originalPlane;
     public GameObject quitAskPlane;
     public GameObject quitAskText;
-    public GameObject TitleText;
     public GameObject quitYesButton;
     public GameObject quitNoButton;
+    public GameObject settingsPanel; 
     public GameObject[] selectTriangleList;
     public int selectedButton = 0;
     public int selectedQuitButton = 0;
@@ -41,12 +41,12 @@ public class TitleUIManager : MonoBehaviour
         showButtons();
         showSelectTriangle();
         hideQuitAsk();
-
+        settingsPanel.SetActive(false); 
         isQuitAsk = false;
     }
     public void Update()
     {
-        if(!isQuitAsk){
+        if(!isQuitAsk && !settingsPanel.activeSelf){
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 if (selectedButton < maxButtons - 1)
@@ -75,7 +75,7 @@ public class TitleUIManager : MonoBehaviour
                 }
                 if (selectedButton == 2)
                 {
-                    LoadSettingsScene();
+                    ToggleSettingsPanel();
                 }
                 if (selectedButton == 3)
                 {
@@ -83,7 +83,7 @@ public class TitleUIManager : MonoBehaviour
                 }
             }
         }
-        else{
+        else if (isQuitAsk){
             if(Input.GetKeyDown(KeyCode.LeftArrow)){
                 if(selectedQuitButton == 1){
                     selectedQuitButton = 0;
@@ -157,13 +157,11 @@ public class TitleUIManager : MonoBehaviour
             SceneManager.LoadScene("WorldMapScene");
         }
     }
-    public void LoadSettingsScene()
+    public void ToggleSettingsPanel()
     {
-        hideButtons();
-        hideSelectTriangle();
-        if(!isQuitAsk){
-            SceneManager.LoadSceneAsync("SettingsScene", LoadSceneMode.Additive);
-        }
+        bool isActive = settingsPanel.activeSelf;
+        settingsPanel.SetActive(!isActive);
+        Time.timeScale = isActive ? 1 : 0; 
     }
     public void LoadContinueScene()
     {
@@ -177,7 +175,6 @@ public class TitleUIManager : MonoBehaviour
         Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         planeRenderer.material.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
         isQuitAsk = true;
-        TitleText.SetActive(false);
         quitAskPlane.SetActive(true);
         quitAskText.SetActive(true);
         quitYesButton.SetActive(true);
@@ -194,7 +191,6 @@ public class TitleUIManager : MonoBehaviour
         Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         planeRenderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         isQuitAsk = false;
-        TitleText.SetActive(true);
         quitAskPlane.SetActive(false);
         quitAskText.SetActive(false);
         quitYesButton.SetActive(false);

@@ -21,6 +21,17 @@ public class AudioManager : MonoBehaviour
     public AudioClip damagedSound;
     public AudioClip moveSound;
 
+    //Debug용, 완성시 Start 메서드 삭제
+    private void Start()
+    {
+        if (bgmSource != null && bgmSource.clip != null)
+        {
+            bgmSource.volume = bgmVolume;
+            bgmSource.Play();
+        }
+    }
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
