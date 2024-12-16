@@ -186,7 +186,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             StartCoroutine(AddReverseForce());
-            //AudioManager.Instance.PlayJumpSound();
+            AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
         }
@@ -423,7 +423,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            //AudioManager.Instance.PlayDamagedSound();
+            AudioManager.Instance.PlayDamagedSound();
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
             StartCoroutine(MovePause(stunCooldown));
