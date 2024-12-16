@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 3618782452728500422}
   - component: {fileID: 3618782452728500423}
   - component: {fileID: 2005446108410957071}
-  m_Layer: 0
+  - component: {fileID: 2566965280258377652}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -69,11 +70,11 @@ MonoBehaviour:
   damageableLayer:
     serializedVersion: 2
     m_Bits: 64
-  getDamageCooldown: 1
-  stunCooldown: 0.5
+  stunCoolTime: 0.5
   groundNormalThreshold: 30
   bounceSpeed: 8
-  powerupCooldown: 1
+  canPowerup: 1
+  powerupCooldown: 0.3
   powerupDuration: 10
   sweetPotatoAttackRange: 5
   sweetPotatoAttackDamage: 1
@@ -81,7 +82,7 @@ MonoBehaviour:
   isInvincible: 0
   dashStrength: 2000
   dashSpeed: 12
-  carrotPrefab: {fileID: 0}
+  carrotPrefab: {fileID: 3502997246030779287, guid: 0c0402bbf95c44b9ea3f24a57e38019f, type: 3}
   carrotSpeed: 10
   carrotAngles:
   - -30
@@ -134,10 +135,18 @@ MonoBehaviour:
   boxScale: {x: 0.85, y: 0.3, z: 0.83}
   offset: {x: 0, y: 0.5, z: 0.158}
   maxDistance: 0.6
-  isHit: 0
+  isHit: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+--- !u!81 &2566965280258377652
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3618782452728500420}
+  m_Enabled: 1
 --- !u!1001 &3618782451908638616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1358,6 +1367,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6962802506125551302, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b62da2fe79fa11248936a2796fc97c54, type: 2}
+    - target: {fileID: -6962802506125551302, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: e13853acf9bbe194c858b6d8202b1b60, type: 2}
     - target: {fileID: 919132149155446097, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
       propertyPath: m_Name
       value: Chili Pepper Mouse
@@ -1451,6 +1468,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6962802506125551302, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fac19b909d9344243860e6d561bcd295, type: 2}
+    - target: {fileID: -6962802506125551302, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: d80400da3681cbc4f8180a1059d69fcc, type: 2}
     - target: {fileID: 919132149155446097, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
       propertyPath: m_Name
       value: Sweet Potato Mouse
@@ -1544,6 +1569,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6962802506125551302, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ed22e7e41c3a1f4bbb0c4bb97d40512, type: 2}
+    - target: {fileID: -6962802506125551302, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8315ade1ab38bbd4f84713db17a32040, type: 2}
     - target: {fileID: 919132149155446097, guid: 8b54f2396de03fa4b8d69de484393a9d, type: 3}
       propertyPath: m_Name
       value: Carrot  Mouse

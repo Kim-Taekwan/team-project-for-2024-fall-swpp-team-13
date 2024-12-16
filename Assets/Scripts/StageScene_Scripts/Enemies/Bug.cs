@@ -8,6 +8,7 @@ public class Bug : MonoBehaviour, IEnemy
     public int hp = 1;
     public int damageAmount = 1;
     public bool isStationary = false;
+    public int score = 200;
 
     [SerializeField] Vector3 defaultPosition;
     public Vector3 patrolRange = new Vector3(5.0f, 0, 5.0f);
@@ -53,6 +54,7 @@ public class Bug : MonoBehaviour, IEnemy
         if(!stageManager.CheckGameContinue() || isDead || playerTransform == null || rb == null)
         {
             rb.velocity = Vector3.zero;
+            animator.SetFloat("Speed_f", 0.0f);
             return;
         }
 
@@ -73,10 +75,14 @@ public class Bug : MonoBehaviour, IEnemy
         if (isAttacking)
         {
             Vector3 playerXZPosition = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
-            direction = (playerXZPosition - transform.position).normalized;
-            Vector3 targetVelocity = direction * speed;
-            rb.velocity = new Vector3(targetVelocity.x, rb.velocity.y, targetVelocity.z);
-            targetRotation = Quaternion.LookRotation(direction);
+            float currentDistanceToPlayer = Vector3.Distance(transform.position, playerXZPosition);
+            if (currentDistanceToPlayer >= reachedThreshold)
+            {
+                direction = (playerXZPosition - transform.position).normalized;
+                Vector3 targetVelocity = direction * speed;
+                rb.velocity = new Vector3(targetVelocity.x, rb.velocity.y, targetVelocity.z);
+                targetRotation = Quaternion.LookRotation(direction);
+            }
         }
         else
         {
@@ -145,6 +151,7 @@ public class Bug : MonoBehaviour, IEnemy
             rb.velocity = Vector3.zero;
             GetComponent<BoxCollider>().enabled = false;
             animator.SetTrigger("DeathTrig");
+            stageManager.UpdateScore(score);
             StartCoroutine(DelayDeath());
         }
     }
@@ -156,28 +163,10 @@ public class Bug : MonoBehaviour, IEnemy
         Destroy(gameObject);
     }
 
+    public bool CanBeSteppedOn() => true;
+
     public void GiveDamage()
     {
-        player.GetComponent<PlayerController>().TakeDamage(damageAmount);
+        player.GetComponent<PlayerController>().TakeDamage(damageAmount, transform);
     }
-    
-    /*
-    public void ActivateEnemy()
-    {
-        isActivated = true;
-    }
-
-    public void DeactivateEnemy()
-    {
-        isActivated = false;
-    }
-    */
-
-    // private void OnCollisionEnter(Collision collision)
-    // {
-    //     if (collision.gameObject.CompareTag("Player"))
-    //     {
-    //         AttackPlayer();
-    //     }
-    // }
 }

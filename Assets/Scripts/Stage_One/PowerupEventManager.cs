@@ -18,11 +18,13 @@ public class PowerupEventManager : MonoBehaviour
     private GameObject mainCanvas;
     [SerializeField] bool hasStarted = false;
     [SerializeField] bool isSkillReady = false;
-    [SerializeField] bool hasEnded = false;    
+    [SerializeField] bool hasEnded = false;
     private PlayerController playerController;
+    private StageManager stageManager;
 
     private void Start()
     {
+        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         mainCanvas = GameObject.Find("Main Canvas");
     }
@@ -33,6 +35,7 @@ public class PowerupEventManager : MonoBehaviour
         if (sweetPotato == null && !hasStarted)
         {
             hasStarted = true;
+            stageManager.canPause = false;
             EnemiesAttackEvent();
         }
 
@@ -40,6 +43,7 @@ public class PowerupEventManager : MonoBehaviour
         {
             hasEnded = true;
             Time.timeScale = 1.0f;
+            stageManager.canPause = true;
             StartCoroutine(EndEvent());
         }
     }
@@ -47,10 +51,11 @@ public class PowerupEventManager : MonoBehaviour
     private void EnemiesAttackEvent()
     {
         eventCamera.Priority = 20;
-        StartCoroutine(playerController.InputPause(playerMoveDelay));
+        StartCoroutine(playerController.MovePause(playerMoveDelay));
         StartCoroutine(SlowMotion());
         StartCoroutine(PopUpGuide());
 
+        // Generates enemies from 6 spawn points
         foreach (Transform spawnPoint in bugSpawnPoints)
         {
             Instantiate(bugPrefab, spawnPoint.position, spawnPoint.rotation);

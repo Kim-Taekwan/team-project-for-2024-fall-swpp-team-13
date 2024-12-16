@@ -21,7 +21,7 @@ public class PauseUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !stageManager.isGameOver && !stageManager.isGameClear)
+        if (Input.GetKeyDown(KeyCode.Escape) && !stageManager.isGameOver && !stageManager.isGameClear && stageManager.canPause)
         {
             if (!stageManager.isGamePaused)
                 ActivatePauseUI();

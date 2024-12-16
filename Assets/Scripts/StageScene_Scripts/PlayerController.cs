@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private HealthManager healthManager;
     private Camera mainCamera;
 
+    // Ground Interaction
     [Header("Ground Interaction")]
     [SerializeField] float currentSpeed; // for debugging speed
     public float speed = 8.0f;
@@ -37,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider boxCollider;
     public PhysicMaterial slip;
 
-
+    // Animation
     [Header("Animation")]
     public Animator animator;
     private bool isMoving = false;
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float showRewardDelay = 1.5f;
     [SerializeField] Vector3 rewardOffset = new Vector3(0.0f, 0.5f, 0.2f);
 
+    // Attack & Damage
     [Header("Attack & Damage")]
     public float attackRange = 2.0f;
     public float attackAngle = 45.0f;
@@ -56,14 +58,15 @@ public class PlayerController : MonoBehaviour
     private bool canAttack = true;
     public LayerMask damageableLayer;
     private bool canTakeDamage = true;
-    public float getDamageCooldown = 1.0f;
-    public float stunCooldown = 0.5f;
+    private float damageCoolTime = 2.0f;
+    public float stunCoolTime = 0.5f;
     public float groundNormalThreshold = 30.0f;
     private float pushBackSpeed = 8.0f;
     public float bounceSpeed = 8.0f;
 
+    // Power Up
     [Header("Power Up")]
-    private bool canPowerup = true;
+    [SerializeField] bool canPowerup = true;
     public float powerupCooldown = 0.3f;
     public float powerupDuration = 10.0f;
     public float sweetPotatoAttackRange = 5.0f;
@@ -76,10 +79,12 @@ public class PlayerController : MonoBehaviour
     public float carrotSpeed = 10.0f;
     public float[] carrotAngles = { -20f, 0f, 20f };
     private Coroutine currentPowerupCoroutine;
-    private float originalSpeed;
+    public float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
     public Vector3 carrotYOffset = new Vector3(0, 0.5f, 0);
+    public bool isUsingPowerup = false;
 
+    // Particles
     [Header("Particles")]
     public ParticleSystem dirtTrail;
 
@@ -109,7 +114,7 @@ public class PlayerController : MonoBehaviour
             // Attack Input
             if (Input.GetKeyDown(KeyCode.X))
             {                
-                PerformAttack();
+                Attack();
             }
 
             // Powerup Input
@@ -123,9 +128,10 @@ public class PlayerController : MonoBehaviour
                 else if (currentPowerup == Powerup.SweetPotato || currentPowerup == Powerup.ChiliPepper)
                 {
                     // Check if can use powerup
-                    float cost = staminaCost[currentPowerup];
+                    float cost = staminaCost[currentPowerup] / 50.0f;
                     if (staminaManager.CanUsePowerup(cost) && canPowerup)
                     {
+                        isUsingPowerup = true;
                         staminaManager.RunStamina(cost);
                         if (currentPowerup == Powerup.SweetPotato)
                         {
@@ -211,45 +217,23 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(Physics.gravity * 10.0f, ForceMode.Impulse);
     }
 
-    private void PerformAttack()
+    private void Attack()
     {
         if (!canAttack)
         {
             return;
         }
-        animator.SetTrigger("attackTrig");
         canAttack = false;
+        animator.SetTrigger("attackTrig");
         StartCoroutine(AttackStay());
-
-        Vector3 playerPosition = transform.position;
-        Vector3 forward = transform.forward;
-        Collider[] wireColliders = Physics.OverlapSphere(playerPosition, attackRange);
-        foreach (Collider hit in wireColliders)
-        {
-            if (hit.CompareTag("Wire")) 
-            {
-                WireController wire = hit.GetComponent<WireController>();
-                if (wire != null)
-                {
-                    if (Physics.Raycast(playerPosition, forward, out RaycastHit hitInfo, attackRange))
-                    {
-                        wire.HandleWireAttack(hitInfo.point); 
-                    }
-                    else
-                    {
-                        wire.HandleWireAttack(hit.ClosestPoint(playerPosition));
-                    }
-                }
-            }
-        }
         StartCoroutine(AttackCooldown());
-        StartCoroutine(InputPause(attackTime));
     }
 
     // Continue hit detection during attackTime
     private IEnumerator AttackStay()
     {
         float startTime = Time.time;
+        canMove = false;
         while (Time.time < startTime + attackTime)
         {
             Vector3 playerPosition = transform.position;
@@ -262,7 +246,6 @@ public class PlayerController : MonoBehaviour
                 if (damageableObject != null)
                 {
                     Vector3 directionToEnemy = hitCollider.transform.position - playerPosition;
-                    float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
                     float angle = Vector3.Angle(forward, directionToEnemy);
                     if (angle < attackAngle)
                     {
@@ -272,7 +255,7 @@ public class PlayerController : MonoBehaviour
             }
             yield return new WaitForSeconds(attackTime / 10.0f);
         }
-        
+        canMove = true;
     }
 
     private IEnumerator AttackCooldown()
@@ -332,8 +315,11 @@ public class PlayerController : MonoBehaviour
             StopCoroutine(currentPowerupCoroutine);
             currentPowerupCoroutine = null;
         }
+        animator.SetBool("isSweetPotato", false);
         speed = originalSpeed;
         isInvincible = false;
+        isUsingPowerup = false;
+        canMove = true;
     }
 
     private void UseCarrotPowerup()
@@ -342,11 +328,14 @@ public class PlayerController : MonoBehaviour
         if (!staminaManager.CanUsePowerup(powerupStaminaCost) || !canPowerup) return;
         staminaManager.RunStamina(powerupStaminaCost);
         UseCarrot();
+        animator.SetTrigger("shootCarrot");
         StartCoroutine(PowerupCooldown());
     }
 
     private IEnumerator SweetPotatoHoldCoroutine()
     {
+        canMove = false;
+        animator.SetBool("isSweetPotato", true);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
             UseSweetPotato();
@@ -402,15 +391,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, Transform attackTransform = null)
     {
-        if (!canTakeDamage || !stageManager.CheckGameContinue())
+        if (!canTakeDamage)
         {
             return;
         }
-
         canTakeDamage = false;
         stageManager.LoseHp(amount);
+
+        if (attackTransform != null)
+        {
+            Vector3 pushDirection =  transform.position - attackTransform.position;
+            pushDirection.y = 0;
+            pushDirection.Normalize();
+            rb.velocity = rb.velocity + pushDirection * pushBackSpeed;
+        }        
 
         if (stageManager.hp == 0)
         {
@@ -422,17 +418,46 @@ public class PlayerController : MonoBehaviour
             AudioManager.Instance.PlayDamagedSound();
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
-            StartCoroutine(MovePause(stunCooldown));
+            StartCoroutine(MovePause(stunCoolTime));
         }
     }
 
     private IEnumerator DamageCooldown()
     {
-        yield return new WaitForSeconds(getDamageCooldown);
+        float startTime = Time.time;
+        yield return new WaitForSeconds(0.3f);
+        
+        bool isOrigin = true;
+        List<Material> playerMaterials = new List<Material>();
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            playerMaterials.AddRange(renderer.materials);
+        }
+
+        // Blink player's color during damage cool time
+        while (Time.time < startTime + damageCoolTime)
+        {
+            foreach(Material material in playerMaterials)
+            {
+                material.color *= (isOrigin ? 0.8f : 1.25f);
+            }
+            isOrigin = !isOrigin;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        // Make sure to return original color when exits
+        if (!isOrigin)
+        {
+            foreach (Material material in playerMaterials)
+            {
+                material.color *= 1.25f;
+            }
+        }        
         canTakeDamage = true;
     }
 
-    public void LookAtCamera(GameObject optionCam)
+    public void LookAtCamera(GameObject optionCam = null)
     {
         if (optionCam != null)
         {
@@ -445,8 +470,13 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {        
+    private void OnCollisionStay(Collision collision)
+    {
+        if (!stageManager.CheckGameContinue())
+        {
+            return;
+        }
+
         if (collision.gameObject.CompareTag("Enemy"))
         {
             int validContacts = 0;
@@ -460,38 +490,41 @@ public class PlayerController : MonoBehaviour
             }
             Debug.Log(validContacts + " / " + collision.contacts.Length);
             IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
-            if (isInvincible)
+            if (enemy == null)
             {
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(1);
-                }
+                return;
+            }
+
+            if (isInvincible)
+            {                
+                enemy.TakeDamage(1);
             }
             else if (validContacts >= collision.contacts.Length / 2)
             {
-                if (enemy != null)
+                if (enemy.CanBeSteppedOn())
                 {
                     enemy.TakeDamage(1);
                     rb.velocity = new Vector3(rb.velocity.x, bounceSpeed, rb.velocity.z);
                 }
+                else
+                {
+                    enemy.GiveDamage();
+                }
             }
             else
             {
-                if (enemy != null)
-                {
-                    enemy.GiveDamage();
-
-                    Vector3 pushDirection = collision.transform.position - transform.position;
-                    pushDirection.y = 0;
-                    pushDirection.Normalize();
-                    rb.velocity = rb.velocity - pushDirection * pushBackSpeed;
-                }
+                enemy.GiveDamage();                                        
             }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!stageManager.CheckGameContinue())
+        {
+            return;
+        }
+
         if (other.gameObject.CompareTag("Coin"))
         {
             Destroy(other.gameObject);
@@ -509,6 +542,7 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             rb.velocity = Vector3.zero;
+            ResetPowerupSettings();
 
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
@@ -538,14 +572,14 @@ public class PlayerController : MonoBehaviour
         reward.SetActive(true);
     }
 
-    public IEnumerator InputPause(float moveDelay)
+    public IEnumerator MovePause(float moveDelay)
     {
         canMove = false;
         yield return new WaitForSeconds(moveDelay);
         canMove = true;
     }
 
-    public IEnumerator MovePause(float moveDelay)
+    public IEnumerator MoveFreeze(float moveDelay)
     {
         rb.velocity = Vector3.zero;
         canMove = false;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 // Bugs that always chase and attack the player
 public class BugForEvent : MonoBehaviour, IEnemy
@@ -9,6 +10,7 @@ public class BugForEvent : MonoBehaviour, IEnemy
     public int damageAmount = 1;
     public float speed = 3.0f;
     [SerializeField] float currentSpeed;
+    public int score = 200;
 
     private StageManager stageManager;
     private Transform playerTransform;
@@ -64,6 +66,7 @@ public class BugForEvent : MonoBehaviour, IEnemy
             rb.velocity = Vector3.zero;
             GetComponent<BoxCollider>().enabled = false;
             animator.SetTrigger("DeathTrig");
+            stageManager.UpdateScore(score);
             StartCoroutine(DelayDeath());
         }
     }
@@ -75,8 +78,10 @@ public class BugForEvent : MonoBehaviour, IEnemy
         Destroy(gameObject);
     }
 
+    public bool CanBeSteppedOn() => true;
+
     public void GiveDamage()
     {
-        player.GetComponent<PlayerController>().TakeDamage(damageAmount);
+        player.GetComponent<PlayerController>().TakeDamage(damageAmount, transform);
     }
 }

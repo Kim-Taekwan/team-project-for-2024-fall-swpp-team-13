@@ -80,6 +80,7 @@ MonoBehaviour:
   damageAmount: 1
   speed: 3
   currentSpeed: 0
+  score: 200
 --- !u!1001 &8649817319811757344
 PrefabInstance:
   m_ObjectHideFlags: 0
