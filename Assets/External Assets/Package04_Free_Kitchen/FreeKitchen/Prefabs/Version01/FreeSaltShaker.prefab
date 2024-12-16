@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5935113928407712273}
   - component: {fileID: 8482870634922637019}
   - component: {fileID: 7679482013973596151}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FreeSaltShaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 7978629859881015054}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 26.014502, y: 26.014502, z: 26.014502}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
