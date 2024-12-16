@@ -51,6 +51,7 @@ MonoBehaviour:
   isGameClear: 0
   isGamePaused: 0
   isFreezed: 0
+  canPause: 1
   scoreText: {fileID: 4025244122453030778}
   coinText: {fileID: 4025244121304145543}
   recipeImage: {fileID: 4025244122858788690}
@@ -63,6 +64,7 @@ MonoBehaviour:
   mainCanvas: {fileID: 4025244121330422912}
   gameOverCanvas: {fileID: 4025244121404057168}
   gameClearCanvas: {fileID: 4025244122087018252}
+  victoryCam: {fileID: 0}
   hp: 6
   maxHp: 6
   stamina: 10

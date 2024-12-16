@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,17 +26,22 @@ public class PlayerController : MonoBehaviour
     private HPScript hpScript;
     private Camera mainCamera;
 
-    // Default Ground - General
+    // Ground Interaction
+    [Header("Ground Interaction")]
     [SerializeField] float currentSpeed; // for debugging speed
-    public float speed = 800.0f;
-    public float jumpForce = 200.0f;
+    public float speed = 8.0f;
+    public float jumpForce = 250.0f;
     public bool isGrounded = true;
     public bool canMove = true; // for player movement only
     private float horizontalInput = 0.0f;
     private float verticalInput = 0.0f;
     private bool hasJumpInput = false;
+    private GroundChecker groundChecker;
+    private BoxCollider boxCollider;
+    public PhysicMaterial slip;
 
-    // Animaton
+    // Animation
+    [Header("Animation")]
     public Animator animator;
     private bool isMoving = false;
     private bool isJumping = false;
@@ -44,27 +50,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float showRewardDelay = 1.5f;
     [SerializeField] Vector3 rewardOffset = new Vector3(0.0f, 0.5f, 0.2f);
 
-    // Audio
-    public AudioSource audioSource;
-    public AudioClip groundImpactSound;
-    public AudioClip movementSound;
-
     // Attack & Damage
+    [Header("Attack & Damage")]
     public float attackRange = 2.0f;
     public float attackAngle = 45.0f;
+    public float attackTime = 0.5f;
     public int attackDamage = 1;
     public float attackCooldown = 1.0f;
     private bool canAttack = true;
     public LayerMask damageableLayer;
     private bool canTakeDamage = true;
-    public float getDamageCooldown = 1.0f;
-    public float stunCooldown = 0.5f;
+    private float damageCoolTime = 2.0f;
+    public float stunCoolTime = 0.5f;
     public float groundNormalThreshold = 30.0f;
     private float pushBackSpeed = 8.0f;
     public float bounceSpeed = 8.0f;
 
-    // Powerup
-    private bool canPowerup = true;
+    // Power Up
+    [Header("Power Up")]
+    [SerializeField] bool canPowerup = true;
     public float powerupCooldown = 0.3f;
     public float powerupDuration = 10.0f;
     public float sweetPotatoAttackRange = 5.0f;
@@ -77,17 +81,22 @@ public class PlayerController : MonoBehaviour
     public float carrotSpeed = 10.0f;
     public float[] carrotAngles = { -20f, 0f, 20f };
     private Coroutine currentPowerupCoroutine;
-    private float originalSpeed;
+    public float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
     public GameObject sweetPotatoEffect;
     public GameObject chiliPepperEffect;
 
     public GameObject dustPrefab;
-
-    public Vector3 yOffset = new Vector3(0, 0.5f, 0);
+    public Vector3 carrotYOffset = new Vector3(0, 0.5f, 0);
+    public bool isUsingPowerup = false;
 
     // Particles
+    //[Header("Particles")]
     // public GameObject dirtTrail;
+
+    // Cinemachine
+    public CinemachineVirtualCamera VC1; 
+    public float requiredPosition = 1.0f;
 
     void Start()
     {
@@ -97,6 +106,8 @@ public class PlayerController : MonoBehaviour
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = transform.GetChild(0).GetComponent<Animator>();
         hpScript = GetComponent<HPScript>();
+        groundChecker = GetComponent<GroundChecker>();
+        boxCollider = GetComponent<BoxCollider>();
         mainCamera = Camera.main;
         originalSpeed = speed;
     }
@@ -106,7 +117,7 @@ public class PlayerController : MonoBehaviour
         if (stageManager.CheckGameContinue() && canMove)
         {
             // Jump Input
-            if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
+            if (Input.GetKeyDown(KeyCode.Z) && groundChecker.IsGrounded())
             {
                 hasJumpInput = true;
             }
@@ -114,7 +125,7 @@ public class PlayerController : MonoBehaviour
             // Attack Input
             if (Input.GetKeyDown(KeyCode.X))
             {                
-                PerformAttack();
+                Attack();
             }
 
             // Powerup Input
@@ -128,9 +139,10 @@ public class PlayerController : MonoBehaviour
                 else if (currentPowerup == Powerup.SweetPotato || currentPowerup == Powerup.ChiliPepper)
                 {
                     // Check if can use powerup
-                    float cost = staminaCost[currentPowerup];
+                    float cost = staminaCost[currentPowerup] / 50.0f;
                     if (staminaManager.CanUsePowerup(cost) && canPowerup)
                     {
+                        isUsingPowerup = true;
                         staminaManager.RunStamina(cost);
                         if (currentPowerup == Powerup.SweetPotato)
                         {
@@ -156,6 +168,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private bool DollyTrackReached()
+    {
+        if (VC1 != null)
+        {
+            var dolly = VC1.GetCinemachineComponent<CinemachineTrackedDolly>();
+            return dolly != null && dolly.m_PathPosition >= requiredPosition;
+        }
+        return true;
+    }
+
     private void HandleMovement()
     {
         // Movement Input
@@ -175,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
         if(isGrounded && (velocity.magnitude > 0.1f)) StartCoroutine(PlayDustAndTrailEffect());
         //Instantiate(dustPrefab, transform.position, Quaternion.identity);
-        UpdateAnimationAndSound(direction);
+        UpdateAnimation(direction);
     }
 
     private void HandleJump()
@@ -190,6 +212,25 @@ public class PlayerController : MonoBehaviour
             AudioManager.Instance.PlayJumpSound();
             animator.SetTrigger("jumpTrig");
             animator.SetBool("isGrounded", false);
+            boxCollider.material = slip;
+        }
+        // Check falling state
+        else if (!isJumping && !isFalling && rb.velocity.y < -2.0f)
+        {
+            isGrounded = false;
+            isFalling = true;
+            animator.SetBool("isGrounded", false);
+            animator.SetTrigger("fallTrig");
+            boxCollider.material = null;
+        }
+        // Check grounded state
+        else if ((isJumping || isFalling) && groundChecker.IsGrounded() && rb.velocity.y < 0.0f)
+        {
+            isGrounded = true;
+            isFalling = false;
+            isJumping = false;
+            animator.SetBool("isGrounded", true);
+            boxCollider.material = null;
         }
     }
 
@@ -211,62 +252,45 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(Physics.gravity * 10.0f, ForceMode.Impulse);
     }
 
-    private void PerformAttack()
+    private void Attack()
     {
         if (!canAttack)
         {
             return;
         }
-        AudioManager.Instance.PlayAttackSound();
-        animator.SetTrigger("attackTrig");
         canAttack = false;
-        Vector3 playerPosition = transform.position;
-        Vector3 forward = transform.forward;
-        Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, damageableLayer);
-        IDamageable closestDamageableObject = null;
-        float closestDistance = float.MaxValue;
-        foreach (Collider hitCollider in hitColliders)
-        {
-            GameObject hitObject = hitCollider.gameObject;
-            IDamageable damageableObject = hitObject.GetComponent<IDamageable>();
-            if (damageableObject != null)
-            {
-                Vector3 directionToEnemy = hitCollider.transform.position - playerPosition;
-                float distanceToEnemy = Vector3.Distance(playerPosition, hitObject.transform.position);
-                float angle = Vector3.Angle(forward, directionToEnemy);
-                if (distanceToEnemy < closestDistance && angle < attackAngle)
-                {
-                    closestDistance = distanceToEnemy;
-                    closestDamageableObject = damageableObject;
-                }
-            }
-        }
-        if (closestDamageableObject != null)
-        {
-            Debug.Log(closestDamageableObject);
-            closestDamageableObject.TakeDamage(attackDamage);
-        }
-
-        Collider[] wireColliders = Physics.OverlapSphere(playerPosition, attackRange);
-        foreach (Collider hit in wireColliders)
-        {
-            if (hit.CompareTag("Wire")) 
-            {
-                WireController wire = hit.GetComponent<WireController>();
-                if (wire != null)
-                {
-                    if (Physics.Raycast(playerPosition, forward, out RaycastHit hitInfo, attackRange))
-                    {
-                        wire.HandleWireAttack(hitInfo.point); 
-                    }
-                    else
-                    {
-                        wire.HandleWireAttack(hit.ClosestPoint(playerPosition));
-                    }
-                }
-            }
-        }
+        animator.SetTrigger("attackTrig");
+        StartCoroutine(AttackStay());
         StartCoroutine(AttackCooldown());
+    }
+
+    // Continue hit detection during attackTime
+    private IEnumerator AttackStay()
+    {
+        float startTime = Time.time;
+        canMove = false;
+        while (Time.time < startTime + attackTime)
+        {
+            Vector3 playerPosition = transform.position;
+            Vector3 forward = transform.forward;
+            Collider[] hitColliders = Physics.OverlapSphere(playerPosition, attackRange, damageableLayer);
+            foreach (Collider hitCollider in hitColliders)
+            {
+                GameObject hitObject = hitCollider.gameObject;
+                IDamageable damageableObject = hitObject.GetComponent<IDamageable>();
+                if (damageableObject != null)
+                {
+                    Vector3 directionToEnemy = hitCollider.transform.position - playerPosition;
+                    float angle = Vector3.Angle(forward, directionToEnemy);
+                    if (angle < attackAngle)
+                    {
+                        damageableObject.TakeDamage(attackDamage);
+                    }
+                }
+            }
+            yield return new WaitForSeconds(attackTime / 10.0f);
+        }
+        canMove = true;
     }
 
     private IEnumerator AttackCooldown()
@@ -282,31 +306,22 @@ public class PlayerController : MonoBehaviour
         canPowerup = true;
     }
 
-    private void UpdateAnimationAndSound(Vector3 direction)
+    private void UpdateAnimation(Vector3 direction)
     {
         if (direction != Vector3.zero)
         {
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            if (audioSource && !audioSource.isPlaying && isGrounded)
+            /*if (!audioSource.isPlaying && isGrounded)
             {
                 audioSource.clip = movementSound;
                 audioSource.Play();
-            }
+            }*/
         }
         else
         {
             animator.SetBool("isMoving", false);
-        }
-
-        // Check falling state
-        if (!isJumping && !isFalling && rb.velocity.y < -2.0f)
-        {
-            isFalling = true;
-            isGrounded = false;
-            animator.SetBool("isGrounded", false);
-            animator.SetTrigger("fallTrig");
         }
     }
 
@@ -331,8 +346,11 @@ public class PlayerController : MonoBehaviour
             StopCoroutine(currentPowerupCoroutine);
             currentPowerupCoroutine = null;
         }
+        animator.SetBool("isSweetPotato", false);
         speed = originalSpeed;
         isInvincible = false;
+        isUsingPowerup = false;
+        canMove = true;
     }
 
     private void UseCarrotPowerup()
@@ -341,11 +359,14 @@ public class PlayerController : MonoBehaviour
         if (!staminaManager.CanUsePowerup(powerupStaminaCost) || !canPowerup) return;
         staminaManager.RunStamina(powerupStaminaCost);
         UseCarrot();
+        animator.SetTrigger("shootCarrot");
         StartCoroutine(PowerupCooldown());
     }
 
     private IEnumerator SweetPotatoHoldCoroutine()
     {
+        canMove = false;
+        animator.SetBool("isSweetPotato", true);
         GameObject effect = Instantiate(sweetPotatoEffect, transform.position, Quaternion.identity);
         effect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
@@ -397,7 +418,7 @@ public class PlayerController : MonoBehaviour
             Quaternion rotation = playerRotation * Quaternion.Euler(0, angle, 0);
             Vector3 direction = rotation * Vector3.forward;
 
-            GameObject carrot = Instantiate(carrotPrefab, playerPosition + direction * 1.0f + yOffset, rotation);
+            GameObject carrot = Instantiate(carrotPrefab, playerPosition + direction * 1.0f + carrotYOffset, rotation);
 
             Rigidbody carrotRb = carrot.GetComponent<Rigidbody>();
             if (carrotRb != null)
@@ -407,16 +428,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, Transform attackTransform = null)
     {
-        if (!canTakeDamage || !stageManager.CheckGameContinue())
+        if (!canTakeDamage)
         {
             return;
         }
-
         canTakeDamage = false;
         hpScript.ChangeHP(transform.position);
         stageManager.LoseHp(amount);
+
+        if (attackTransform != null)
+        {
+            Vector3 pushDirection =  transform.position - attackTransform.position;
+            pushDirection.y = 0;
+            pushDirection.Normalize();
+            rb.velocity = rb.velocity + pushDirection * pushBackSpeed;
+        }        
 
         if (stageManager.hp == 0)
         {
@@ -428,46 +456,66 @@ public class PlayerController : MonoBehaviour
             AudioManager.Instance.PlayDamagedSound();
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
-            StartCoroutine(MovePause(stunCooldown));
+            StartCoroutine(MovePause(stunCoolTime));
         }
     }
 
     private IEnumerator DamageCooldown()
     {
-        yield return new WaitForSeconds(getDamageCooldown);
+        float startTime = Time.time;
+        yield return new WaitForSeconds(0.3f);
+        
+        bool isOrigin = true;
+        List<Material> playerMaterials = new List<Material>();
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            playerMaterials.AddRange(renderer.materials);
+        }
+
+        // Blink player's color during damage cool time
+        while (Time.time < startTime + damageCoolTime)
+        {
+            foreach(Material material in playerMaterials)
+            {
+                material.color *= (isOrigin ? 0.8f : 1.25f);
+            }
+            isOrigin = !isOrigin;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        // Make sure to return original color when exits
+        if (!isOrigin)
+        {
+            foreach (Material material in playerMaterials)
+            {
+                material.color *= 1.25f;
+            }
+        }        
         canTakeDamage = true;
     }
 
-    private void LookAtCamera()
+    public void LookAtCamera(GameObject optionCam = null)
     {
-        transform.LookAt(mainCamera.transform);
+        if (optionCam != null)
+        {
+            transform.LookAt(optionCam.transform);
+        }
+        else
+        {
+            transform.LookAt(mainCamera.transform);
+        }
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (!stageManager.CheckGameContinue())
         {
-            int validContacts = 0;
-            foreach (ContactPoint contact in collision.contacts)
-            {
-                float angle = Vector3.Angle(contact.normal, Vector3.up);
-                if (angle < groundNormalThreshold)
-                {
-                    validContacts++;
-                }
-            }
-            if (validContacts >= collision.contacts.Length / 2)
-            {
-                isGrounded = true;
-                isFalling = false;
-                isJumping = false;
-                animator.SetBool("isGrounded", true);
-                //if(audioSource != null && audioSource.isActiveAndEnabled)
-                //    audioSource.PlayOneShot(groundImpactSound);
-            }
+            return;
         }
-        else if (collision.gameObject.CompareTag("Enemy"))
+
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             int validContacts = 0;
             foreach (ContactPoint contact in collision.contacts)
@@ -480,38 +528,46 @@ public class PlayerController : MonoBehaviour
             }
             Debug.Log(validContacts + " / " + collision.contacts.Length);
             IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
+            if (enemy == null)
+            {
+                return;
+            }
+
             if (isInvincible)
             {
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(1);
-                }
+                enemy.TakeDamage(1);
             }
             else if (validContacts >= collision.contacts.Length / 2)
             {
-                if (enemy != null)
+                if (enemy.CanBeSteppedOn())
                 {
                     enemy.TakeDamage(1);
                     rb.velocity = new Vector3(rb.velocity.x, bounceSpeed, rb.velocity.z);
                 }
+                else
+                {
+                    enemy.GiveDamage();
+                }
             }
             else
             {
-                if (enemy != null)
-                {
-                    enemy.GiveDamage();
-
-                    Vector3 pushDirection = collision.transform.position - transform.position;
-                    pushDirection.y = 0;
-                    pushDirection.Normalize();
-                    rb.velocity = rb.velocity - pushDirection * pushBackSpeed;
-                }
+                enemy.GiveDamage();
             }
+        }
+
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage(1, collision.transform);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!stageManager.CheckGameContinue())
+        {
+            return;
+        }
+
         if (other.gameObject.CompareTag("Coin"))
         {
             Destroy(other.gameObject);
@@ -529,9 +585,9 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             rb.velocity = Vector3.zero;
+            ResetPowerupSettings();
             canMove = false;
 
-            LookAtCamera();
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
 
@@ -544,7 +600,7 @@ public class PlayerController : MonoBehaviour
             stageManager.HealHp(stageManager.maxHp);
             stageManager.UpdatePowerup(other.gameObject.name);
 
-            LookAtCamera();
+            LookAtCamera(null);
             animator.SetTrigger("powerupTrig");
             rb.velocity = Vector3.zero;
             StartCoroutine(stageManager.StageFreeze(powerupPauseDelay));
@@ -561,6 +617,13 @@ public class PlayerController : MonoBehaviour
     }
 
     public IEnumerator MovePause(float moveDelay)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(moveDelay);
+        canMove = true;
+    }
+
+    public IEnumerator MoveFreeze(float moveDelay)
     {
         rb.velocity = Vector3.zero;
         canMove = false;

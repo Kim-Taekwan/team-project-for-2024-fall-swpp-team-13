@@ -37,7 +37,7 @@ public class HoleManager : MonoBehaviour
                 PlayDustEffect(hole2.transform.position);
                 Vector3 hole2ExitPosition = hole2.transform.GetChild(0).position;
                 player.transform.position = hole2ExitPosition;
-                StartCoroutine(playerController.MovePause(exitDelay));
+                StartCoroutine(playerController.MoveFreeze(exitDelay));
             }
             else if (distanceToHole2 < 1.5f)
             {
@@ -46,7 +46,7 @@ public class HoleManager : MonoBehaviour
                 PlayDustEffect(hole2.transform.position);
                 Vector3 hole1ExitPosition = hole1.transform.GetChild(0).position;
                 player.transform.position = hole1ExitPosition;
-                StartCoroutine(playerController.MovePause(exitDelay));
+                StartCoroutine(playerController.MoveFreeze(exitDelay));
             }
         }        
     }

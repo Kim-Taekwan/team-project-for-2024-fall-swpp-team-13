@@ -7,11 +7,17 @@ public class FlourShooter : MonoBehaviour
     public float maxDistance = 5f;    
     public float flightDuration = 1f; 
     public float arcHeight = 2f;      
-    public float minDistance = 3f;   
+    public float minDistance = 3f;
+    public float repeatRate = 1f;
 
     void Start()
     {
-        InvokeRepeating(nameof(LaunchFlour), 1f, 1f);
+        InvokeRepeating(nameof(LaunchFlour), repeatRate, repeatRate);
+    }
+
+    private void OnDisable()
+    {
+        CancelInvoke(nameof(LaunchFlour));
     }
 
     void LaunchFlour()

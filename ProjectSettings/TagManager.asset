@@ -15,9 +15,8 @@ TagManager:
   - Wall
   - Projectile
   - Wire
-  - Effect
-  - FxTemporaire
-  - BrokenFence
+  - Projectile
+  - Obstacle
   layers:
   - Default
   - TransparentFX
@@ -26,8 +25,8 @@ TagManager:
   - Water
   - UI
   - Damageable
-  - 
-  - 
+  - Ground
+  - Player
   - 
   - 
   - 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 501555877748271536}
   - component: {fileID: 2382708905879870842}
   - component: {fileID: -5183464562414182249}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FreeCup
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2803333794917593613}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34,7 +34,7 @@ Transform:
   - {fileID: 9187601055747920587}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!65 &2803333794917593611
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -62,15 +62,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 1
   damageAmount: 1
+  isStationary: 0
   defaultPosition: {x: 0, y: 0, z: 0}
   patrolRange: {x: 3, y: 0, z: 3}
   speed: 3
   detectDistance: 5
   returnDistance: 8
   isAttacking: 0
-  reachedThreshold: 0.5
   currentSpeed: 0
-  deathParticlePrefab: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
+  hasReached: 0
 --- !u!54 &2803333794917593607
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -85,7 +85,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 84
+  m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!1001 &8649817319811757344
 PrefabInstance:

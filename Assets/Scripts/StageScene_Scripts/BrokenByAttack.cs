@@ -7,6 +7,7 @@ public class BrokenByAttack : MonoBehaviour, IDamageable
     public GameObject dustPrefab;
     public void TakeDamage(int amount)
     {
+        AudioManager.Instance.PlayAttackSound();
         StartCoroutine(PlayDustEffectAndDestroy());
     }
 
