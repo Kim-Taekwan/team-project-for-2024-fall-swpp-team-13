@@ -1,14 +1,19 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    public float bgmVolume = 1.0f;
-    public float sfxVolume = 1.0f;
+    public float bgmVolume = 0.7f;
+    public float sfxVolume = 0.7f;
 
     public AudioSource bgmSource;
     public AudioSource sfxSource;
+    public List<AudioClip> bgmList = new List<AudioClip>();
 
     [Header("Sound Effects")]
     public AudioClip coinSound;
@@ -23,7 +28,7 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null)
         {
             Destroy(gameObject);
             return;
@@ -31,6 +36,19 @@ public class AudioManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    // Scene과 동일한 이름의 BGM을 재생
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        for (int i = 0; i < bgmList.Count; i++)
+        {
+            if (arg0.name == bgmList[i].name)
+            {
+                PlayBGM(bgmList[i]);
+            }
+        }
     }
 
     public void SetBGMVolume(float volume)
@@ -51,11 +69,12 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayBGM(AudioClip clip)
+    public void PlayBGM(AudioClip clip, bool isLoop = true)
     {
         if (bgmSource != null && clip != null)
         {
             bgmSource.clip = clip;
+            bgmSource.loop = isLoop;
             bgmSource.volume = bgmVolume;
             bgmSource.Play();
         }
@@ -65,8 +84,13 @@ public class AudioManager : MonoBehaviour
     {
         if (sfxSource != null && clip != null)
         {
-            sfxSource.PlayOneShot(clip, sfxVolume);
-        }
+            GameObject go = new GameObject(clip.name);
+            AudioSource audioSource = go.AddComponent<AudioSource>();
+            audioSource.clip = clip;
+            audioSource.volume = sfxVolume;
+            audioSource.Play();
+            Destroy(go, clip.length);
+        }        
     }
 
     public void StopAllSounds()
@@ -82,12 +106,12 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayGameClearSound() => PlayBGM(gameClearSound, false);
+    public void PlayGameOverSound() => PlayBGM(gameOverSound, false);
     public void PlayCoinSound() => PlaySFX(coinSound);
     public void PlayRecipeSound() => PlaySFX(recipeSound);
     public void PlayPowerUpSound() => PlaySFX(powerUpSound);
     public void PlayJumpSound() => PlaySFX(jumpSound);
-    public void PlayGameClearSound() => PlayBGM(gameClearSound);
-    public void PlayGameOverSound() => PlaySFX(gameOverSound);
     public void PlayAttackSound() => PlaySFX(attackSound);
     public void PlayDamagedSound() => PlaySFX(damagedSound);
     public void PlayMoveSound() => PlaySFX(moveSound);

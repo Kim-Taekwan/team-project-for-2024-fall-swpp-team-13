@@ -12,7 +12,7 @@ GameObject:
   m_Layer: 0
   m_Name: Exit Position
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 7406500348171099366}
   - component: {fileID: 5865647444976767811}
   - component: {fileID: 8539387911724099465}
+  - component: {fileID: -8377342816349060304}
   m_Layer: 0
-  m_Name: Holedoor
+  m_Name: holedoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,3 +117,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-8377342816349060304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7891147123041486428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7442bda53f8609945bd473c64272de32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyGuidePrefab: {fileID: 3244186109158954881, guid: 8727f1aadf0c8184c97877caa11cb542, type: 3}
+  guideDistance: 2
+  guideCancelDistance: 2.5
+  isGuiding: 0

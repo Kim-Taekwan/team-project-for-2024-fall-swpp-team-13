@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6299756050349227290}
   - component: {fileID: 8109238596558260688}
   - component: {fileID: 3446907688939075284}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FreeVase
   m_TagString: Untagged
   m_Icon: {fileID: 0}

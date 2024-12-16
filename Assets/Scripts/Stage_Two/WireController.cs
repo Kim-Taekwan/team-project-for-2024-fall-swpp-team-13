@@ -1,16 +1,20 @@
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
-public class WireController : MonoBehaviour
+public class WireController : MonoBehaviour, IDamageable
 {
     public LineRenderer lineRenderer;   
     public GameObject sparkEffectPrefab; 
-    public ElectricWhisk electricWhisk;   
+    public ElectricWhisk electricWhisk;
+    public FlourShooter flourShooter;
 
-    private CapsuleCollider wireCollider; 
+    private CapsuleCollider wireCollider;
+    private GameObject player;
 
     void Start()
     {
         CreateColliderAlongLine();
+        player = GameObject.Find("Player");
     }
 
     void CreateColliderAlongLine()
@@ -31,13 +35,38 @@ public class WireController : MonoBehaviour
         wireCollider.direction = 2; 
     }
 
-    public void HandleWireAttack(Vector3 attackPosition)
-    {
+    public void TakeDamage(int amount)
+    {        
+        Vector3 playerPosition = player.transform.position;
+        Vector3 forward = player.transform.forward;
+        Vector3 attackPosition;
+        if (Physics.Raycast(playerPosition, forward, out RaycastHit hitInfo, player.GetComponent<PlayerController>().attackRange))
+        {
+            attackPosition = hitInfo.point;
+        }
+        else
+        {
+            attackPosition = playerPosition;
+        }
         Instantiate(sparkEffectPrefab, attackPosition, Quaternion.identity);
+
         if (electricWhisk != null)
         {
             electricWhisk.enabled = false; 
             Debug.Log("Electric Whisk turned off!");
+        }
+
+        if (flourShooter != null)
+        {
+            flourShooter.enabled = false;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player") && player.GetComponent<PlayerController>().isInvincible)
+        {
+            TakeDamage(1);
         }
     }
 }
