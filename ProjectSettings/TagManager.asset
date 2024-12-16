@@ -15,6 +15,9 @@ TagManager:
   - Wall
   - Projectile
   - Wire
+  - Effect
+  - FxTemporaire
+  - BrokenFence
   layers:
   - Default
   - TransparentFX

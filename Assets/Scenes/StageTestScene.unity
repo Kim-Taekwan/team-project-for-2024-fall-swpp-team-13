@@ -2883,6 +2883,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: dirtTrail
+      value: 
+      objectReference: {fileID: 1616367920038817779, guid: ae6bdf3417a5d6047a559654858dac31, type: 3}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: dustPrefab
       value: 
       objectReference: {fileID: 2860425260954049642, guid: 91ccdc26ee9f640a69b120f1b1deaecb, type: 3}
@@ -2902,6 +2906,10 @@ PrefabInstance:
       propertyPath: powerupCooldown
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: chiliPepperEffect
+      value: 
+      objectReference: {fileID: 1206498299807332555, guid: af6c1e3f046eecd4d81330aeb285600f, type: 3}
     - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: sweetPotatoEffect
       value: 
@@ -3178,6 +3186,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8361438779330486964, guid: 0ffb89b0e9fa7cf40abff6c208489455, type: 3}
+      propertyPath: near clip plane
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 8361438779330486967, guid: 0ffb89b0e9fa7cf40abff6c208489455, type: 3}
       propertyPath: m_RootOrder
       value: 0

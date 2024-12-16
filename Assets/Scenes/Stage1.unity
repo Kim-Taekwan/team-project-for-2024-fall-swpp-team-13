@@ -1491,6 +1491,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 247899389}
     - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
+    - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
       propertyPath: isHole1Door
       value: 1
       objectReference: {fileID: 0}
@@ -7524,6 +7528,10 @@ PrefabInstance:
       propertyPath: hole2
       value: 
       objectReference: {fileID: 758987922}
+    - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
     - target: {fileID: 509833985872043191, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
       propertyPath: m_Name
       value: HoleManager
@@ -7940,6 +7948,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigFenceBroken (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4003689086508957181, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: m_TagString
+      value: BrokenFence
+      objectReference: {fileID: 0}
+    - target: {fileID: 7494109933528527389, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
     - target: {fileID: 7550638153184653812, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.016
@@ -34419,6 +34435,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 490586843}
     - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
+    - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
       propertyPath: isHole1Door
       value: 1
       objectReference: {fileID: 0}
@@ -39646,10 +39666,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigFenceBroken (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 4003689086508957181, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: m_TagString
+      value: BrokenFence
+      objectReference: {fileID: 0}
     - target: {fileID: 4542316029267229869, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.16
       objectReference: {fileID: 0}
+    - target: {fileID: 7494109933528527389, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
     - target: {fileID: 7550638153184653812, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.11
@@ -42749,9 +42777,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 2860425260954049642, guid: 91ccdc26ee9f640a69b120f1b1deaecb, type: 3}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: carrotPrefab
+      value: 
+      objectReference: {fileID: 3502997246030779287, guid: 0c0402bbf95c44b9ea3f24a57e38019f, type: 3}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: getDamageCooldown
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3618782452728500417, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
+      propertyPath: sweetPotatoEffect
+      value: 
+      objectReference: {fileID: 7938384439400024403, guid: b6e54acc881a03c4a9719b161a25a3e3, type: 3}
     - target: {fileID: 3618782452728500420, guid: 52dc7daa5c07f0c43997cfe8072e3792, type: 3}
       propertyPath: m_Name
       value: Player
@@ -52281,6 +52321,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4003689086508957181, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: m_TagString
+      value: BrokenFence
+      objectReference: {fileID: 0}
+    - target: {fileID: 7494109933528527389, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e, type: 3}
     - target: {fileID: 7550638153184653812, guid: 1c6caa13e84724d0e97a51848cebb554, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.2
@@ -54236,6 +54284,10 @@ PrefabInstance:
       propertyPath: hole2
       value: 
       objectReference: {fileID: 1671522361}
+    - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
+      propertyPath: dustPrefab
+      value: 
+      objectReference: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
     - target: {fileID: 509833985872043190, guid: a219df4f1eb449e40954dfc52ea782c4, type: 3}
       propertyPath: isHole1Door
       value: 1
