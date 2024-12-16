@@ -33,7 +33,7 @@ public class FlourZone : MonoBehaviour
             if (player != null && playersInZone.Contains(player))
             {
                 // 속도 복구 및 플레이어를 목록에서 제거
-                player.speed /= speedMultiplier;
+                player.speed = player.isInvincible ? player.dashSpeed : player.originalSpeed;
                 playersInZone.Remove(player);
             }
         }
@@ -46,7 +46,7 @@ public class FlourZone : MonoBehaviour
         {
             if (player != null)
             {
-                player.speed /= speedMultiplier;
+                player.speed = player.isInvincible ? player.dashSpeed : player.originalSpeed;
             }
         }
 
