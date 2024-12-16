@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using System.Reflection;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class SettingsManager : MonoBehaviour
 
     void Awake()
     {
+        AutoAssignComponents();
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -44,6 +46,49 @@ public class SettingsManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void AutoAssignComponents()
+    {
+        FieldInfo[] fields = this.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        foreach (FieldInfo field in fields)
+        {
+            if (field.Name == "brightnessOverlay" || field.Name == "brightnessOverlayPrefab")
+            {
+                continue;
+            }
+            if (typeof(UnityEngine.Object).IsAssignableFrom(field.FieldType))
+            {
+                GameObject obj = GameObject.Find(field.Name);
+
+                if (obj != null)
+                {
+                    if (field.FieldType == typeof(GameObject))
+                    {
+                        field.SetValue(this, obj);
+                        Debug.Log($"Assigned {field.Name} to GameObject {obj.name}");
+                    }
+                    else
+                    {
+                        Component component = obj.GetComponent(field.FieldType);
+                        if (component != null)
+                        {
+                            field.SetValue(this, component);
+                            Debug.Log($"Assigned {field.Name} to {component.GetType().Name} from GameObject {obj.name}");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"Object {obj.name} does not have a component of type {field.FieldType.Name}");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"No GameObject found with name {field.Name}");
+                }
+            }
+        }
     }
 
     void OnEnable()
@@ -105,7 +150,18 @@ public class SettingsManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (scene.buildIndex == 0) 
+        {
+            return;
+        }
         AttachOverlayToCanvas();
+        AutoAssignComponents();
+        
+        if(settingsPanel != null && settingsPanel.activeSelf)
+        {
+            settingsPanel.SetActive(false);
+            LoadSettings();
+        }
     }
 
     private void AttachOverlayToCanvas()

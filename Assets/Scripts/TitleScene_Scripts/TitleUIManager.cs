@@ -161,7 +161,6 @@ public class TitleUIManager : MonoBehaviour
     {
         bool isActive = settingsPanel.activeSelf;
         settingsPanel.SetActive(!isActive);
-        Time.timeScale = isActive ? 1 : 0; 
     }
     public void LoadContinueScene()
     {
