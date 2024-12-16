@@ -79,6 +79,7 @@ MonoBehaviour:
   hp: 1
   damageAmount: 1
   isStationary: 0
+  score: 400
   defaultPosition: {x: 0, y: 0, z: 0}
   patrolRange: {x: 5, y: 0, z: 5}
   speed: 4
@@ -87,6 +88,7 @@ MonoBehaviour:
   isChasing: 0
   currentSpeed: 0
   hasReached: 0
+  deathParticlePrefab: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
