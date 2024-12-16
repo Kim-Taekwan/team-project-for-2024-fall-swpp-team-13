@@ -22,11 +22,10 @@ public class UIWorldMap : MonoBehaviour
         FindAllLines();
 
         // Manually activating levels here, this will actually have to be handled at each Stage scene's scripts
-        PlayerPrefs.DeleteAll();
         //PlayerProgress.MarkLevelCompleted(2); // Activate level 2
         //PlayerProgress.MarkLevelCompleted(3);
 
-        stageUnlocked[0] = true; 
+        UpdateStageUnlockedFromGameManager();
         //stageUnlocked[1] = PlayerProgress.IsLevelCompleted(2); // check if level 2 is completed
         //stageUnlocked[2] = PlayerProgress.IsLevelCompleted(3); 
 
@@ -167,5 +166,23 @@ public class UIWorldMap : MonoBehaviour
     public void ReturnToMenu()
     {
         SceneManager.LoadScene("TitleScene"); 
+    }
+
+    private void UpdateStageUnlockedFromGameManager()
+    {
+        if (GameManager.Instance != null)
+        {
+            int stageProgress = GameManager.Instance.stageProgress;
+            Debug.Log($"Stage Progress from GameManager: {stageProgress}");
+
+            for (int i = 0; i < stageProgress && i < stageUnlocked.Count; i++)
+            {
+                stageUnlocked[i] = true;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("GameManager Instance not found!");
+        }
     }
 }

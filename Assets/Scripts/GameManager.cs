@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     // Save Log
     [SerializeField] bool[] obtainedRecipes = new bool[4];
     [SerializeField] int[] bestScores = new int[4];
-    [SerializeField] int stageProgress = 0; // 0: No stages cleared,    [1-4]: cleared up to [1-4] stage
+    [SerializeField] public int stageProgress = 0; // 0: No stages cleared,    [1-4]: cleared up to [1-4] stage
 
     // System variables
     [SerializeField] int currentStage = 0;  // 0: None(World Map etc.), [1-4]: currently playing [1-4] stage

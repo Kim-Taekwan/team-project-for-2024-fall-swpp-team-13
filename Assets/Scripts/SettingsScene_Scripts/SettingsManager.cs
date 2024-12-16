@@ -21,7 +21,8 @@ public class SettingsManager : MonoBehaviour
     public Button quitYesButton;
     public Button quitNoButton;
 
-    public Image brightnessOverlay;
+    public Image brightnessOverlayPrefab; 
+    private Image brightnessOverlay;  
 
     public bool isSaved;
 
@@ -29,7 +30,7 @@ public class SettingsManager : MonoBehaviour
     private Resolution[] predefinedResolutions = new Resolution[]
     {
         new Resolution { width = 1920, height = 1080 },
-        new Resolution { width = 1600, height = 900},
+        new Resolution { width = 1600, height = 900 },
         new Resolution { width = 1280, height = 720 }
     };
 
@@ -45,15 +46,25 @@ public class SettingsManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Start()
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void Start()
     {
         Resolution[] supportedResolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
         List<Resolution> availiableResolutions = predefinedResolutions
-        .Where(predef => supportedResolutions.Any(supported => 
-            predef.width == supported.width && predef.height == supported.height))
-        .ToList();
+            .Where(predef => supportedResolutions.Any(supported =>
+                predef.width == supported.width && predef.height == supported.height))
+            .ToList();
 
         resolutions = availiableResolutions.ToArray();
 
@@ -89,6 +100,28 @@ public class SettingsManager : MonoBehaviour
         isSaved = true;
 
         LoadSettings();
+        AttachOverlayToCanvas();
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        AttachOverlayToCanvas();
+    }
+
+    private void AttachOverlayToCanvas()
+    {
+        if (brightnessOverlay == null && brightnessOverlayPrefab != null)
+        {
+            Canvas rootCanvas = GetRootCanvas();
+
+            brightnessOverlay = Instantiate(brightnessOverlayPrefab, rootCanvas.transform, false);
+            brightnessOverlay.transform.SetSiblingIndex(rootCanvas.transform.childCount - 1); 
+
+            float brightness = PlayerPrefs.GetFloat("Brightness", 1f);
+            float alpha = 1f - brightness;
+            brightnessOverlay.color = new Color(0, 0, 0, alpha);
+            Debug.Log($"BrightnessOverlay added: Alpha={alpha}");
+        }
     }
 
     public void SetBrightness(float brightness)
@@ -97,6 +130,11 @@ public class SettingsManager : MonoBehaviour
         {
             float alpha = 1f - brightness; 
             brightnessOverlay.color = new Color(0, 0, 0, alpha);
+
+            PlayerPrefs.SetFloat("Brightness", brightness);
+            PlayerPrefs.Save();
+
+            Debug.Log($"Brightness set to {brightness}, Alpha set to {alpha}");
         }
 
         isSaved = false;
@@ -106,7 +144,7 @@ public class SettingsManager : MonoBehaviour
     {
         if (volume < 0 || volume > 100)
         {
-            return; 
+            return;
         }
         AudioManager.Instance.SetBGMVolume(volume);
         isSaved = false;
@@ -116,7 +154,7 @@ public class SettingsManager : MonoBehaviour
     {
         if (volume < 0 || volume > 100)
         {
-            return; 
+            return;
         }
         AudioManager.Instance.SetSFXVolume(volume);
         isSaved = false;
@@ -157,7 +195,7 @@ public class SettingsManager : MonoBehaviour
         SaveSettings();
         settingsPanel.SetActive(false);
         quitPanel.SetActive(false);
-        Time.timeScale = 1; 
+        Time.timeScale = 1;
     }
 
     public void QuitNo()
@@ -177,7 +215,8 @@ public class SettingsManager : MonoBehaviour
 
     public void LoadSettings()
     {
-        if(!PlayerPrefs.HasKey("Brightness") || !PlayerPrefs.HasKey("BGMVolume") || !PlayerPrefs.HasKey("SFXVolume") || !PlayerPrefs.HasKey("Resolution") || !PlayerPrefs.HasKey("Fullscreen")){
+        if (!PlayerPrefs.HasKey("Brightness") || !PlayerPrefs.HasKey("BGMVolume") || !PlayerPrefs.HasKey("SFXVolume") || !PlayerPrefs.HasKey("Resolution") || !PlayerPrefs.HasKey("Fullscreen"))
+        {
             PlayerPrefs.SetFloat("Brightness", 1f);
             PlayerPrefs.SetFloat("BGMVolume", 0.5f);
             PlayerPrefs.SetFloat("SFXVolume", 0.5f);
@@ -185,6 +224,8 @@ public class SettingsManager : MonoBehaviour
             PlayerPrefs.SetInt("Fullscreen", 1);
         }
         float brightness = PlayerPrefs.GetFloat("Brightness", 1f);
+        Debug.Log(brightness);
+        PlayerPrefs.SetFloat("Brightness", brightness);
         brightnessSlider.value = brightness;
         brightnessSlider.onValueChanged.RemoveAllListeners();
         brightnessSlider.value = brightness;
@@ -218,6 +259,28 @@ public class SettingsManager : MonoBehaviour
         fullscreenDropdown.value = PlayerPrefs.GetInt("Fullscreen");
         SetFullscreen(fullscreenDropdown.value);
     }
+    private Canvas GetRootCanvas()
+    {
+        Canvas[] allCanvases = FindObjectsOfType<Canvas>();
+
+        foreach (Canvas canvas in allCanvases)
+        {
+            if (canvas.transform.parent == null) 
+            {
+                return canvas;
+            }
+        }
+
+        GameObject newCanvas = new GameObject("RootCanvas");
+        Canvas rootCanvas = newCanvas.AddComponent<Canvas>();
+        rootCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+        newCanvas.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        newCanvas.AddComponent<GraphicRaycaster>();
+
+        return rootCanvas;
+    }
+
 
     public void Update()
     {
