@@ -20,6 +20,7 @@ public class Bug : MonoBehaviour, IEnemy
     [SerializeField] float currentSpeed;
     private Quaternion defaultRotation;
     private Quaternion targetRotation;
+    public GameObject deathParticlePrefab;
 
     private StageManager stageManager;
     private Vector3 patrolTarget;
@@ -159,7 +160,10 @@ public class Bug : MonoBehaviour, IEnemy
     private IEnumerator DelayDeath()
     {
         yield return new WaitForSeconds(0.3f);
-        //TODO: Add Particle Effect
+        if (deathParticlePrefab != null)
+        {
+            Instantiate(deathParticlePrefab, transform.position, Quaternion.identity);
+        }
         Destroy(gameObject);
     }
 

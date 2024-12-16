@@ -71,7 +71,7 @@ public class PowerupEventManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             Time.timeScale = Time.timeScale - 0.1f <= 0.0f ? 0.0f : Time.timeScale - 0.1f;
-            Debug.Log(Time.time);
+            //Debug.Log(Time.time);
         }
     }
 

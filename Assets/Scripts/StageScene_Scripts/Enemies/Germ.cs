@@ -18,8 +18,8 @@ public class Germ : MonoBehaviour, IEnemy
     [SerializeField] Vector3 defaultPosition;
     public Vector3 patrolRange = new Vector3(5.0f, 0, 5.0f);
     public float speed = 4.0f;
-    public float detectDistance = 6.0f; // ÇÃ·¹ÀÌ¾î °¨Áö °Å¸®
-    public float returnDistance = 8.0f; // ÇÃ·¹ÀÌ¾î¸¦ ÃßÀûÇÏ´Ù°¡ µ¹¾Æ°¡´Â °Å¸®
+    public float detectDistance = 6.0f; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
+    public float returnDistance = 8.0f; // ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Ù°ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
     public bool isChasing = false;
     private float reachedThreshold = 1.0f;
     [SerializeField] float currentSpeed;
@@ -28,6 +28,7 @@ public class Germ : MonoBehaviour, IEnemy
     private Quaternion targetRotation;
     private bool isDead = false;    
     private Vector3 patrolTarget;
+    public GameObject deathParticlePrefab;
 
     // Attack
     [Header("Attack")]
@@ -116,7 +117,7 @@ public class Germ : MonoBehaviour, IEnemy
                 }
                 else
                 {
-                    // patrolTarget°ú ÃæºÐÈ÷ °¡±î¿ì¸é »õ·Î¿î ¸ñÇ¥ ÁöÁ¡ »ý¼º
+                    // patrolTargetï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     SetNewPatrolTarget();
                 }
             }
@@ -154,7 +155,7 @@ public class Germ : MonoBehaviour, IEnemy
         }
         else
         {
-            // ¹üÀ§ ¾È¿¡¼­ ·£´ýÀ¸·Î ÆÐÆ®·Ñ Å¸°Ù ÁöÁ¤
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             float randomX = Random.Range(-patrolRange.x, patrolRange.x);
             float randomZ = Random.Range(-patrolRange.z, patrolRange.z);
             patrolTarget = defaultPosition + new Vector3(randomX, 0, randomZ);
@@ -227,7 +228,10 @@ public class Germ : MonoBehaviour, IEnemy
     private IEnumerator DelayDeath()
     {
         yield return new WaitForSeconds(0.3f);
-        //TODO: Add Particle Effect
+        if (deathParticlePrefab != null)
+        {
+            Instantiate(deathParticlePrefab, transform.position, Quaternion.identity);
+        }
         Destroy(gameObject);
     }
 

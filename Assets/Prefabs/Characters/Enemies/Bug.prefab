@@ -63,6 +63,7 @@ MonoBehaviour:
   hp: 1
   damageAmount: 1
   isStationary: 0
+  score: 200
   defaultPosition: {x: 0, y: 0, z: 0}
   patrolRange: {x: 3, y: 0, z: 3}
   speed: 3
@@ -70,6 +71,7 @@ MonoBehaviour:
   returnDistance: 8
   isAttacking: 0
   currentSpeed: 0
+  deathParticlePrefab: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
   hasReached: 0
 --- !u!54 &2803333794917593607
 Rigidbody:

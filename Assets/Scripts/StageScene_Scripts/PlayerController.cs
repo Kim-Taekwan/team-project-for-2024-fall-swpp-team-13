@@ -526,7 +526,7 @@ public class PlayerController : MonoBehaviour
                     validContacts++;
                 }
             }
-            Debug.Log(validContacts + " / " + collision.contacts.Length);
+            //Debug.Log(validContacts + " / " + collision.contacts.Length);
             IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
             if (enemy == null)
             {
