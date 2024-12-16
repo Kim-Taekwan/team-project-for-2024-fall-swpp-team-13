@@ -217,7 +217,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        //AudioManager.Instance.PlayAttackSound();
+        AudioManager.Instance.PlayAttackSound();
         animator.SetTrigger("attackTrig");
         canAttack = false;
         Vector3 playerPosition = transform.position;
