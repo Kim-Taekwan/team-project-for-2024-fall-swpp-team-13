@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private StageManager stageManager;
     private StaminaManager staminaManager;
     private HealthManager healthManager;
+    private HPScript hpScript;
     private Camera mainCamera;
 
     // Ground Interaction
@@ -82,12 +83,16 @@ public class PlayerController : MonoBehaviour
     private Coroutine currentPowerupCoroutine;
     public float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
+    public GameObject sweetPotatoEffect;
+    public GameObject chiliPepperEffect;
+
+    public GameObject dustPrefab;
     public Vector3 carrotYOffset = new Vector3(0, 0.5f, 0);
     public bool isUsingPowerup = false;
 
     // Particles
-    [Header("Particles")]
-    public ParticleSystem dirtTrail;
+    //[Header("Particles")]
+    // public GameObject dirtTrail;
 
     // Cinemachine
     public CinemachineVirtualCamera VC1; 
@@ -100,6 +105,7 @@ public class PlayerController : MonoBehaviour
         staminaManager = GameObject.Find("Stamina Bar").GetComponent<StaminaManager>();
         healthManager = GameObject.Find("Health").GetComponent<HealthManager>();
         animator = transform.GetChild(0).GetComponent<Animator>();
+        hpScript = GetComponent<HPScript>();
         groundChecker = GetComponent<GroundChecker>();
         boxCollider = GetComponent<BoxCollider>();
         mainCamera = Camera.main;
@@ -188,6 +194,9 @@ public class PlayerController : MonoBehaviour
         Vector3 velocity = new Vector3(0.0f, rb.velocity.y, 0.0f) + direction * currentSpeed;
 
         rb.velocity = velocity;
+
+        if(isGrounded && (velocity.magnitude > 0.1f)) StartCoroutine(PlayDustAndTrailEffect());
+        //Instantiate(dustPrefab, transform.position, Quaternion.identity);
         UpdateAnimation(direction);
     }
 
@@ -222,6 +231,17 @@ public class PlayerController : MonoBehaviour
             isJumping = false;
             animator.SetBool("isGrounded", true);
             boxCollider.material = null;
+        }
+    }
+
+    IEnumerator PlayDustAndTrailEffect()
+    {
+        if(UnityEngine.Random.Range(0, 2) == 0){
+            GameObject dust = Instantiate(dustPrefab, transform.position - transform.forward * 0.2f + new Vector3(0.0f, 0.2f, 0.0f), Quaternion.identity);
+            //GameObject trail = Instantiate(dirtTrail, transform.position - transform.forward * 0.2f + new Vector3(0.0f, 0.2f, 0.0f), Quaternion.identity);
+            yield return new WaitForSeconds(0.1f);
+            Destroy(dust);
+            //Destroy(trail);
         }
     }
 
@@ -317,10 +337,6 @@ public class PlayerController : MonoBehaviour
             }
             */
         }
-        else
-        {
-            //dirtTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        }
     }
 
     public void ResetPowerupSettings()
@@ -351,12 +367,15 @@ public class PlayerController : MonoBehaviour
     {
         canMove = false;
         animator.SetBool("isSweetPotato", true);
+        GameObject effect = Instantiate(sweetPotatoEffect, transform.position, Quaternion.identity);
+        effect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
             UseSweetPotato();
             staminaManager.RunStamina(staminaCost[Powerup.SweetPotato] / 50.0f);
             yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
         }
+        Destroy(effect);
         ResetPowerupSettings();
     }
 
@@ -364,11 +383,14 @@ public class PlayerController : MonoBehaviour
     {
         isInvincible = true;
         speed = dashSpeed;
+        GameObject effect = Instantiate(chiliPepperEffect, transform.position, Quaternion.identity);
+        effect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
             staminaManager.RunStamina(staminaCost[Powerup.ChiliPepper] / 50.0f);
             yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
         }
+        Destroy(effect);
         ResetPowerupSettings();
     }
 
@@ -413,6 +435,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         canTakeDamage = false;
+        hpScript.ChangeHP(transform.position);
         stageManager.LoseHp(amount);
 
         if (attackTransform != null)
@@ -563,6 +586,7 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
             rb.velocity = Vector3.zero;
             ResetPowerupSettings();
+            canMove = false;
 
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
@@ -588,7 +612,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(showRewardDelay);
         reward.transform.localScale *= 0.5f;
         reward.transform.position = transform.position + rewardOffset;
-        reward.GetComponent<SpinningItems>().startY = reward.gameObject.transform.position.y;
+        reward.transform.Find("RewardObject").GetComponent<SpinningItems>().startY = reward.gameObject.transform.position.y;
         reward.SetActive(true);
     }
 
