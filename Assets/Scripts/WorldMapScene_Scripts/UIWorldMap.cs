@@ -101,6 +101,15 @@ public class UIWorldMap : MonoBehaviour
     {
         if (stageUnlocked[index])
         {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.currentStage = index + 1; 
+                Debug.Log($"GameManager currentStage updated to: {GameManager.Instance.currentStage}");
+            }
+            else
+            {
+                Debug.LogWarning("GameManager Instance not found!");
+            }      
             switch (index)
             {
                 case 0: LoadingSceneController.LoadScene("Stage1"); break;

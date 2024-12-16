@@ -53,7 +53,10 @@ public class ClickableNode : MonoBehaviour
         if (uiWorldMap.stageUnlocked[nodeIndex])
         {
             string nextSceneName = "";
-
+            
+            GameManager.Instance.currentStage = nodeIndex + 1; 
+            Debug.Log($"GameManager currentStage updated to: {GameManager.Instance.currentStage}");
+            
             switch (nodeIndex)
             {
                 case 0: nextSceneName = "Stage1"; break;

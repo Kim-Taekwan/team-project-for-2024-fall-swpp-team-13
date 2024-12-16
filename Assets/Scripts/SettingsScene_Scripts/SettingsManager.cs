@@ -180,13 +180,15 @@ public class SettingsManager : MonoBehaviour
 
     public void Back()
     {
-        if (quitPanel.activeSelf)
-        {
-            quitPanel.SetActive(false);
-        }
-        else if (settingsPanel.activeSelf)
-        {
-            quitPanel.SetActive(true);
+        if(quitPanel != null){
+            if (quitPanel.activeSelf)
+            {
+                quitPanel.SetActive(false);
+            }
+            else if (settingsPanel.activeSelf)
+            {
+                quitPanel.SetActive(true);
+            }
         }
     }
 
