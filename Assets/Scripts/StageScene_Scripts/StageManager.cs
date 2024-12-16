@@ -1,9 +1,10 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-//using UnityEditor.Animations;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public enum Powerup
 public class StageManager : MonoBehaviour
 {
     // Stage status
+    [Header("Stage Status")]
     public bool obtainedRecipe = false;
     public int stageCoins = 0;
     public int stageScore = 0;
@@ -27,8 +29,10 @@ public class StageManager : MonoBehaviour
     public bool isGameClear = false;
     public bool isGamePaused = false;
     public bool isFreezed = false; // for movement of all dynamic objects like player, enemies, obstacles
+    public bool canPause = true;
 
     // Stage UI
+    [Header("Stage UI")]
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI coinText;
     public Image recipeImage;
@@ -36,9 +40,11 @@ public class StageManager : MonoBehaviour
     public Canvas mainCanvas;
     public Canvas gameOverCanvas;
     public Canvas gameClearCanvas;
+    public CinemachineVirtualCamera victoryCam;
     private PauseUIManager pauseUIManager;
 
     // Player status
+    [Header("Player Status")]
     public int hp = 6, maxHp = 6;
     public float stamina = 10.0f, maxStamina = 10.0f;
     public Powerup currentPowerup = Powerup.None;
@@ -50,6 +56,8 @@ public class StageManager : MonoBehaviour
     public static event Action OnPlayerHealed;
     public static event Action OnGameCleared;
 
+    public GameObject clearParticlePrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,7 +66,7 @@ public class StageManager : MonoBehaviour
         playerController = player.GetComponent<PlayerController>();
     }
 
-    // Checker method to determine the game continues
+    // Checker method to determine if the game continues
     public bool CheckGameContinue()
     {
         return !isGamePaused && !isGameClear && !isGameOver && !isFreezed;
@@ -75,7 +83,7 @@ public class StageManager : MonoBehaviour
         stageCoins += coins;
         AudioManager.Instance.PlayCoinSound();
         UpdateScore(coins * 100);
-        coinText.text = "�� " + stageCoins.ToString("D2");
+        coinText.text = "X " + stageCoins.ToString("D2");
     }
 
     public void ObtainRecipe()
@@ -156,9 +164,21 @@ public class StageManager : MonoBehaviour
         mainCanvas.gameObject.SetActive(false);
         gameClearCanvas.gameObject.SetActive(true);
         OnGameCleared?.Invoke();
+        StartCoroutine(InstantiateGameClearParticle(0.3f));
+        //Instantiate(clearParticlePrefab, player.transform.position, Quaternion.identity);
+
+        // victory Camera action
+        playerController.LookAtCamera(victoryCam.gameObject);
+        victoryCam.Priority = 20;
 
         // Save log right after stage clear
         GameManager.Instance.UpdateStageClear(stageScore, obtainedRecipe);
+    }
+
+    private IEnumerator InstantiateGameClearParticle(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Instantiate(clearParticlePrefab, player.transform.position, Quaternion.identity);
     }
 
     public void RestartGame()
