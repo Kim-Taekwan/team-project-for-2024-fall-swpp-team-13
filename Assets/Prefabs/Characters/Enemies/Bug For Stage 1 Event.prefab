@@ -81,6 +81,7 @@ MonoBehaviour:
   speed: 3
   currentSpeed: 0
   score: 200
+  deathParticlePrefab: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
 --- !u!1001 &8649817319811757344
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TitleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Scenes/ContinueScene 1.unity
+    guid: 9ff2573c334314549a7e814f1f023b7c
+  - enabled: 0
+    path: Assets/Scenes/ContinueScene.unity
+    guid: 22167128584be45028446724d71481fd
   - enabled: 1
     path: Assets/Scenes/HelpScene.unity
     guid: aed3c53bdaf5546868f15ef23561d9c8
@@ -20,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage1.unity
     guid: faa472212c70d4b9b948e425beb5b5dd
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 17d136e33fd45bf4a8fce097a0c7bd9b
   m_configObjects: {}

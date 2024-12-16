@@ -18,6 +18,7 @@ public class BugForEvent : MonoBehaviour, IEnemy
     private GameObject player;
     private Animator animator;
     private bool isDead = false;
+    public GameObject deathParticlePrefab;
 
     void Awake()
     {
@@ -74,7 +75,10 @@ public class BugForEvent : MonoBehaviour, IEnemy
     private IEnumerator DelayDeath()
     {
         yield return new WaitForSeconds(0.3f);
-        //TODO: Add Particle Effect
+        if (deathParticlePrefab != null)
+        {
+            Instantiate(deathParticlePrefab, transform.position, Quaternion.identity);
+        }
         Destroy(gameObject);
     }
 

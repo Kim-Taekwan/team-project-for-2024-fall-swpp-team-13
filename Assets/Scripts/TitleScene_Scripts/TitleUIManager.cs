@@ -13,6 +13,7 @@ public class TitleUIManager : MonoBehaviour
     public GameObject quitAskText;
     public GameObject quitYesButton;
     public GameObject quitNoButton;
+    public GameObject settingsPanel; 
     public GameObject[] selectTriangleList;
     public int selectedButton = 0;
     public int selectedQuitButton = 0;
@@ -40,12 +41,12 @@ public class TitleUIManager : MonoBehaviour
         showButtons();
         showSelectTriangle();
         hideQuitAsk();
-
+        settingsPanel.SetActive(false); 
         isQuitAsk = false;
     }
     public void Update()
     {
-        if(!isQuitAsk){
+        if(!isQuitAsk && !settingsPanel.activeSelf){
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 if (selectedButton < maxButtons - 1)
@@ -74,7 +75,7 @@ public class TitleUIManager : MonoBehaviour
                 }
                 if (selectedButton == 2)
                 {
-                    LoadSettingsScene();
+                    ToggleSettingsPanel();
                 }
                 if (selectedButton == 3)
                 {
@@ -82,7 +83,7 @@ public class TitleUIManager : MonoBehaviour
                 }
             }
         }
-        else{
+        else if (isQuitAsk){
             if(Input.GetKeyDown(KeyCode.LeftArrow)){
                 if(selectedQuitButton == 1){
                     selectedQuitButton = 0;
@@ -156,13 +157,10 @@ public class TitleUIManager : MonoBehaviour
             SceneManager.LoadScene("WorldMapScene");
         }
     }
-    public void LoadSettingsScene()
+    public void ToggleSettingsPanel()
     {
-        hideButtons();
-        hideSelectTriangle();
-        if(!isQuitAsk){
-            SceneManager.LoadSceneAsync("SettingsScene", LoadSceneMode.Additive);
-        }
+        bool isActive = settingsPanel.activeSelf;
+        settingsPanel.SetActive(!isActive);
     }
     public void LoadContinueScene()
     {
@@ -203,12 +201,12 @@ public class TitleUIManager : MonoBehaviour
         Outline quitYesOutline = quitYesButton.gameObject.GetComponent<Outline>();
         Outline quitNoOutline = quitNoButton.gameObject.GetComponent<Outline>();
         if(selectedQuitButton == 0){
-            quitYesOutline.effectColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            quitYesOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
             quitNoOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         }
         if(selectedQuitButton == 1){
             quitYesOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-            quitNoOutline.effectColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            quitNoOutline.effectColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
         }
     }
 }

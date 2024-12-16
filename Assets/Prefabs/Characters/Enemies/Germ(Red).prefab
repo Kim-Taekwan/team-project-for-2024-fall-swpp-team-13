@@ -88,6 +88,7 @@ MonoBehaviour:
   isChasing: 0
   currentSpeed: 0
   hasReached: 0
+  deathParticlePrefab: {fileID: 3302442364004722511, guid: 10434d6bf3af98b46a88ab696f543ee3, type: 3}
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
