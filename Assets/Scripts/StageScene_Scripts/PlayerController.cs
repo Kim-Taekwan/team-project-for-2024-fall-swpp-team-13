@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine currentPowerupCoroutine;
     private float originalSpeed;
     public float holdPowerupStaminaCooldown = 1.0f;
+    public GameObject sweetPotatoEffect;
 
     public GameObject dustPrefab;
 
@@ -346,12 +347,15 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SweetPotatoHoldCoroutine()
     {
+        GameObject effect = Instantiate(sweetPotatoEffect, transform.position, Quaternion.identity);
+        effect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
             UseSweetPotato();
             staminaManager.RunStamina(staminaCost[Powerup.SweetPotato] / 50.0f);
             yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
         }
+        Destroy(effect);
         ResetPowerupSettings();
     }
 
@@ -549,7 +553,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(showRewardDelay);
         reward.transform.localScale *= 0.5f;
         reward.transform.position = transform.position + rewardOffset;
-        reward.GetComponent<SpinningItems>().startY = reward.gameObject.transform.position.y;
+        reward.transform.Find("RewardObject").GetComponent<SpinningItems>().startY = reward.gameObject.transform.position.y;
         reward.SetActive(true);
     }
 
