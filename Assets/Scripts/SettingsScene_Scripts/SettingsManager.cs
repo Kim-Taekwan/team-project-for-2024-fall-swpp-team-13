@@ -9,6 +9,7 @@ using System.Reflection;
 public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager Instance { get; private set; }
+    public static bool firstScene = true;
 
     public Slider brightnessSlider;
     public Slider bgmVolumeSlider;
@@ -67,7 +68,6 @@ public class SettingsManager : MonoBehaviour
                     if (field.FieldType == typeof(GameObject))
                     {
                         field.SetValue(this, obj);
-                        Debug.Log($"Assigned {field.Name} to GameObject {obj.name}");
                     }
                     else
                     {
@@ -77,18 +77,12 @@ public class SettingsManager : MonoBehaviour
                             field.SetValue(this, component);
                             Debug.Log($"Assigned {field.Name} to {component.GetType().Name} from GameObject {obj.name}");
                         }
-                        else
-                        {
-                            Debug.LogWarning($"Object {obj.name} does not have a component of type {field.FieldType.Name}");
-                        }
                     }
-                }
-                else
-                {
-                    Debug.LogWarning($"No GameObject found with name {field.Name}");
                 }
             }
         }
+        //if(quitPanel != null && quitPanel.activeSelf)
+        //    quitPanel.SetActive(false);
     }
 
     void OnEnable()
@@ -103,6 +97,11 @@ public class SettingsManager : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.SetFloat("Brightness", 1f);
+        PlayerPrefs.SetFloat("BGMVolume", 0.5f);
+        PlayerPrefs.SetFloat("SFXVolume", 0.5f);
+        PlayerPrefs.SetInt("Resolution", 0);
+        PlayerPrefs.SetInt("Fullscreen", 1);
         Resolution[] supportedResolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
@@ -150,8 +149,9 @@ public class SettingsManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.buildIndex == 0) 
+        if (firstScene) 
         {
+            firstScene = false;
             return;
         }
         AttachOverlayToCanvas();
@@ -159,6 +159,8 @@ public class SettingsManager : MonoBehaviour
         
         if(settingsPanel != null && settingsPanel.activeSelf)
         {
+            if(quitPanel != null && quitPanel.activeSelf)
+                quitPanel.SetActive(false);
             settingsPanel.SetActive(false);
             LoadSettings();
         }
@@ -175,6 +177,8 @@ public class SettingsManager : MonoBehaviour
 
             float brightness = PlayerPrefs.GetFloat("Brightness", 1f);
             float alpha = 1f - brightness;
+            if(alpha > 0.8f)
+                alpha = 0.8f;
             brightnessOverlay.color = new Color(0, 0, 0, alpha);
             Debug.Log($"BrightnessOverlay added: Alpha={alpha}");
         }
@@ -185,6 +189,8 @@ public class SettingsManager : MonoBehaviour
         if (brightnessOverlay != null)
         {
             float alpha = 1f - brightness; 
+            if(alpha > 0.8f)
+                alpha = 0.8f;
             brightnessOverlay.color = new Color(0, 0, 0, alpha);
 
             PlayerPrefs.SetFloat("Brightness", brightness);
@@ -282,7 +288,6 @@ public class SettingsManager : MonoBehaviour
             PlayerPrefs.SetInt("Fullscreen", 1);
         }
         float brightness = PlayerPrefs.GetFloat("Brightness", 1f);
-        Debug.Log(brightness);
         PlayerPrefs.SetFloat("Brightness", brightness);
         brightnessSlider.value = brightness;
         brightnessSlider.onValueChanged.RemoveAllListeners();
@@ -292,6 +297,8 @@ public class SettingsManager : MonoBehaviour
         if (brightnessOverlay != null)
         {
             float alpha = 1f - brightness;
+            if(alpha > 0.8f)
+                alpha = 0.8f;
             brightnessOverlay.color = new Color(0, 0, 0, alpha);
         }
 
@@ -300,7 +307,9 @@ public class SettingsManager : MonoBehaviour
 
         bgmVolumeSlider.onValueChanged.RemoveAllListeners();
         sfxVolumeSlider.onValueChanged.RemoveAllListeners();
-
+        
+        Debug.Log(bgmVolume);
+        
         AudioManager.Instance.SetBGMVolume(bgmVolume);
         bgmVolumeSlider.value = bgmVolume;
 
