@@ -3801,7 +3801,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obtainedRecipes: 00000000
   bestScores: 00000000000000000000000000000000
-  stageProgress: 0
+  stageProgress: 1
   currentStage: 0
 --- !u!4 &1050578992
 Transform:
