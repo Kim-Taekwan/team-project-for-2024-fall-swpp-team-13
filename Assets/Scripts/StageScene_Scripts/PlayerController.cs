@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -88,6 +89,10 @@ public class PlayerController : MonoBehaviour
     [Header("Particles")]
     public ParticleSystem dirtTrail;
 
+    // Cinemachine
+    public CinemachineVirtualCamera VC1; 
+    public float requiredPosition = 1.0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -155,6 +160,16 @@ public class PlayerController : MonoBehaviour
             HandleJump();
             UpdateEffects();
         }
+    }
+
+    private bool DollyTrackReached()
+    {
+        if (VC1 != null)
+        {
+            var dolly = VC1.GetCinemachineComponent<CinemachineTrackedDolly>();
+            return dolly != null && dolly.m_PathPosition >= requiredPosition;
+        }
+        return true;
     }
 
     private void HandleMovement()
@@ -496,7 +511,7 @@ public class PlayerController : MonoBehaviour
             }
 
             if (isInvincible)
-            {                
+            {
                 enemy.TakeDamage(1);
             }
             else if (validContacts >= collision.contacts.Length / 2)
@@ -513,8 +528,13 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                enemy.GiveDamage();                                        
+                enemy.GiveDamage();
             }
+        }
+
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage(1, collision.transform);
         }
     }
 

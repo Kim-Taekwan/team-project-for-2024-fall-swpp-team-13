@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scenes/StageTestScene.unity.meta
 guid: 3665d71e76bde72418caa69dc38b9d56
+========
+guid: d67068f83822b4247976569d4361ae80
+>>>>>>>> origin/feat/stage-three:Assets/External Assets/GeniusCrate_Games/Kitchen_Set/Scenes/Kitchen_Dinning_set(interior).unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
