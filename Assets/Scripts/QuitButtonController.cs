@@ -34,6 +34,7 @@ public class QuitButtonController : MonoBehaviour
     {
         if (settingsManager != null && settingsManager.quitPanel != null)
         {
+            settingsManager.settingsPanel.SetActive(false);
             settingsManager.quitPanel.SetActive(false);
             Debug.Log("QuitNo executed.");
         }

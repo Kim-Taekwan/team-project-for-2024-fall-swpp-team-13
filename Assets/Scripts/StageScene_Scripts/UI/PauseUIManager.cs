@@ -9,6 +9,7 @@ public class PauseUIManager : MonoBehaviour
     public Canvas pauseCanvas;
     public List<Button> buttons = new List<Button>();
     public int currentButtonIndex = 0;
+    public GameObject settingsPanel;
 
     private StageManager stageManager;
 
@@ -25,7 +26,7 @@ public class PauseUIManager : MonoBehaviour
         {
             if (!stageManager.isGamePaused)
                 ActivatePauseUI();
-            else
+            else if (settingsPanel.activeInHierarchy == false)
                 DeactivatePauseUI();
         }
 

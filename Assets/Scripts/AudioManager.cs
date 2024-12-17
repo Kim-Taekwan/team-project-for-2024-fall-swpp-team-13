@@ -58,8 +58,13 @@ public class AudioManager : MonoBehaviour
             if (arg0.name == bgmList[i].name)
             {
                 PlayBGM(bgmList[i]);
+                return;
             }
-        }
+            if (arg0.name == "WorldMapScene" && bgmList[i].name == "TitleScene")
+            {
+                PlayBGM(bgmList[i]);
+            }
+        }                
     }
 
     public void SetBGMVolume(float volume)

@@ -187,6 +187,12 @@ public class StageManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void ReturnToWorldMap()
+    {
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene("WorldMapScene");
+    }
+
     public IEnumerator StageFreeze(float freezeDelay)
     {
         isFreezed = true;
