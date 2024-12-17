@@ -90,9 +90,9 @@ public class PlayerController : MonoBehaviour
     public Vector3 carrotYOffset = new Vector3(0, 0.5f, 0);
     public bool isUsingPowerup = false;
 
-    // Particles
-    //[Header("Particles")]
-    // public GameObject dirtTrail;
+    //Particles
+    [Header("Particles")]
+    public ParticleSystem powerupParticle;
 
     // Cinemachine
     public CinemachineVirtualCamera VC1; 
@@ -453,6 +453,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            if (stageManager.currentPowerup != Powerup.None)
+            {
+                stageManager.UpdatePowerup("None");
+                Instantiate(powerupParticle, transform.position, Quaternion.identity);
+            }
             AudioManager.Instance.PlayDamagedSound();
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
@@ -597,8 +602,11 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Powerup"))
         {
             Destroy(other.gameObject);
-            stageManager.HealHp(stageManager.maxHp);
+            stageManager.HealHp(1);
+            stageManager.UpdateScore(1000);
             stageManager.UpdatePowerup(other.gameObject.name);
+            Instantiate(powerupParticle, transform.position, Quaternion.identity);
+            AudioManager.Instance.PlayPowerUpSound();
 
             LookAtCamera(null);
             animator.SetTrigger("powerupTrig");

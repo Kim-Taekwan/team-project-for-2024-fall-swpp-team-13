@@ -96,6 +96,7 @@ MonoBehaviour:
   dustPrefab: {fileID: 2860425260954049642, guid: 91ccdc26ee9f640a69b120f1b1deaecb, type: 3}
   carrotYOffset: {x: 0, y: 0.5, z: 0}
   isUsingPowerup: 0
+  powerupParticle: {fileID: 141433446842962268, guid: 9fe8f8b3288e45a44af36ff8aa04486e, type: 3}
   VC1: {fileID: 0}
   requiredPosition: 1
 --- !u!54 &3618782452728500422
