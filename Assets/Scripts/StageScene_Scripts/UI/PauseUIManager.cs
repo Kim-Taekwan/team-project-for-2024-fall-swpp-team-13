@@ -58,6 +58,7 @@ public class PauseUIManager : MonoBehaviour
 
     public void DeactivatePauseUI()
     {
+        AudioManager.Instance.PlayCancelUISound();
         stageManager.isGamePaused = false;
         Time.timeScale = 1.0f;
         pauseCanvas.gameObject.SetActive(false);
@@ -65,6 +66,7 @@ public class PauseUIManager : MonoBehaviour
 
     public void HighlightButton(int currentIndex)
     {
+        AudioManager.Instance.PlayMoveButtonSound();
         currentButtonIndex = currentIndex;
 
         foreach (Button button in buttons)

@@ -144,7 +144,7 @@ public class Bug : MonoBehaviour, IEnemy
     // Damaged by player jump or attack
     public void TakeDamage(int amount)
     {
-        AudioManager.Instance.PlayAttackSound();
+        AudioManager.Instance.PlayEnemyDamagedSound();
         hp -= amount;
         if (hp <= 0)
         {

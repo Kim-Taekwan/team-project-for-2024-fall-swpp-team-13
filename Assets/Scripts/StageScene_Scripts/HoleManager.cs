@@ -32,18 +32,18 @@ public class HoleManager : MonoBehaviour
         {
             if (distanceToHole1 < 1.5f)
             {
-                //TODO: Particle effects on both side
                 PlayDustEffect(hole1.transform.position);
                 PlayDustEffect(hole2.transform.position);
+                AudioManager.Instance.PlayWarpSound();
                 Vector3 hole2ExitPosition = hole2.transform.GetChild(0).position;
                 player.transform.position = hole2ExitPosition;
                 StartCoroutine(playerController.MoveFreeze(exitDelay));
             }
             else if (distanceToHole2 < 1.5f)
             {
-                //TODO: Particle effects on both side
                 PlayDustEffect(hole1.transform.position);
                 PlayDustEffect(hole2.transform.position);
+                AudioManager.Instance.PlayWarpSound();
                 Vector3 hole1ExitPosition = hole1.transform.GetChild(0).position;
                 player.transform.position = hole1ExitPosition;
                 StartCoroutine(playerController.MoveFreeze(exitDelay));

@@ -18,6 +18,7 @@ public class QuitButtonController : MonoBehaviour
     {
         if (settingsManager != null)
         {
+            AudioManager.Instance.PlayDecisionButtonSound();
             settingsManager.SaveSettings();
             settingsManager.settingsPanel.SetActive(false);
             settingsManager.quitPanel.SetActive(false);
@@ -33,6 +34,7 @@ public class QuitButtonController : MonoBehaviour
     {
         if (settingsManager != null && settingsManager.quitPanel != null)
         {
+            AudioManager.Instance.PlayCancelUISound();
             settingsManager.settingsPanel.SetActive(false);
             settingsManager.quitPanel.SetActive(false);
             Debug.Log("QuitNo executed.");

@@ -50,13 +50,14 @@ public class WireController : MonoBehaviour, IDamageable
         }
         Instantiate(sparkEffectPrefab, attackPosition, Quaternion.identity);
 
-        if (electricWhisk != null)
+        if (electricWhisk != null && electricWhisk.enabled)
         {
-            electricWhisk.enabled = false; 
+            electricWhisk.enabled = false;
+            AudioManager.Instance.PlaySparkSound();
             Debug.Log("Electric Whisk turned off!");
         }
 
-        if (flourShooter != null)
+        if (flourShooter != null && flourShooter.enabled)
         {
             flourShooter.enabled = false;
         }

@@ -11,6 +11,7 @@ public class Warp : MonoBehaviour
     {
         if (other.CompareTag("Player") && targetPosition != null)
         {
+            AudioManager.Instance.PlayWarpSound();
             other.transform.position = targetPosition.position;
             AlignActiveCamera(targetPosition.position);
         }

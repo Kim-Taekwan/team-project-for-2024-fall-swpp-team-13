@@ -17,7 +17,7 @@ public class MeltByPowerup : MonoBehaviour
         if (other.CompareTag("Player") && playerController.isUsingPowerup)
         {
             GameObject dust = Instantiate(dustPrefab, transform.position + new Vector3(0.0f, 0.5f, 0.0f), Quaternion.identity);
-            //TODO : Add SFX
+            AudioManager.Instance.PlayBrokenSound();
             Destroy(gameObject);
         }
     }

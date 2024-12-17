@@ -10,11 +10,18 @@ public class ElectricWhisk : MonoBehaviour
     public float pushRadius = 23f;         
     public float pushForce = 150f;      
 
-    private Vector3 initialPosition;       
+    private Vector3 initialPosition;
+    private AudioSource audioSource;
 
     void Start()
     {
         initialPosition = transform.position;
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void OnDisable()
+    {
+        audioSource.Stop();
     }
 
     void Update()
@@ -22,6 +29,10 @@ public class ElectricWhisk : MonoBehaviour
         if (!isActive) return;
         ApplyVibration();
         ApplyPushBasedOnDistance();
+        if (audioSource != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }        
     }
 
     void ApplyVibration()

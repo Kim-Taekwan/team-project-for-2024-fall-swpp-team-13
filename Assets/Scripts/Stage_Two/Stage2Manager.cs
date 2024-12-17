@@ -7,6 +7,7 @@ public class Stage2Manager : MonoBehaviour
     public float deathYThreshold = 15f; // 죽음 판정 Y좌표
 
     private PlayerController player;
+    private StageManager stageManager;
     private bool[] visitedSubStages; // 각 Sub-Stage의 방문 여부
 
     void Start()
@@ -17,6 +18,7 @@ public class Stage2Manager : MonoBehaviour
         {
             Debug.LogError("PlayerController를 찾을 수 없습니다!");
         }
+        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
 
         // 방문 여부 배열 초기화
         visitedSubStages = new bool[respawnPoints.Length];
@@ -27,7 +29,12 @@ public class Stage2Manager : MonoBehaviour
         // 플레이어가 죽음 판정 기준을 충족했을 경우 Respawn 처리
         if (player != null && player.transform.position.y < deathYThreshold)
         {
-            RespawnPlayer();
+            player.TakeDamage(2);
+            if (!stageManager.isGameOver)
+            {
+                AudioManager.Instance.PlayCliffSound();
+                RespawnPlayer();
+            }            
         }
     }
 

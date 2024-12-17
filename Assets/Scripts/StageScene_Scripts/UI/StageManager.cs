@@ -185,12 +185,14 @@ public class StageManager : MonoBehaviour
 
     public void RestartGame()
     {
+        AudioManager.Instance.PlayDecisionButtonSound();
         Time.timeScale = 1.0f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ReturnToWorldMap()
     {
+        AudioManager.Instance.PlayMoveSceneSound();
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("WorldMapScene");
     }

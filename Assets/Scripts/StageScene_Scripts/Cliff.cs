@@ -23,14 +23,11 @@ public class Cliff : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerController.TakeDamage(1);
+            playerController.TakeDamage(2);
             if (!stageManager.isGameOver)
             {
+                AudioManager.Instance.PlayCliffSound();
                 player.transform.position = respawnPoint;
-            }
-            else
-            {
-                player.SetActive(false);
             }
         }
 

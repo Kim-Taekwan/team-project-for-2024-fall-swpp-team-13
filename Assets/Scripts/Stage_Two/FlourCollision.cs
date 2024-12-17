@@ -30,6 +30,7 @@ public class FlourCollision : MonoBehaviour
         {
             if (uiManager != null)
             {
+                AudioManager.Instance.PlayFlourOnScreenSound();
                 uiManager.ShowFlourUI();
             }
             Destroy(gameObject); 

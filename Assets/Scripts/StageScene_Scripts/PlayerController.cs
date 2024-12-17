@@ -164,7 +164,6 @@ public class PlayerController : MonoBehaviour
         {
             HandleMovement();
             HandleJump();
-            UpdateEffects();
         }
     }
 
@@ -260,6 +259,7 @@ public class PlayerController : MonoBehaviour
         }
         canAttack = false;
         animator.SetTrigger("attackTrig");
+        AudioManager.Instance.PlayAttackSound();
         StartCoroutine(AttackStay());
         StartCoroutine(AttackCooldown());
     }
@@ -313,29 +313,19 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            /*if (!audioSource.isPlaying && isGrounded)
+            if (isGrounded)
             {
-                audioSource.clip = movementSound;
-                audioSource.Play();
-            }*/
+                AudioManager.Instance.PlayMoveSound(GetInstanceID());
+            }
+            else
+            {
+                AudioManager.Instance.StopMoveSound(GetInstanceID());
+            }
         }
         else
         {
             animator.SetBool("isMoving", false);
-        }
-    }
-
-    // Particle Effects
-    private void UpdateEffects()
-    {
-        if (isMoving)
-        {
-            /*
-            if (!dirtTrail.isPlaying)
-            {
-                dirtTrail.Play();
-            }
-            */
+            AudioManager.Instance.StopMoveSound(GetInstanceID());
         }
     }
 
@@ -360,6 +350,7 @@ public class PlayerController : MonoBehaviour
         staminaManager.RunStamina(powerupStaminaCost);
         UseCarrot();
         animator.SetTrigger("shootCarrot");
+        AudioManager.Instance.PlayShootCarrotSound();
         StartCoroutine(PowerupCooldown());
     }
 
@@ -368,6 +359,7 @@ public class PlayerController : MonoBehaviour
         canMove = false;
         animator.SetBool("isSweetPotato", true);
         GameObject effect = Instantiate(sweetPotatoEffect, transform.position, Quaternion.identity);
+        AudioManager.Instance.PlaySweetPotatoSound();
         effect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
@@ -384,6 +376,7 @@ public class PlayerController : MonoBehaviour
         isInvincible = true;
         speed = dashSpeed;
         GameObject effect = Instantiate(chiliPepperEffect, transform.position, Quaternion.identity);
+        AudioManager.Instance.PlayChiliPepperSound();
         effect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
@@ -457,8 +450,12 @@ public class PlayerController : MonoBehaviour
             {
                 stageManager.UpdatePowerup("None");
                 Instantiate(powerupParticle, transform.position, Quaternion.identity);
+                AudioManager.Instance.PlayPowerupLostSound();
             }
-            AudioManager.Instance.PlayDamagedSound();
+            else
+            {
+                AudioManager.Instance.PlayDamagedSound();
+            }            
             animator.SetTrigger("damagedTrig");
             StartCoroutine(DamageCooldown());
             StartCoroutine(MovePause(stunCoolTime));
@@ -562,7 +559,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            TakeDamage(1, collision.transform);
+            TakeDamage(2, collision.transform);
         }
     }
 
@@ -593,6 +590,7 @@ public class PlayerController : MonoBehaviour
             ResetPowerupSettings();
             canMove = false;
 
+            AudioManager.Instance.PlayRewardSound();
             animator.SetBool("isGameClear", true);
             stageManager.GameClear();
 

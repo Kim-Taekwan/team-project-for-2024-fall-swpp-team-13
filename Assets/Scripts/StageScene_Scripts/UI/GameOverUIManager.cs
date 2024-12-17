@@ -43,6 +43,7 @@ public class GameOverUIManager : MonoBehaviour
 
     public void HighlightButton(int currentIndex)
     {
+        AudioManager.Instance.PlayMoveButtonSound();
         currentButtonIndex = currentIndex;
 
         foreach (Button button in buttons)

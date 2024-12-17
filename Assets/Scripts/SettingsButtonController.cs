@@ -8,6 +8,7 @@ public class SettingsButtonController : MonoBehaviour
     {
         if (settingsPanel != null)
         {
+            AudioManager.Instance.PlayDecisionButtonSound();
             settingsPanel.SetActive(true); // Settings Panel 활성화
         }
         else

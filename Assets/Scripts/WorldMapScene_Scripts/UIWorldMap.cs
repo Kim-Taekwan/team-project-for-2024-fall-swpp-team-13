@@ -56,6 +56,7 @@ public class UIWorldMap : MonoBehaviour
         {
             if (currentStageIndex < stageNodes.Count - 1 && stageUnlocked[currentStageIndex + 1])
             {
+                AudioManager.Instance.PlayMoveButtonSound();
                 currentStageIndex++;
                 UpdateStageNodes();
                 UpdateLineColors();
@@ -65,6 +66,7 @@ public class UIWorldMap : MonoBehaviour
         {
             if (currentStageIndex > 0)
             {
+                AudioManager.Instance.PlayMoveButtonSound();
                 currentStageIndex--;
                 UpdateStageNodes();
                 UpdateLineColors();
@@ -103,13 +105,14 @@ public class UIWorldMap : MonoBehaviour
         {
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.currentStage = index + 1; 
+                GameManager.Instance.currentStage = index + 1;
+                AudioManager.Instance.PlayMoveSceneSound();
                 Debug.Log($"GameManager currentStage updated to: {GameManager.Instance.currentStage}");
             }
             else
             {
                 Debug.LogWarning("GameManager Instance not found!");
-            }      
+            }
             switch (index)
             {
                 case 0: LoadingSceneController.LoadScene("Stage1"); break;
@@ -174,6 +177,7 @@ public class UIWorldMap : MonoBehaviour
     }
     public void ReturnToMenu()
     {
+        AudioManager.Instance.PlayDecisionButtonSound();
         SceneManager.LoadScene("TitleScene"); 
     }
 

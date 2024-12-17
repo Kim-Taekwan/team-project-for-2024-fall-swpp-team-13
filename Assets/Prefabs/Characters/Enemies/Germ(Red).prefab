@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 1
-  damageAmount: 2
+  damageAmount: 3
   isStationary: 0
   score: 500
   defaultPosition: {x: 0, y: 0, z: 0}

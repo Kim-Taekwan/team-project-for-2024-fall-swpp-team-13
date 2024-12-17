@@ -212,7 +212,7 @@ public class Germ : MonoBehaviour, IEnemy
     // Damaged by attack
     public void TakeDamage(int amount)
     {
-        AudioManager.Instance.PlayAttackSound();
+        AudioManager.Instance.PlayEnemyDamagedSound();
         hp -= amount;
         if (hp <= 0)
         {

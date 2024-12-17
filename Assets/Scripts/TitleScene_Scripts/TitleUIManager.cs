@@ -49,6 +49,7 @@ public class TitleUIManager : MonoBehaviour
         if(!isQuitAsk && !settingsPanel.activeSelf){
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
+                AudioManager.Instance.PlayMoveButtonSound();
                 if (selectedButton < maxButtons - 1)
                 {
                     selectedButton++;
@@ -57,6 +58,7 @@ public class TitleUIManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
+                AudioManager.Instance.PlayMoveButtonSound();
                 if (selectedButton > 0)
                 {
                     selectedButton--;
@@ -91,7 +93,7 @@ public class TitleUIManager : MonoBehaviour
                 showQuitSelect();
             }
             if(Input.GetKeyDown(KeyCode.RightArrow)){
-                if(selectedQuitButton == 0){
+                if (selectedQuitButton == 0){
                     selectedQuitButton = 1;
                 }
                 showQuitSelect();
@@ -152,18 +154,22 @@ public class TitleUIManager : MonoBehaviour
     }
     public void NewGame()
     {
+        AudioManager.Instance.PlayDecisionButtonSound();
+        AudioManager.Instance.PlayDecisionButtonSound();
         GameManager.Instance.DeleteSaveData();
         LoadWorldMapScene();
     }
     public void LoadWorldMapScene()
     {
-        if(!isQuitAsk){
+        AudioManager.Instance.PlayDecisionButtonSound();
+        if (!isQuitAsk){
             PlayerPrefs.SetString("LastScene", "TitleScene");
             SceneManager.LoadScene("WorldMapScene");
         }
     }
     public void ToggleSettingsPanel()
     {
+        AudioManager.Instance.PlayDecisionButtonSound();
         bool isActive = settingsPanel.activeSelf;
         settingsPanel.SetActive(!isActive);
     }
@@ -176,6 +182,7 @@ public class TitleUIManager : MonoBehaviour
     }
     public void QuitAsk()
     {
+        AudioManager.Instance.PlayDecisionButtonSound();
         //Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         //planeRenderer.material.color = new Color(0.8f, 0.8f, 0.8f, 1.0f);
         isQuitAsk = true;
@@ -188,10 +195,12 @@ public class TitleUIManager : MonoBehaviour
     }
     public void QuitYes()
     {
+        AudioManager.Instance.PlayDecisionButtonSound();
         Application.Quit();
     }
     public void QuitNo()
     {
+        AudioManager.Instance.PlayCancelUISound();
         //Renderer planeRenderer = originalPlane.GetComponent<Renderer>();
         //planeRenderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         isQuitAsk = false;
@@ -203,6 +212,7 @@ public class TitleUIManager : MonoBehaviour
     }
     public void showQuitSelect()
     {
+        AudioManager.Instance.PlayMoveButtonSound();
         Outline quitYesOutline = quitYesButton.gameObject.GetComponent<Outline>();
         Outline quitNoOutline = quitNoButton.gameObject.GetComponent<Outline>();
         if(selectedQuitButton == 0){

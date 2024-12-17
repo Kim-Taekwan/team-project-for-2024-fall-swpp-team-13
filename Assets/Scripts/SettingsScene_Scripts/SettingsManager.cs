@@ -248,6 +248,7 @@ public class SettingsManager : MonoBehaviour
             }
             else if (settingsPanel.activeSelf)
             {
+                AudioManager.Instance.PlayDecisionButtonSound();
                 quitPanel.SetActive(true);
             }
         }
