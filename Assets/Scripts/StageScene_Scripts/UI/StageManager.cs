@@ -100,9 +100,11 @@ public class StageManager : MonoBehaviour
 
     public void UpdatePowerup(string powerupName)
     {
-        UpdateScore(1000);
         switch (powerupName)
         {
+            case "None":
+                currentPowerup = Powerup.None;
+                break;
             case "Sweet Potato":
                 currentPowerup = Powerup.SweetPotato;
                 break;
