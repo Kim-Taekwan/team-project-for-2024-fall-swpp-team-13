@@ -26,7 +26,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip damagedSound;
     public AudioClip moveSound;
 
-    //Debugìš©, ì™„ì„±ì‹œ Start ë©”ì„œë“œ ì‚­ì œ
+    //Debug?? ?ï¿½ì„±??Start ë©”ì„œ????ï¿½ï¿½
     private void Start()
     {
         if (bgmSource != null && bgmSource.clip != null)
@@ -50,7 +50,7 @@ public class AudioManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    // Scene°ú µ¿ÀÏÇÑ ÀÌ¸§ÀÇ BGMÀ» Àç»ý
+    // Play the bgm having the same name with scene
     private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
         for (int i = 0; i < bgmList.Count; i++)
