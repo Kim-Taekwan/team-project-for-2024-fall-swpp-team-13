@@ -5,6 +5,7 @@ using UnityEngine;
 public class MeltByPowerup : MonoBehaviour
 {
     private PlayerController playerController;
+    public GameObject dustPrefab;
 
     void Start()
     {
@@ -15,7 +16,7 @@ public class MeltByPowerup : MonoBehaviour
     {
         if (other.CompareTag("Player") && playerController.isUsingPowerup)
         {
-            //TODO : Add Particle
+            GameObject dust = Instantiate(dustPrefab, transform.position + new Vector3(0.0f, 0.5f, 0.0f), Quaternion.identity);
             //TODO : Add SFX
             Destroy(gameObject);
         }
