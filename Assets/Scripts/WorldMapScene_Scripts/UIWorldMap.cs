@@ -19,7 +19,7 @@ public class UIWorldMap : MonoBehaviour
     void Start()
     {
         FindAllNodes();
-        FindAllLines();
+        //FindAllLines();
 
         // Manually activating levels here, this will actually have to be handled at each Stage scene's scripts
         //PlayerProgress.MarkLevelCompleted(2); // Activate level 2
@@ -40,7 +40,7 @@ public class UIWorldMap : MonoBehaviour
         }
 
         UpdateStageNodes();
-        UpdateLineColors();
+        //UpdateLineColors();
     }
 
     void Update()

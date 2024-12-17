@@ -40,7 +40,6 @@ public class ClickableNode : MonoBehaviour
         }
     }
 
-    // Click on stage works as Enter key down
     void OnMouseDown()
     {
         UIWorldMap uiWorldMap = FindObjectOfType<UIWorldMap>();
@@ -50,23 +49,37 @@ public class ClickableNode : MonoBehaviour
             return;
         }
 
+        // Check if the thickcircle child exists and its color is black
+        MeshRenderer thickCircleRenderer = transform.Find("thickcircle")?.GetComponent<MeshRenderer>();
+        if (thickCircleRenderer != null && thickCircleRenderer.material.color == uiWorldMap.lockedStageColor)
+        {
+            Debug.Log("Cannot click this node because thickcircle is black (locked).");
+            return;
+        }
+
         if (uiWorldMap.stageUnlocked[nodeIndex])
         {
             string nextSceneName = "";
-            
-            GameManager.Instance.currentStage = nodeIndex + 1; 
+            GameManager.Instance.currentStage = nodeIndex + 1;
             Debug.Log($"GameManager currentStage updated to: {GameManager.Instance.currentStage}");
-            
-            switch (nodeIndex)
+
+            switch (gameObject.name)
             {
-                case 0: nextSceneName = "Stage1"; break;
-                case 1: nextSceneName = "Stage2"; break;
-                case 2: nextSceneName = "Stage3"; break;
+                case "NodeStage1":
+                    nextSceneName = "Stage1";
+                    break;
+                case "NodeStage2":
+                    nextSceneName = "Stage2";
+                    break;
+                case "NodeStage3":
+                    nextSceneName = "Stage3";
+                    break;
                 default:
-                    Debug.LogError("Invalid node index: " + nodeIndex);
+                    Debug.LogError("Invalid object name: " + gameObject.name);
                     return;
             }
 
+            Debug.Log($"Loading scene: {nextSceneName}");
             LoadingSceneController.LoadScene(nextSceneName);
         }
         else
@@ -74,5 +87,4 @@ public class ClickableNode : MonoBehaviour
             Debug.Log("This stage is locked.");
         }
     }
-
 }
