@@ -67,11 +67,11 @@ public class TitleUIManager : MonoBehaviour
             {
                 if (selectedButton == 0)
                 {
-                    LoadWorldMapScene();
+                    NewGame();
                 }
                 if (selectedButton == 1)
                 {
-                    LoadContinueScene();
+                    LoadWorldMapScene();
                 }
                 if (selectedButton == 2)
                 {
@@ -149,6 +149,11 @@ public class TitleUIManager : MonoBehaviour
         }
         selectTriangleList[2*selectedButton].SetActive(true);
         selectTriangleList[2*selectedButton+1].SetActive(true);
+    }
+    public void NewGame()
+    {
+        GameManager.Instance.DeleteSaveData();
+        LoadWorldMapScene();
     }
     public void LoadWorldMapScene()
     {

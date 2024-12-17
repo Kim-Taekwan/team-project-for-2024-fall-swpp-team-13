@@ -3673,7 +3673,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 456813812}
         m_TargetAssemblyTypeName: TitleUIManager, Assembly-CSharp
-        m_MethodName: LoadWorldMapScene
+        m_MethodName: NewGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6165,7 +6165,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 456813812}
         m_TargetAssemblyTypeName: TitleUIManager, Assembly-CSharp
-        m_MethodName: LoadContinueScene
+        m_MethodName: LoadWorldMapScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

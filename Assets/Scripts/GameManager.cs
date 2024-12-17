@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     // Save Log
     [SerializeField] bool[] obtainedRecipes = new bool[4];
     [SerializeField] int[] bestScores = new int[4];
-    [SerializeField] public int stageProgress = 0; // 0: No stages cleared,    [1-4]: cleared up to [1-4] stage
+    [SerializeField] public int stageProgress = 1; // 0: No stages cleared,    [1-4]: cleared up to [1-4] stage
 
     // System variables
     [SerializeField] public int currentStage = 0;  // 0: None(World Map etc.), [1-4]: currently playing [1-4] stage
@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
     public void UpdateStageClear(int stageScore, bool obtainedRecipe)
     {
         // Update stage progress only if the later stage is cleared
-        stageProgress = Math.Max(stageProgress, currentStage);
+        stageProgress = Math.Max(stageProgress + 1, currentStage);
 
         // Update recipe info only if it was acquired
         obtainedRecipes[currentStage-1] = obtainedRecipes[currentStage-1] || obtainedRecipe;
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
     {
         public bool[] obtainedRecipes = new bool[4];
         public int[] bestScores = new int[4];
-        public int stageProgress = 0;
+        public int stageProgress = 1;
     }
 
     private void SaveLog()
@@ -103,5 +103,29 @@ public class GameManager : MonoBehaviour
             stageProgress = data.stageProgress;
         }
     }
+    public void DeleteSaveData()
+    {
+#if UNITY_EDITOR
+        string path = Application.dataPath + "/Save/savefile.json";
+#else
+        string path = Application.persistentDataPath + "/savefile.json";
+#endif
+
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+            Debug.Log("Save data deleted successfully.");
+        }
+        else
+        {
+            Debug.LogWarning("No save file found to delete.");
+        }
+        obtainedRecipes = new bool[4];
+        bestScores = new int[4];
+        stageProgress = 1;
+
+        Debug.Log("GameManager data reset to defaults.");
+}
+
 }
 
