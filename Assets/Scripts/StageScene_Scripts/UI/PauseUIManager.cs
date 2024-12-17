@@ -22,11 +22,11 @@ public class PauseUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !stageManager.isGameOver && !stageManager.isGameClear && stageManager.canPause)
+        if (Input.GetKeyDown(KeyCode.Escape) && !stageManager.isGameOver && !stageManager.isGameClear && stageManager.canPause && !settingsPanel.activeSelf)
         {
             if (!stageManager.isGamePaused)
                 ActivatePauseUI();
-            else if (settingsPanel.activeInHierarchy == false)
+            else
                 DeactivatePauseUI();
         }
 

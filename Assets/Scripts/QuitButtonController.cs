@@ -21,7 +21,6 @@ public class QuitButtonController : MonoBehaviour
             settingsManager.SaveSettings();
             settingsManager.settingsPanel.SetActive(false);
             settingsManager.quitPanel.SetActive(false);
-            Time.timeScale = 1;
             Debug.Log("QuitYes executed.");
         }
         else
