@@ -78,10 +78,6 @@ public class AudioManager : MonoBehaviour
                 PlayBGM(bgmList[i]);
                 return;
             }
-            if (arg0.name == "WorldMapScene" && bgmList[i].name == "TitleScene")
-            {
-                PlayBGM(bgmList[i]);
-            }
         }                
     }
 
@@ -192,6 +188,14 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null && sfxSource.isPlaying)
         {
             sfxSource.Stop();
+        }
+    }
+
+    public void StopBGM()
+    {
+        if (bgmSource != null && bgmSource.isPlaying)
+        {
+            bgmSource.Stop();
         }
     }
 

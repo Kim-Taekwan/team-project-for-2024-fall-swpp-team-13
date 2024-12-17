@@ -16382,6 +16382,8 @@ MonoBehaviour:
   hasStarted: 0
   isSkillReady: 0
   hasEnded: 0
+  eventBGM: {fileID: 8300000, guid: fcb8e60b189e21a49baddb6dcb1ecefb, type: 3}
+  stage1BGM: {fileID: 8300000, guid: 955877283700ca94abf73790c66c7b94, type: 3}
 --- !u!4 &534369184
 Transform:
   m_ObjectHideFlags: 0

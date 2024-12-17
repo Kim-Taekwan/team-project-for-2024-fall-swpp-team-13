@@ -21,6 +21,8 @@ public class PowerupEventManager : MonoBehaviour
     [SerializeField] bool hasEnded = false;
     private PlayerController playerController;
     private StageManager stageManager;
+    public AudioClip eventBGM;
+    public AudioClip stage1BGM;
 
     private void Start()
     {
@@ -41,6 +43,7 @@ public class PowerupEventManager : MonoBehaviour
 
         if (isSkillReady && !hasEnded && Input.GetKeyDown(KeyCode.C))
         {
+            AudioManager.Instance.StopBGM();
             hasEnded = true;
             Time.timeScale = 1.0f;
             stageManager.canPause = true;
@@ -49,7 +52,7 @@ public class PowerupEventManager : MonoBehaviour
     }
 
     private void EnemiesAttackEvent()
-    {
+    {        
         eventCamera.Priority = 20;
         StartCoroutine(playerController.MovePause(playerMoveDelay));
         StartCoroutine(SlowMotion());
@@ -64,7 +67,9 @@ public class PowerupEventManager : MonoBehaviour
 
     IEnumerator SlowMotion()
     {
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(1.0f);
+        AudioManager.Instance.PlayBGM(eventBGM);
+        yield return new WaitForSeconds(2.0f);
         eventCart.m_Speed = 6.5f;
         yield return new WaitForSeconds(1.5f);
         while (!hasEnded)
@@ -89,6 +94,7 @@ public class PowerupEventManager : MonoBehaviour
             Destroy(keyGuideInstance);
         }
         yield return new WaitForSeconds(returnDelay);
+        AudioManager.Instance.PlayBGM(stage1BGM);
         eventCamera.Priority = 9;
         defaultCamera.MoveToTopOfPrioritySubqueue();
     }

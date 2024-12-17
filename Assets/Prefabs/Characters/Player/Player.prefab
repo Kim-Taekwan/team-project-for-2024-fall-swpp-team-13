@@ -143,7 +143,7 @@ MonoBehaviour:
   boxScale: {x: 0.85, y: 0.3, z: 0.83}
   offset: {x: 0, y: 0.5, z: 0.158}
   maxDistance: 0.6
-  isHit: 1
+  isHit: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 128

@@ -93,6 +93,7 @@ public class PlayerController : MonoBehaviour
     //Particles
     [Header("Particles")]
     public ParticleSystem powerupParticle;
+    GameObject powerupEffect;
 
     // Cinemachine
     public CinemachineVirtualCamera VC1; 
@@ -165,6 +166,7 @@ public class PlayerController : MonoBehaviour
             HandleMovement();
             HandleJump();
         }
+        UpdateSoundAndVisualEffects();
     }
 
     private bool DollyTrackReached()
@@ -193,9 +195,6 @@ public class PlayerController : MonoBehaviour
         Vector3 velocity = new Vector3(0.0f, rb.velocity.y, 0.0f) + direction * currentSpeed;
 
         rb.velocity = velocity;
-
-        if(isGrounded && (velocity.magnitude > 0.1f)) StartCoroutine(PlayDustAndTrailEffect());
-        //Instantiate(dustPrefab, transform.position, Quaternion.identity);
         UpdateAnimation(direction);
     }
 
@@ -230,6 +229,20 @@ public class PlayerController : MonoBehaviour
             isJumping = false;
             animator.SetBool("isGrounded", true);
             boxCollider.material = null;
+        }
+    }
+
+    void UpdateSoundAndVisualEffects()
+    {
+        Vector3 XZvelocity = new Vector3(rb.velocity.x, 0.0f, rb.velocity.z);
+        if (isGrounded &&  XZvelocity.magnitude > 1.0f)
+        {
+            AudioManager.Instance.PlayMoveSound(GetInstanceID());
+            StartCoroutine(PlayDustAndTrailEffect());
+        }
+        else
+        {
+            AudioManager.Instance.StopMoveSound(GetInstanceID());
         }
     }
 
@@ -313,19 +326,10 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isMoving", true);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-            if (isGrounded)
-            {
-                AudioManager.Instance.PlayMoveSound(GetInstanceID());
-            }
-            else
-            {
-                AudioManager.Instance.StopMoveSound(GetInstanceID());
-            }
         }
         else
         {
             animator.SetBool("isMoving", false);
-            AudioManager.Instance.StopMoveSound(GetInstanceID());
         }
     }
 
@@ -341,6 +345,10 @@ public class PlayerController : MonoBehaviour
         isInvincible = false;
         isUsingPowerup = false;
         canMove = true;
+        if (powerupEffect != null)
+        {
+            Destroy(powerupEffect);
+        }
     }
 
     private void UseCarrotPowerup()
@@ -358,16 +366,15 @@ public class PlayerController : MonoBehaviour
     {
         canMove = false;
         animator.SetBool("isSweetPotato", true);
-        GameObject effect = Instantiate(sweetPotatoEffect, transform.position, Quaternion.identity);
+        powerupEffect = Instantiate(sweetPotatoEffect, transform.position, Quaternion.identity);
         AudioManager.Instance.PlaySweetPotatoSound();
-        effect.transform.SetParent(transform);
+        powerupEffect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
             UseSweetPotato();
             staminaManager.RunStamina(staminaCost[Powerup.SweetPotato] / 50.0f);
             yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
         }
-        Destroy(effect);
         ResetPowerupSettings();
     }
 
@@ -375,15 +382,14 @@ public class PlayerController : MonoBehaviour
     {
         isInvincible = true;
         speed = dashSpeed;
-        GameObject effect = Instantiate(chiliPepperEffect, transform.position, Quaternion.identity);
+        powerupEffect = Instantiate(chiliPepperEffect, transform.position, Quaternion.identity);
         AudioManager.Instance.PlayChiliPepperSound();
-        effect.transform.SetParent(transform);
+        powerupEffect.transform.SetParent(transform);
         while (Input.GetKey(KeyCode.C) && !staminaManager.isEmpty())
         {
             staminaManager.RunStamina(staminaCost[Powerup.ChiliPepper] / 50.0f);
             yield return new WaitForSeconds(holdPowerupStaminaCooldown / 50.0f);
         }
-        Destroy(effect);
         ResetPowerupSettings();
     }
 

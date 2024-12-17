@@ -309,14 +309,15 @@ MonoBehaviour:
   bgmList:
   - {fileID: 8300000, guid: 955877283700ca94abf73790c66c7b94, type: 3}
   - {fileID: 8300000, guid: 5b4985558cad71640873e56c4c1c1c02, type: 3}
-  - {fileID: 8300000, guid: 89bb15201a4350146a9fc5f84a98a3f2, type: 3}
+  - {fileID: 8300000, guid: 3d3d72fcc02e9c945a2f1255b9d85c78, type: 3}
   - {fileID: 8300000, guid: a0477b67229ca4546a65198b288fb9cd, type: 3}
+  - {fileID: 8300000, guid: bfc7e31a53ed1f04a90bfe175ef544d5, type: 3}
   coinSound: {fileID: 8300000, guid: 2fcfc7d434f702843ad3663056ab925f, type: 3}
   recipeSound: {fileID: 8300000, guid: 9229e3f6717752545a74a889d7a380e8, type: 3}
   powerUpSound: {fileID: 8300000, guid: 540f5eb1d1fc11148b9e06dc61f8c53d, type: 3}
   jumpSound: {fileID: 8300000, guid: 32174c4cac4bb0242a74c316c3109499, type: 3}
   gameClearSound: {fileID: 8300000, guid: 7d9cc7e3bf882b14ab71a287959a87fa, type: 3}
-  gameOverSound: {fileID: 8300000, guid: 76ff5fdb0cb00a74f9b9b1499e954a9a, type: 3}
+  gameOverSound: {fileID: 8300000, guid: a6fcb14dee003ec469901514eb97b088, type: 3}
   attackSound: {fileID: 8300000, guid: 814e5ee8db91a384db105ae2fce0fd93, type: 3}
   playerDamagedSound: {fileID: 8300000, guid: b314b4ec3381710499f67dda6b69d08b, type: 3}
   moveSound: {fileID: 8300000, guid: a8c197c6b62a1b14287f42731bed01b4, type: 3}
