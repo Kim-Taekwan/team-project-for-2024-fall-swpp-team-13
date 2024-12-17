@@ -100,7 +100,6 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetFloat("Brightness", 1f);
         PlayerPrefs.SetFloat("BGMVolume", 0.5f);
         PlayerPrefs.SetFloat("SFXVolume", 0.5f);
-        PlayerPrefs.SetInt("Resolution", 0);
         PlayerPrefs.SetInt("Fullscreen", 1);
         Resolution[] supportedResolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
@@ -320,8 +319,12 @@ public class SettingsManager : MonoBehaviour
 
         sfxVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
 
+        resolutionDropdown.onValueChanged.AddListener(SetResolution);
+
         resolutionDropdown.value = PlayerPrefs.GetInt("Resolution");
         SetResolution(PlayerPrefs.GetInt("Resolution"));
+
+        fullscreenDropdown.onValueChanged.AddListener(SetFullscreen);
 
         fullscreenDropdown.value = PlayerPrefs.GetInt("Fullscreen");
         SetFullscreen(fullscreenDropdown.value);
