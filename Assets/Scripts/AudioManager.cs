@@ -43,6 +43,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip warpSound;
     public AudioClip brokenSound;
     public AudioClip electricWhiskSound;
+    public AudioClip clapSound;
 
 
     private void Start()
@@ -227,4 +228,5 @@ public class AudioManager : MonoBehaviour
     public void PlayBrokenSound() => PlaySFX(brokenSound);
     public void PlayElectricWhiskSound(GameObject go) => PlaySpatialSFX(electricWhiskSound, go);
     public void StopElectricWhiskSound(GameObject go) => StopSpatialSFX(go);
+    public void PlayClapSound() => PlaySFX(clapSound);
 }

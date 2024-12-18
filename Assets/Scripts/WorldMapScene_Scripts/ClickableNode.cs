@@ -24,6 +24,7 @@ public class ClickableNode : MonoBehaviour
     {
         if (meshRenderer != null && uiWorldMap.stageUnlocked[nodeIndex])
         {
+            AudioManager.Instance.PlayMoveButtonSound();
             meshRenderer.material.color = uiWorldMap.currentStageColor;
         }
     }
@@ -59,6 +60,7 @@ public class ClickableNode : MonoBehaviour
 
         if (uiWorldMap.stageUnlocked[nodeIndex])
         {
+            AudioManager.Instance.PlayMoveSceneSound();
             string nextSceneName = "";
             GameManager.Instance.currentStage = nodeIndex + 1;
             Debug.Log($"GameManager currentStage updated to: {GameManager.Instance.currentStage}");

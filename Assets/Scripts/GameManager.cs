@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
     // TODO: 'Settings' variables as save log
 
     // Save Log
-    [SerializeField] bool[] obtainedRecipes = new bool[4];
-    [SerializeField] int[] bestScores = new int[4];
+    [SerializeField] public bool[] obtainedRecipes = new bool[4];
+    [SerializeField] public int[] bestScores = new int[4];
     [SerializeField] public int stageProgress = 1; // 0: No stages cleared,    [1-4]: cleared up to [1-4] stage
 
     // System variables

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class UIWorldMap : MonoBehaviour
@@ -14,12 +16,16 @@ public class UIWorldMap : MonoBehaviour
     public List<GameObject> stageNodes = new List<GameObject>();
     public List<bool> stageUnlocked = new List<bool> { true, false, false};
 
-    public List<GameObject> lines = new List<GameObject>();
+    public List<Image> lines = new List<Image>();
+    public Sprite[] recipeSprites = new Sprite[2];
+    public Image[] recipeImages = new Image[3];
+    public TextMeshProUGUI[] bestScoresTexts = new TextMeshProUGUI[3];
+    public Image clearPanel;
+    public TextMeshProUGUI clearText;
 
     void Start()
     {
         FindAllNodes();
-        //FindAllLines();
 
         // Manually activating levels here, this will actually have to be handled at each Stage scene's scripts
         //PlayerProgress.MarkLevelCompleted(2); // Activate level 2
@@ -40,7 +46,24 @@ public class UIWorldMap : MonoBehaviour
         }
 
         UpdateStageNodes();
-        //UpdateLineColors();
+        UpdateLineColors();
+        UpdateStageStatus();
+    }
+
+    private void UpdateStageStatus()
+    {
+        for (int i = 0; i < recipeImages.Length; i++)
+        {
+            recipeImages[i].sprite = GameManager.Instance.obtainedRecipes[i] ? recipeSprites[1] : recipeSprites[0];
+            bestScoresTexts[i].text = GameManager.Instance.bestScores[i].ToString("D5");
+        }
+
+        if (GameManager.Instance.stageProgress == 4 && clearPanel != null && clearText != null)
+        {
+            AudioManager.Instance.PlayClapSound();
+            clearPanel.gameObject.SetActive(true);
+            clearText.gameObject.SetActive(true);
+        }
     }
 
     void Update()
@@ -59,7 +82,6 @@ public class UIWorldMap : MonoBehaviour
                 AudioManager.Instance.PlayMoveButtonSound();
                 currentStageIndex++;
                 UpdateStageNodes();
-                UpdateLineColors();
             }
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -69,7 +91,6 @@ public class UIWorldMap : MonoBehaviour
                 AudioManager.Instance.PlayMoveButtonSound();
                 currentStageIndex--;
                 UpdateStageNodes();
-                UpdateLineColors();
             }
         }
         else if (Input.GetKeyDown(KeyCode.Return))
@@ -91,12 +112,6 @@ public class UIWorldMap : MonoBehaviour
             int index = i;
             stageNodes[i].AddComponent<ClickableNode>().Setup(index, uiWorldMap); 
         }
-    }
-
-    void FindAllLines()
-    {
-        lines.Add(GameObject.Find("Line12"));
-        lines.Add(GameObject.Find("Line23"));
     }
 
     public void LoadLevel(int index)
@@ -150,16 +165,16 @@ public class UIWorldMap : MonoBehaviour
 
    void UpdateLineColors()
     {
-        if (lines.Count >= 3)
+        if (stageNodes.Count >= 2)
         {
             for (int i = 0; i < lines.Count; i++)
             {
                 bool isConnectedUnlocked = stageUnlocked[i] && stageUnlocked[i + 1];
-                lines[i].SetActive(isConnectedUnlocked);
+                lines[i].gameObject.SetActive(isConnectedUnlocked);
 
                 if (isConnectedUnlocked)
                 {
-                    lines[i].GetComponent<Renderer>().material.color = unlockedLineColor;
+                    lines[i].color = unlockedLineColor;
                 }
             }
         }

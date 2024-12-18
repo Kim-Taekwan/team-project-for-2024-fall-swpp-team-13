@@ -1,15 +1,15 @@
 {
     "obtainedRecipes": [
+        false,
         true,
-        false,
-        false,
+        true,
         false
     ],
     "bestScores": [
-        10900,
-        0,
-        0,
+        300,
+        25100,
+        45000,
         0
     ],
-    "stageProgress": 2
+    "stageProgress": 4
 }

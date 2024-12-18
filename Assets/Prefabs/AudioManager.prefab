@@ -338,3 +338,4 @@ MonoBehaviour:
   warpSound: {fileID: 8300000, guid: d1186c9b7c8ff1a459cf9691f51f50a2, type: 3}
   brokenSound: {fileID: 8300000, guid: 9f53956df4c92f744b873a6fa64ca6cb, type: 3}
   electricWhiskSound: {fileID: 8300000, guid: 4c40b5c24d64d7e409ff6d11147b6511, type: 3}
+  clapSound: {fileID: 8300000, guid: b0ca16a5d28502c418b45e15967e5a80, type: 3}
