@@ -57,11 +57,11 @@ public class LoadingSceneController : MonoBehaviour
 
                 if (progressBar.fillAmount >= 1f)
                 {
-                    op.allowSceneActivation = true; 
+                    isLoading = false;
+                    op.allowSceneActivation = true;
                     yield break; 
                 }
             }
         }
-        isLoading = false;
     }
 }
