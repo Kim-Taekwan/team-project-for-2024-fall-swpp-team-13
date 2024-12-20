@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
     public void UpdateStageClear(int stageScore, bool obtainedRecipe)
     {
         // Update stage progress only if the later stage is cleared
-        stageProgress = Math.Max(stageProgress + 1, currentStage);
+        stageProgress = Math.Max(stageProgress, currentStage+1);
 
         // Update recipe info only if it was acquired
         obtainedRecipes[currentStage-1] = obtainedRecipes[currentStage-1] || obtainedRecipe;
